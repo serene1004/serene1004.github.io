@@ -125,7 +125,7 @@ onMounted(() => {
   const starsArray = []
   for (let i = 0; i < numberOfStars; i++) {
     const starMaterial = new THREE.MeshStandardMaterial({
-      color: "white",
+      color: "white", // 별색상도 파라미터로 받아도될듯듯
     })
     const star = new THREE.Mesh(starGeometry, starMaterial)
     const min = -128

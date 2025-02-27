@@ -67,7 +67,10 @@ onMounted(() => {
 
   // Material
   const sunMaterial = new THREE.MeshStandardMaterial({
-    map: sunTexture,
+    // map: sunTexture,       // map 대신 emissiveMap 사용
+    emissive: "orange",       // 빛의 색상 (주황색으로 설정)
+    emissiveMap: sunTexture,  // Emissive Map 적용
+    emissiveIntensity: 0.75,  // 빛 방사 강도 (애니메이션으로 변경 예정)
   })
   const earthMaterial = new THREE.MeshStandardMaterial({
     map: earthTexture,
@@ -81,31 +84,7 @@ onMounted(() => {
   const earth = new THREE.Mesh(earthGeometry, earthMaterial)
   const moon = new THREE.Mesh(moonGeometry, moonMaterial)
 
-  const sunGlowMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-      viewVector: { type: "v3", value: camera.position },
-    },
-    vertexShader: `
-      varying vec3 vNormal;
-      void main() {
-        vNormal = normalize(normalMatrix * normal);
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      varying vec3 vNormal;
-      void main() {
-        float intensity = pow(0.8 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
-        gl_FragColor = vec4(0.976, 0.451, 0.086, 1.0) * intensity; // #f97316의 RGB 변환
-      }
-    `,
-    side: THREE.BackSide,
-    blending: THREE.AdditiveBlending,
-    transparent: true,
-  })
-  const sunGlow = new THREE.Mesh(new THREE.SphereGeometry(8, 32, 32), sunGlowMaterial)
-  // sunGlow.scale.set(1.25, 1.25, 1.25); // 태양보다 조금 더 크게
-  scene.add(sunGlow)
+  scene.add(sun)
 
   // Group
   const sunGroup = new THREE.Group()
@@ -125,7 +104,7 @@ onMounted(() => {
   const starsArray = []
   for (let i = 0; i < numberOfStars; i++) {
     const starMaterial = new THREE.MeshStandardMaterial({
-      color: "white", // 별색상도 파라미터로 받아도될듯듯
+      color: "white", // 별색상도 파라미터로 받아도될듯
     })
     const star = new THREE.Mesh(starGeometry, starMaterial)
     const min = -128

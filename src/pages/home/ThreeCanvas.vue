@@ -1,27 +1,30 @@
 <script setup>
-import { onMounted, ref } from "vue"
+import { onMounted, onUnmounted, ref } from "vue"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 const canvas = ref(null)
 
 onMounted(() => {
-  // https://www.solarsystemscope.com/textures/
+  const scene = new THREE.Scene()
+  const clock = new THREE.Clock()
   const textureLoader = new THREE.TextureLoader()
-  const sunTexture = textureLoader.load('/textures/space/2k_sun.jpg');
-  const earthTexture = textureLoader.load('/textures/space/2k_earth_daymap.jpg');
-  const moonTexture = textureLoader.load('/textures/space/2k_moon.jpg');
-  const starsMilkywayTexture = textureLoader.load('/textures/space/2k_stars_milky_way.jpg');
-  sunTexture.wrapS = THREE.RepeatWrapping
-  sunTexture.wrapT = THREE.RepeatWrapping
-  earthTexture.wrapS = THREE.RepeatWrapping
-  earthTexture.wrapT = THREE.RepeatWrapping
-  moonTexture.wrapS = THREE.RepeatWrapping
-  moonTexture.wrapT = THREE.RepeatWrapping
-  starsMilkywayTexture.wrapS = THREE.RepeatWrapping
-  starsMilkywayTexture.wrapT = THREE.RepeatWrapping
 
-  // Renderer
+  // 텍스처 로드
+  const loadTexture = (path) => {
+    const texture = textureLoader.load(path)
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    return texture
+  }
+
+  // https://www.solarsystemscope.com/textures/
+  // const starsMilkywayTexture = loadTexture('/textures/space/2k_stars_milky_way.jpg')
+  const sunTexture = loadTexture('/textures/space/2k_sun.jpg')
+  const earthTexture = loadTexture('/textures/space/2k_earth_daymap.jpg')
+  const moonTexture = loadTexture('/textures/space/2k_moon.jpg')
+
+  // 렌더러 설정
   const renderer = new THREE.WebGLRenderer({
     canvas: canvas.value,
     antialias: true,
@@ -30,63 +33,46 @@ onMounted(() => {
   renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1)
   renderer.shadowMap.enabled = true
 
-  // Scene
-  const scene = new THREE.Scene()
-  // scene.background = starsMilkywayTexture
-
-  // Camera
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  )
+  // 카메라 설정
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
   camera.position.set(64, 32, -64)
   scene.add(camera)
 
-  // Light
-  const ambientLight = new THREE.AmbientLight("white", 0.05)
-  scene.add(ambientLight)
+  // 빛 설정
+  const setupLights = () => {
+    scene.add(new THREE.AmbientLight("white", 0.05))
 
-  const sunLight = new THREE.PointLight("white", 1024, 1024)
-  sunLight.position.set(0, 0, 0)
-  sunLight.castShadow = true
-  sunLight.shadow.mapSize.width = 256
-  sunLight.shadow.mapSize.height = 256
-  sunLight.shadow.camera.near = 1
-  sunLight.shadow.camera.far = 128
-  scene.add(sunLight)
+    const sunLight = new THREE.PointLight("white", 1024, 1024)
+    sunLight.position.set(0, 0, 0)
+    sunLight.castShadow = true
+    sunLight.shadow.mapSize.set(256, 256)
+    sunLight.shadow.camera.near = 1
+    sunLight.shadow.camera.far = 128
+    scene.add(sunLight)
+  }
+  setupLights()
 
-  const lightHelper = new THREE.PointLightHelper(sunLight)
-  // scene.add(lightHelper)
+  // 공통된 Sphere 생성 함수
+  const createSphere = (size, texture) => {
+    return new THREE.Mesh(
+      new THREE.SphereGeometry(size, 32, 32),
+      new THREE.MeshStandardMaterial({ map: texture })
+    )
+  }
 
-  // Geometry
-  const sunGeometry = new THREE.SphereGeometry(16, 32, 32)
-  const earthGeometry = new THREE.SphereGeometry(2, 32, 32)
-  const moonGeometry = new THREE.SphereGeometry(0.5, 32, 32)
+  // 태양, 지구, 달 생성
+  const sun = createSphere(16, sunTexture)
+  // sun.material.map = sunTexture                  // map 대신 emissiveMap 사용
+  sun.material.emissive = new THREE.Color("orange") // 빛의 색상
+  sun.material.emissiveMap = sunTexture             // Emissive Map 적용
+  sun.material.emissiveIntensity = 0.75             // 빛 방사 강도
 
-  // Material
-  const sunMaterial = new THREE.MeshStandardMaterial({
-    // map: sunTexture,       // map 대신 emissiveMap 사용
-    emissive: "orange",       // 빛의 색상 (주황색으로 설정)
-    emissiveMap: sunTexture,  // Emissive Map 적용
-    emissiveIntensity: 0.75,  // 빛 방사 강도 (애니메이션으로 변경 예정)
-  })
-  const earthMaterial = new THREE.MeshStandardMaterial({
-    map: earthTexture,
-  })
-  const moonMaterial = new THREE.MeshStandardMaterial({
-    map: moonTexture,
-  })
-
-  // Mesh
-  const sun = new THREE.Mesh(sunGeometry, sunMaterial)
-  const earth = new THREE.Mesh(earthGeometry, earthMaterial)
-  const moon = new THREE.Mesh(moonGeometry, moonMaterial)
+  const earth = createSphere(2, earthTexture)
+  const moon = createSphere(0.5, moonTexture)
 
   scene.add(sun)
 
-  // Group
+  // 그룹 생성
   const sunGroup = new THREE.Group()
   const earthGroup = new THREE.Group()
   earthGroup.add(earth, moon)
@@ -94,64 +80,74 @@ onMounted(() => {
   earthGroup.rotation.x = THREE.MathUtils.degToRad(23.5)
   moon.position.set(3, 0, 0)
 
-  // sunGroup.add(sun, earthGroup)
   sunGroup.add(earthGroup)
   scene.add(sunGroup)
 
-  const numberOfStars = 256
-  const starGeometry = new THREE.SphereGeometry(0.5, 16, 16)
+  // 별 생성
   const starsGroup = new THREE.Group()
-  const starsArray = []
+  const numberOfStars = 256
   for (let i = 0; i < numberOfStars; i++) {
-    const starMaterial = new THREE.MeshStandardMaterial({
-      color: "white", // 별색상도 파라미터로 받아도될듯
-    })
-    const star = new THREE.Mesh(starGeometry, starMaterial)
-    const min = -128
-    const max = 128
-    const posX = Math.random() * (max - min + 1) + min
-    const posY = Math.random() * (max - min + 1) + min
-    const posZ = Math.random() * (max - min + 1) + min
-    star.position.set(posX, posY, posZ)
+    const star = createSphere(0.5, null)
+    star.material = new THREE.MeshStandardMaterial({ color: "white" })
+
+    star.position.set(
+      Math.random() * 256 - 128,
+      Math.random() * 256 - 128,
+      Math.random() * 256 - 128
+    )
+
     starsGroup.add(star)
-    starsArray.push(star)
   }
   scene.add(starsGroup)
 
-  // Controls
+  // 카메라 컨트롤 (모든 조작 비활성화)
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.maxDistance = 128
   controls.minDistance = 32
+  // controls.enableZoom = false   // 휠 줌 방지
+  // controls.enableRotate = false // 회전 방지
+  controls.enablePan = false    // 이동 방지
 
-  const clock = new THREE.Clock()
 
+  // 회전 애니메이션
+  const rotatingObjects = [
+    { object: sunGroup, speed: 64 },
+    { object: earthGroup, speed: 2 },
+    { object: earth, speed: 4 },
+    { object: moon, speed: 2 },
+    { object: starsGroup, speed: 8 },
+  ]
+
+  const updateRotation = (delta) => {
+    rotatingObjects.forEach(({ object, speed }) => {
+      object.rotation.y += delta / speed
+    })
+  }
+
+  // 애니메이션 루프
   const draw = () => {
     const delta = clock.getDelta()
-
-    // for (let i = 0; i < numberOfStars; i++) {
-    //   const random = Math.random()
-    //   starsArray[i].scale.set(random / 2, random / 2, random / 2)
-    // }
-
-    sunGroup.rotation.y += delta / 64
-    earthGroup.rotation.y += delta / 2
-    earth.rotation.y += delta / 4
-    moon.rotation.y += delta / 2
-    starsGroup.rotation.y += delta / 8 // 회전시간
-
+    updateRotation(delta)
     renderer.render(scene, camera)
     renderer.setAnimationLoop(draw)
   }
 
+  // 윈도우 크기 조절 이벤트
   const setSize = () => {
-    camera.aspect = window.innerWidth / window.innerHeight
+    const { innerWidth, innerHeight } = window
+    camera.aspect = innerWidth / innerHeight
     camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.render(scene, camera)
+    renderer.setSize(innerWidth, innerHeight)
   }
+
   window.addEventListener("resize", setSize)
 
   draw()
+
+  onUnmounted(() => {
+    window.removeEventListener("resize", setSize)
+    renderer.setAnimationLoop(null)
+  })
 })
 </script>
 

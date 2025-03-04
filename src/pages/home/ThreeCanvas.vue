@@ -25,8 +25,7 @@ onMounted(() => {
   const sunTexture = loadTexture('/textures/space/2k_sun.jpg')
   const earthTexture = loadTexture('/textures/space/2k_earth_daymap.jpg')
   const moonTexture = loadTexture('/textures/space/2k_moon.jpg')
-
-  // scene.background = starsMilkywayTexture
+  const starTexture = loadTexture('/textures/space/2k_eris_fictional.jpg')
 
   const skyGeometry = new THREE.SphereGeometry(128, 64, 64) // 반지름을 크게 설정
   const skyMaterial = new THREE.MeshBasicMaterial({
@@ -53,14 +52,14 @@ onMounted(() => {
 
   // 빛 설정
   const setupLights = () => {
-    scene.add(new THREE.AmbientLight("white", 0.05))
+    scene.add(new THREE.AmbientLight("white", 0.1))
 
     const sunLight = new THREE.PointLight("white", 1024, 1024)
     sunLight.position.set(0, 0, 0)
     sunLight.castShadow = true
     sunLight.shadow.mapSize.set(256, 256)
     sunLight.shadow.camera.near = 1
-    sunLight.shadow.camera.far = 128
+    sunLight.shadow.camera.far = 256
     scene.add(sunLight)
 
     // const lightHelper = new THREE.PointLightHelper(sunLight)
@@ -103,13 +102,14 @@ onMounted(() => {
   // 별 생성
   const starsGroup = new THREE.Group()
   const numberOfStars = 256
+  const stars = []
   for (let i = 0; i < numberOfStars; i++) {
-    const randomSize = Math.random() * 0.2 + 0.25
+    const randomSize = Math.random() * 0.2 + 0.2
     const star = createSphere(randomSize, null)
-    star.material = new THREE.MeshStandardMaterial({ color: "white" })
+    // star.material = new THREE.MeshStandardMaterial({ color: "white" })
     star.material.emissive = new THREE.Color("white")
-    star.material.emissiveMap = moonTexture
-    star.material.emissiveIntensity = 0.1
+    star.material.emissiveMap = starTexture
+    star.material.emissiveIntensity = 0.75
 
     star.position.set(
       Math.random() * 256 - 128,
@@ -118,8 +118,21 @@ onMounted(() => {
     )
 
     starsGroup.add(star)
+    stars.push(star)
   }
   scene.add(starsGroup)
+
+  function twinkleStars(time) {
+    const t = time * 0.025
+
+    stars.forEach((star, index) => {
+      const intensity = (Math.sin(t + index * 0.5) + 1) * 0.375 // 마지막 곱하기값 0.5 = 0~1, 0.375 = 0~0.75, 0.25 = 0~0.5, 0.125 = 0~0.25
+      star.material.emissiveIntensity = intensity
+    })
+
+    requestAnimationFrame(twinkleStars)
+  }
+  requestAnimationFrame(twinkleStars)
 
   // 카메라 컨트롤 (모든 조작 비활성화)
   const controls = new OrbitControls(camera, renderer.domElement)
@@ -166,7 +179,7 @@ onMounted(() => {
     { object: earthGroup, speed: 0.5 },
     { object: earth, speed: 1 },
     { object: moon, speed: 0.25 },
-    { object: starsGroup, speed: 8 },
+    { object: starsGroup, speed: 32 },
   ]
 
   const updateRotation = (delta) => {

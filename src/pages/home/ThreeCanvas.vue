@@ -175,6 +175,7 @@ onMounted(() => {
 
   // 회전 애니메이션
   const rotatingObjects = [
+    { object: sun, speed: 16 },
     { object: sunGroup, speed: 4 },
     { object: earthGroup, speed: 0.5 },
     { object: earth, speed: 1 },

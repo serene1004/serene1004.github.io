@@ -104,29 +104,35 @@ onMounted(() => {
   setupLights()
 
   // 공통된 Sphere 생성 함수
-  const createSphere = (size, texture) => {
-    return new THREE.Mesh(
+  const createSphere = (size, texture, name) => {
+    const sphere = new THREE.Mesh(
       new THREE.SphereGeometry(size, 32, 32),
       new THREE.MeshStandardMaterial({ map: texture })
     )
+
+    if (name) {
+      sphere.name = name
+    }
+    
+    return sphere
   }
 
   // 행성
-  const sun = createSphere(12, sunTexture)
+  const sun = createSphere(12, sunTexture, 'sun')
   // sun.material.map = sunTexture                  // map 대신 emissiveMap 사용
   sun.material.emissive = new THREE.Color("white")  // 빛의 색상
   sun.material.emissiveMap = sunTexture             // Emissive Map 적용
   sun.material.emissiveIntensity = 0.75             // 빛 방사 강도
 
-  const mercury = createSphere(0.8, mercuryTexture)
-  const venus = createSphere(2.0, venusTexture)
-  const earth = createSphere(2, earthTexture)
-  const moon = createSphere(0.5, moonTexture)
-  const mars = createSphere(1.1, marsTexture)
-  const jupiter = createSphere(5.0, jupiterTexture)
-  const saturn = createSphere(4.2, saturnTexture)
-  const uranus = createSphere(1.8, uranusTexture)
-  const neptune = createSphere(1.8, neptuneTexture)
+  const mercury = createSphere(0.8, mercuryTexture, 'mercury')
+  const venus = createSphere(2.0, venusTexture, 'venus')
+  const earth = createSphere(2, earthTexture, 'earth')
+  const moon = createSphere(0.5, moonTexture, 'moon')
+  const mars = createSphere(1.1, marsTexture, 'mars')
+  const jupiter = createSphere(5.0, jupiterTexture, 'jupiter')
+  const saturn = createSphere(4.2, saturnTexture, 'saturn')
+  const uranus = createSphere(1.8, uranusTexture, 'uranus')
+  const neptune = createSphere(1.8, neptuneTexture, 'neptune')
 
   scene.add(sun)
   earth.add(moon)

@@ -3,7 +3,35 @@ import { onMounted, onUnmounted, ref } from "vue"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
+import ControlPanel from '@/shared/ui/ControlPanel.vue'
+
 const canvas = ref(null)
+
+let controls = null
+
+const isAnimationActive = ref(true)
+const isZoomActive = ref(true)
+const isRotationActive = ref(true)
+const isPanActive = ref(false)
+
+const handleToggleAnimation = (enabled) => {
+  isAnimationActive.value = enabled
+}
+
+const handleToggleZoom = (enabled) => {
+  isZoomActive.value = enabled
+  controls.enableZoom = enabled
+}
+
+const handleToggleRotation = (enabled) => {
+  isRotationActive.value = enabled
+  controls.enableRotate = enabled
+}
+
+const handleTogglePan = (enabled) => {
+  isPanActive.value = enabled
+  controls.enablePan = enabled
+}
 
 onMounted(() => {
   const scene = new THREE.Scene()
@@ -182,12 +210,12 @@ onMounted(() => {
   requestAnimationFrame(twinkleStars)
 
   // 카메라 컨트롤
-  const controls = new OrbitControls(camera, renderer.domElement)
+  controls = new OrbitControls(camera, renderer.domElement)
   controls.maxDistance = 256
   controls.minDistance = 32
-  // controls.enableZoom = false   // 휠 줌 방지
-  // controls.enableRotate = false // 회전 방지
-  controls.enablePan = false    // 이동 방지
+  controls.enableZoom = isZoomActive.value        // 휠 줌 방지
+  controls.enableRotate = isRotationActive.value  // 회전 방지
+  controls.enablePan = isPanActive.value          // 이동 방지
 
   // Raycaster 설정
   const raycaster = new THREE.Raycaster()
@@ -276,7 +304,11 @@ onMounted(() => {
   // 애니메이션 루프
   const draw = () => {
     const delta = clock.getDelta()
-    updateRotation(delta)
+
+    if (isAnimationActive.value) {
+      updateRotation(delta)
+    }
+    
     renderer.render(scene, camera)
     renderer.setAnimationLoop(draw)
   }
@@ -302,12 +334,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <canvas id="canvas" ref="canvas" />
+  <div class="canvas-warpper">
+    <canvas id="canvas" ref="canvas" />
+    <ControlPanel
+      @toggle-animation="handleToggleAnimation" 
+      @toggle-zoom="handleToggleZoom" 
+      @toggle-rotation="handleToggleRotation" 
+      @toggle-pan="handleTogglePan"
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.canvas-warpper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
 #canvas {
   position: absolute;
+  z-index: 1;
   top: 0;
   left: 0;
 }

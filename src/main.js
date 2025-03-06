@@ -4,6 +4,7 @@ import router from '@/router'
 import './assets/reset.css'
 
 import PrimeVue from 'primevue/config'
+import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura'
 import { definePreset } from '@primevue/themes'
 import { preset } from '@/common/preset'
@@ -21,6 +22,7 @@ app.use(PrimeVue, {
         cssLayer: false
       }  
   },
+  ripple: true
 })
 
 app.use(router)

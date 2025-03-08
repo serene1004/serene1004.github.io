@@ -1,60 +1,38 @@
 <script setup>
-import { ref, defineEmits } from "vue"
+import { storeToRefs } from 'pinia'
+import { useControlStore } from "@/store/controlStore"
 
-const emit = defineEmits(["toggle-animation", "toggle-rotation", "toggle-zoom", "toggle-pan"])
-
-const isAnimationEnabled = ref(true)
-const isZoomEnabled = ref(true)
-const isRotationEnabled = ref(true)
-const isPanEnabled = ref(false)
-
-const toggleAnimation = () => {
-  isAnimationEnabled.value = !isAnimationEnabled.value
-  emit("toggle-animation", isAnimationEnabled.value)
-}
-
-const toggleZoom = () => {
-  isZoomEnabled.value = !isZoomEnabled.value
-  emit("toggle-zoom", isZoomEnabled.value)
-}
-
-const toggleRotation = () => {
-  isRotationEnabled.value = !isRotationEnabled.value
-  emit("toggle-rotation", isRotationEnabled.value)
-}
-
-const togglePan = () => {
-  isPanEnabled.value = !isPanEnabled.value
-  emit("toggle-pan", isPanEnabled.value)
-}
+const controlStore = useControlStore()
+const {
+  isAnimationActive,
+  isZoomActive,
+  isRotationActive,
+  isPanActive
+} = storeToRefs(controlStore)
 </script>
 
 <template>
   <div class="controls">
     <Button
-      :icon="isAnimationEnabled ? 'pi pi-pause' : 'pi pi-caret-right'"
-      severity="secondary"
-      :text="!isAnimationEnabled"
-      @click="toggleAnimation"
+      :icon="isAnimationActive ? 'pi pi-pause' : 'pi pi-caret-right'"
+      :severity="isAnimationActive ? 'secondary' : 'contrast'"
+      @click="controlStore.toggleAnimation(!isAnimationActive)"
     />
     <Button
       icon="pi pi-arrows-v"
-      severity="secondary"
-      :text="!isZoomEnabled"
-      @click="toggleZoom"
+      :severity="isZoomActive ? 'secondary' : 'contrast'"
+      @click="controlStore.toggleZoom(!isZoomActive)"
     />
     <Button
       icon="pi pi-undo"
-      severity="secondary"
-      :text="!isRotationEnabled"
-      @click="toggleRotation"
+      :severity="isRotationActive ? 'secondary' : 'contrast'"
+      @click="controlStore.toggleRotation(!isRotationActive)"
     />
-    <!-- <Button
+    <Button
       icon="pi pi-arrows-alt"
-      severity="secondary"
-      :text="!isPanEnabled"
-      @click="togglePan"
-    /> -->
+      :severity="isPanActive ? 'secondary' : 'contrast'"
+      @click="controlStore.togglePan(!isPanActive)"
+    />
   </div>
 </template>
 

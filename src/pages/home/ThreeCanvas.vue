@@ -1,42 +1,84 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue"
+import { onMounted, onUnmounted, ref, watch } from "vue"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import gsap from "gsap"
+import { storeToRefs } from 'pinia'
+
+import { useControlStore } from '@/store/controlStore'
 
 import ControlPanel from '@/shared/ui/ControlPanel.vue'
+import ControlDialog from '@/shared/ui/ControlDialog.vue'
+
+const controlStore = useControlStore()
+const {
+  isAnimationActive,
+  isZoomActive,
+  isRotationActive,
+  isPanActive
+} = storeToRefs(controlStore)
 
 const canvas = ref(null)
 
 let controls = null
+let scene = null
+let clock = null
+let camera = null
 
-const isAnimationActive = ref(true)
-const isZoomActive = ref(true)
-const isRotationActive = ref(true)
-const isPanActive = ref(false)
+// 행성으로 이동
+const moveToPlanet = (planetName) => {
+  const planet = scene.getObjectByName(planetName)
 
-const handleToggleAnimation = (enabled) => {
-  isAnimationActive.value = enabled
-}
+  if (!planet) return
 
-const handleToggleZoom = (enabled) => {
-  isZoomActive.value = enabled
-  controls.enableZoom = enabled
-}
+  // 행성으로 이동하는 동안 애니메이션 및 컨트롤 막기
+  isAnimationActive.value = false
+  controls.enableZoom = false
+  controls.enableRotate = false
+  controls.enablePan = false
 
-const handleToggleRotation = (enabled) => {
-  isRotationActive.value = enabled
-  controls.enableRotate = enabled
-}
+  // 카메라 위치를 행성의 우측 상단으로 설정
+  const offset = 16
+  const cameraDirection = new THREE.Vector3()
+  camera.getWorldDirection(cameraDirection)
 
-const handleTogglePan = (enabled) => {
-  isPanActive.value = enabled
-  controls.enablePan = enabled
+  // 카메라 방향을 기준으로 이동할 위치 계산
+  const cameraPosition = {
+    x: planet.position.x - cameraDirection.x * offset,
+    y: planet.position.y - cameraDirection.y * offset,
+    z: planet.position.z - cameraDirection.z * offset,
+  }
+
+  // 카메라 위치를 설정하면서 이동
+  gsap.to(camera.position, {
+    x: cameraPosition.x,
+    y: cameraPosition.y,
+    z: cameraPosition.z,
+    duration: 1.2,
+    ease: "power2.inOut",
+    onComplete: () => {
+      // 이동 후 카메라가 행성을 바라보도록 설정
+      // camera.lookAt(planet.position)
+
+      // OrbitControls의 target을 행성으로 설정 (회전, 줌, 이동이 행성을 중심으로 하도록)
+      controls.target.set(planet.position.x, planet.position.y, planet.position.z)
+      controls.update()
+      
+      // 행성으로 이동완료 후 다시 제어가능하도록
+      // isAnimationActive.value = true
+      controls.enableZoom = isZoomActive.value
+      controls.enableRotate = isRotationActive.value
+      controls.enablePan = isPanActive.value
+    }
+  })
 }
 
 onMounted(() => {
-  const scene = new THREE.Scene()
-  const clock = new THREE.Clock()
   const textureLoader = new THREE.TextureLoader()
+
+  scene = new THREE.Scene()
+  clock = new THREE.Clock()
+
 
   // 텍스처 로드
   const loadTexture = (path) => {
@@ -81,7 +123,7 @@ onMounted(() => {
   renderer.shadowMap.enabled = true
 
   // 카메라 설정
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
   camera.position.set(-64, 32, 32)
 
   scene.add(camera)
@@ -165,7 +207,7 @@ onMounted(() => {
 
   // 그룹 생성
   const sunGroup = new THREE.Group()
-  sunGroup.rotation.y = THREE.MathUtils.degToRad(135)
+  // sunGroup.rotation.y = THREE.MathUtils.degToRad(135)
   
   mercury.position.set(20, 1.2, -3)
   venus.position.set(25, -1.5, 4)
@@ -217,11 +259,26 @@ onMounted(() => {
 
   // 카메라 컨트롤
   controls = new OrbitControls(camera, renderer.domElement)
-  controls.maxDistance = 256
-  controls.minDistance = 32
+  controls.maxDistance = 192
+  controls.minDistance = 16
   controls.enableZoom = isZoomActive.value        // 휠 줌 방지
   controls.enableRotate = isRotationActive.value  // 회전 방지
   controls.enablePan = isPanActive.value          // 이동 방지
+
+  const panLimit = 64
+  // 이동 제한 함수
+  const limitPan = () => {
+    const target = controls.target
+    const distance = target.length()
+
+    if (distance > panLimit) {
+      target.normalize().multiplyScalar(panLimit)  // 최대 거리 유지
+      controls.update()
+    }
+  }
+
+  // change 이벤트 리스너 추가
+  controls.addEventListener("change", limitPan)
 
   // Raycaster 설정
   const raycaster = new THREE.Raycaster()
@@ -331,6 +388,20 @@ onMounted(() => {
 
   draw()
 
+
+  // 변경감지
+  watch(isZoomActive, (newVal) => {
+    controls.enableZoom = newVal
+  })
+
+  watch(isRotationActive, (newVal) => {
+    controls.enableRotate = newVal
+  })
+
+  watch(isPanActive, (newVal) => {
+    controls.enablePan = newVal
+  })
+
   onUnmounted(() => {
     window.removeEventListener("resize", setSize)
     window.removeEventListener('click', checkIntersections)
@@ -342,12 +413,8 @@ onMounted(() => {
 <template>
   <div class="canvas-warpper">
     <canvas id="canvas" ref="canvas" />
-    <ControlPanel
-      @toggle-animation="handleToggleAnimation" 
-      @toggle-zoom="handleToggleZoom" 
-      @toggle-rotation="handleToggleRotation" 
-      @toggle-pan="handleTogglePan"
-    />
+    <ControlPanel/>
+    <ControlDialog @moveToPlanet="moveToPlanet"/>
   </div>
 </template>
 

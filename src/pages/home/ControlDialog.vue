@@ -2,14 +2,14 @@
 import { ref, reactive, onMounted, shallowRef } from "vue"
 
 import About from './dialog/About.vue'
-import Project from './dialog/Project.vue'
+import Skills from './dialog/Skills.vue'
 import ControlPanel from './dialog/ControlPanel.vue'
 
 const emit = defineEmits(["moveToPlanet"])
 
 const dialogs = reactive({
-  aboutMe: { visible: false, position: 'topright', title: 'AboutMe', component: shallowRef(About), planet: 'mercury' },
-  project: { visible: false, position: 'right', title: 'Project', component: shallowRef(Project), planet: 'earth'},
+  aboutMe: { visible: false, position: 'topright', title: 'AboutMe', component: shallowRef(About), planet: 'earth' },
+  skill: { visible: false, position: 'right', title: 'Skills', component: shallowRef(Skills), planet: 'jupiter'},
   controller: { visible: false, position: 'bottomright', title: 'Controller', component: shallowRef(ControlPanel), planet: 'sun'},
 })
 
@@ -32,6 +32,11 @@ const closeAllDialogs = () => {
 }
 
 const dialogPt = ref({
+  root: {
+    style: {
+      maxHeight: '50vh',
+    }
+  },
   header: {
     style: {
       padding: '8px 8px 8px 16px'
@@ -39,7 +44,9 @@ const dialogPt = ref({
   },
   content: {
     style: {
-      fontSize: '16px'
+      padding: '0px 16px 16px',
+      fontSize: '16px',
+      overflowX: 'hidden'
     }
   }
 })

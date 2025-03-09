@@ -7,7 +7,6 @@ import { storeToRefs } from 'pinia'
 
 import { useControlStore } from '@/store/controlStore'
 
-import ControlPanel from './ControlPanel.vue'
 import ControlDialog from './ControlDialog.vue'
 
 const controlStore = useControlStore()
@@ -19,7 +18,7 @@ const {
 } = storeToRefs(controlStore)
 
 const MAX_DISTANCE = 192
-const MIN_DISTANCE = 16
+const MIN_DISTANCE = 24
 const canvas = ref(null)
 
 let controls = null
@@ -415,7 +414,6 @@ onMounted(() => {
 <template>
   <div class="canvas-warpper">
     <canvas id="canvas" ref="canvas" />
-    <ControlPanel/>
     <ControlDialog @moveToPlanet="moveToPlanet"/>
   </div>
 </template>

@@ -1,23 +1,29 @@
 <script setup>
-import { ref, reactive, onMounted, defineEmits } from "vue"
+import { ref, reactive, onMounted, shallowRef } from "vue"
 
 import About from './dialog/About.vue'
 import Project from './dialog/Project.vue'
+import ControlPanel from './dialog/ControlPanel.vue'
 
 const emit = defineEmits(["moveToPlanet"])
 
 const dialogs = reactive({
-  aboutMe: { visible: false, position: 'topright', title: 'AboutMe', planet: 'mercury' },
-  project: { visible: false, position: 'right', title: 'Project', planet: 'earth'},
-  test: { visible: false, position: 'left', title: 'Test', planet: 'jupiter'},
+  aboutMe: { visible: false, position: 'topright', title: 'AboutMe', component: shallowRef(About), planet: 'mercury' },
+  project: { visible: false, position: 'right', title: 'Project', component: shallowRef(Project), planet: 'earth'},
+  controller: { visible: false, position: 'bottomright', title: 'Controller', component: shallowRef(ControlPanel), planet: 'sun'},
 })
 
-// 다이얼로그 열기
+// 다이얼로그 열기/닫기
 const openDialog = (dialog) => {
-  closeAllDialogs()
-
-  emit("moveToPlanet", dialog.planet)
-  dialog.visible = true
+  if (dialog.visible) {
+    // 이미 열려 있는 다이얼로그를 클릭하면 닫기
+    dialog.visible = false
+  } else {
+    // 다른 다이얼로그가 열려있으면 모두 닫고, 선택한 다이얼로그 열기
+    closeAllDialogs()
+    emit("moveToPlanet", dialog.planet)
+    dialog.visible = true
+  }
 }
 
 // 모든 다이얼로그 닫기
@@ -26,25 +32,40 @@ const closeAllDialogs = () => {
 }
 
 const dialogPt = ref({
-
+  header: {
+    style: {
+      padding: '8px 8px 8px 16px'
+    }
+  },
+  content: {
+    style: {
+      fontSize: '16px'
+    }
+  }
 })
 </script>
 
 <template>
   <div class="actions">
-    <Button label="AboutMe" size="small" @click="openDialog(dialogs.aboutMe)"/>
-    <Button label="Project" size="small" @click="openDialog(dialogs.project)"/>
-    <Button label="Test" size="small" @click="openDialog(dialogs.test)"/>
+    <Button 
+      v-for="dialog in dialogs" 
+      :key="dialog.title" 
+      :label="dialog.title" 
+      size="small"
+      @click="openDialog(dialog)"
+    />
   </div>
 
-  <Dialog v-model:visible="dialogs.aboutMe.visible" :position="dialogs.aboutMe.position" :draggable="false" :header="dialogs.aboutMe.title">
-    <About/>
-  </Dialog>
-  <Dialog v-model:visible="dialogs.project.visible" :position="dialogs.project.position" :draggable="false" :header="dialogs.project.title">
-    <Project/>
-  </Dialog>
-  <Dialog v-model:visible="dialogs.test.visible" :position="dialogs.test.position" :draggable="false" :header="dialogs.test.title">
-    <div>Test입니다.</div>
+  <Dialog
+    v-for="dialog in dialogs"
+    :key="dialog.title"
+    v-model:visible="dialog.visible"
+    :position="dialog.position"
+    :draggable="false"
+    :header="dialog.title"
+    :pt="dialogPt"
+  >
+    <component :is="dialog.component"/>
   </Dialog>
 </template>
 

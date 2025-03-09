@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from '@/router'
 import { createPinia } from 'pinia'
 import './assets/reset.css'
+import 'pretendard/dist/web/static/pretendard.css'
 
 import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'

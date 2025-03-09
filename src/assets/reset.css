@@ -7,7 +7,8 @@
 
 /* 기본 폰트와 글꼴 크기 설정 */
 body {
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
+  font-family: 'Pretendard', sans-serif;
   line-height: 1.5;
 }
 

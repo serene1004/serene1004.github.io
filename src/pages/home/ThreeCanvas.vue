@@ -7,8 +7,8 @@ import { storeToRefs } from 'pinia'
 
 import { useControlStore } from '@/store/controlStore'
 
-import ControlPanel from '@/shared/ui/ControlPanel.vue'
-import ControlDialog from '@/shared/ui/ControlDialog.vue'
+import ControlPanel from './ControlPanel.vue'
+import ControlDialog from './ControlDialog.vue'
 
 const controlStore = useControlStore()
 const {
@@ -18,38 +18,42 @@ const {
   isPanActive
 } = storeToRefs(controlStore)
 
+const MAX_DISTANCE = 192
+const MIN_DISTANCE = 16
 const canvas = ref(null)
 
 let controls = null
 let scene = null
 let clock = null
 let camera = null
+let textureLoader = null
 
+/**
+ * @todo
+ * 애니메이션에 의해 행성들의 위치값이 변경되면 카메라의 포지션도 같이 업데이트되어야할듯
+ * @param planetName
+ */
 // 행성으로 이동
 const moveToPlanet = (planetName) => {
   const planet = scene.getObjectByName(planetName)
-
   if (!planet) return
 
-  // 행성으로 이동하는 동안 애니메이션 및 컨트롤 막기
+  // 이동하는 동안 컨트롤 비활성화
   isAnimationActive.value = false
   controls.enableZoom = false
   controls.enableRotate = false
   controls.enablePan = false
 
-  // 카메라 위치를 행성의 우측 상단으로 설정
-  const offset = 16
+  const offset = MIN_DISTANCE
   const cameraDirection = new THREE.Vector3()
   camera.getWorldDirection(cameraDirection)
 
-  // 카메라 방향을 기준으로 이동할 위치 계산
   const cameraPosition = {
     x: planet.position.x - cameraDirection.x * offset,
     y: planet.position.y - cameraDirection.y * offset,
     z: planet.position.z - cameraDirection.z * offset,
   }
 
-  // 카메라 위치를 설정하면서 이동
   gsap.to(camera.position, {
     x: cameraPosition.x,
     y: cameraPosition.y,
@@ -57,15 +61,14 @@ const moveToPlanet = (planetName) => {
     duration: 1.2,
     ease: "power2.inOut",
     onComplete: () => {
-      // 이동 후 카메라가 행성을 바라보도록 설정
-      // camera.lookAt(planet.position)
+      // 카메라가 행성을 바라보도록 설정
+      camera.lookAt(planet.position)
 
       // OrbitControls의 target을 행성으로 설정 (회전, 줌, 이동이 행성을 중심으로 하도록)
       controls.target.set(planet.position.x, planet.position.y, planet.position.z)
-      controls.update()
-      
+      controls.update() // 업데이트 호출
+
       // 행성으로 이동완료 후 다시 제어가능하도록
-      // isAnimationActive.value = true
       controls.enableZoom = isZoomActive.value
       controls.enableRotate = isRotationActive.value
       controls.enablePan = isPanActive.value
@@ -74,10 +77,9 @@ const moveToPlanet = (planetName) => {
 }
 
 onMounted(() => {
-  const textureLoader = new THREE.TextureLoader()
-
   scene = new THREE.Scene()
   clock = new THREE.Clock()
+  textureLoader = new THREE.TextureLoader()
 
 
   // 텍스처 로드
@@ -259,13 +261,13 @@ onMounted(() => {
 
   // 카메라 컨트롤
   controls = new OrbitControls(camera, renderer.domElement)
-  controls.maxDistance = 192
-  controls.minDistance = 16
+  controls.maxDistance = MAX_DISTANCE
+  controls.minDistance = MIN_DISTANCE
   controls.enableZoom = isZoomActive.value        // 휠 줌 방지
   controls.enableRotate = isRotationActive.value  // 회전 방지
   controls.enablePan = isPanActive.value          // 이동 방지
 
-  const panLimit = 64
+  const panLimit = 96
   // 이동 제한 함수
   const limitPan = () => {
     const target = controls.target
@@ -371,7 +373,7 @@ onMounted(() => {
     if (isAnimationActive.value) {
       updateRotation(delta)
     }
-    
+
     renderer.render(scene, camera)
     renderer.setAnimationLoop(draw)
   }
@@ -421,8 +423,8 @@ onMounted(() => {
 <style lang="scss" scoped>
 .canvas-warpper {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
 }
 
 #canvas {

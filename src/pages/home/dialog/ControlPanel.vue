@@ -15,22 +15,26 @@ const {
   <div class="controls">
     <Button
       :icon="isAnimationActive ? 'pi pi-pause' : 'pi pi-caret-right'"
-      :severity="isAnimationActive ? 'secondary' : 'contrast'"
+      :severity="isAnimationActive ? 'primary' : 'secondary'"
+      :text="!isAnimationActive"
       @click="controlStore.toggleAnimation(!isAnimationActive)"
     />
     <Button
       icon="pi pi-arrows-v"
-      :severity="isZoomActive ? 'secondary' : 'contrast'"
+      :severity="isZoomActive ? 'primary' : 'secondary'"
+      :text="!isZoomActive"
       @click="controlStore.toggleZoom(!isZoomActive)"
     />
     <Button
       icon="pi pi-undo"
-      :severity="isRotationActive ? 'secondary' : 'contrast'"
+      :severity="isRotationActive ? 'primary' : 'secondary'"
+      :text="!isRotationActive"
       @click="controlStore.toggleRotation(!isRotationActive)"
     />
     <Button
       icon="pi pi-arrows-alt"
-      :severity="isPanActive ? 'secondary' : 'contrast'"
+      :severity="isPanActive ? 'primary' : 'secondary'"
+      :text="!isPanActive"
       @click="controlStore.togglePan(!isPanActive)"
     />
   </div>
@@ -38,10 +42,6 @@ const {
 
 <style lang="scss" scoped>
 .controls {
-  position: absolute;
-  z-index: 10;
-  bottom: 0.5em;
-  right: 0.5em;
   display: flex;
   align-items: center;
   gap: 0.25em;

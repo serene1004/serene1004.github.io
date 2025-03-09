@@ -18,7 +18,7 @@ const {
 } = storeToRefs(controlStore)
 
 const MAX_DISTANCE = 192
-const MIN_DISTANCE = 24
+const MIN_DISTANCE = 8
 const canvas = ref(null)
 
 let controls = null
@@ -43,10 +43,15 @@ const moveToPlanet = (planetName) => {
   controls.enableRotate = false
   controls.enablePan = false
 
-  const offset = MIN_DISTANCE
+  // 태양은 더 멀리서 바라보게끔
+  const offset = planetName === "sun" ? 32 : MIN_DISTANCE
+
+  // 카메라가 현재 바라보는 방향 벡터 구하기
   const cameraDirection = new THREE.Vector3()
   camera.getWorldDirection(cameraDirection)
+  cameraDirection.normalize() // 방향 벡터 정규화
 
+  // 오프셋을 반영하여 카메라 이동 위치 계산
   const cameraPosition = {
     x: planet.position.x - cameraDirection.x * offset,
     y: planet.position.y - cameraDirection.y * offset,
@@ -67,7 +72,7 @@ const moveToPlanet = (planetName) => {
       controls.target.set(planet.position.x, planet.position.y, planet.position.z)
       controls.update() // 업데이트 호출
 
-      // 행성으로 이동완료 후 다시 제어가능하도록
+      // 이동 완료 후 컨트롤 다시 활성화
       controls.enableZoom = isZoomActive.value
       controls.enableRotate = isRotationActive.value
       controls.enablePan = isPanActive.value

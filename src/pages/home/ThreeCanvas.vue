@@ -38,13 +38,18 @@ const moveToPlanet = (planetName) => {
   if (!planet) return
 
   // 이동하는 동안 컨트롤 비활성화
-  isAnimationActive.value = false
+  // isAnimationActive.value = false
   controls.enableZoom = false
   controls.enableRotate = false
   controls.enablePan = false
 
-  // 태양은 더 멀리서 바라보게끔
-  const offset = planetName === "sun" ? 32 : MIN_DISTANCE
+  // 행성에 따른 offset값 조정
+  const offsets = {
+    sun: 32,
+    jupiter: 16,
+  }
+
+  const offset = offsets[planetName] ?? MIN_DISTANCE
 
   // 카메라가 현재 바라보는 방향 벡터 구하기
   const cameraDirection = new THREE.Vector3()
@@ -335,14 +340,14 @@ onMounted(() => {
 
   // 공전 (태양을 중심으로 회전)
   const orbitingObjects = [
-    { object: mercury, speed: 0.06, radius: 20, yOffset: 1.2 },
-    { object: venus, speed: 0.03, radius: 25, yOffset: -1.5 },
-    { object: earth, speed: 0.02, radius: 40, yOffset: 0 },
-    { object: mars, speed: 0.01, radius: 50, yOffset: -3 },
-    { object: jupiter, speed: 0.004, radius: 90, yOffset: 4 },
-    { object: saturn, speed: 0.002, radius: 130, yOffset: -3 },
-    { object: uranus, speed: 0.002, radius: 160, yOffset: 4 },
-    { object: neptune, speed: 0.001, radius: 190, yOffset: -4.5 },
+    { object: mercury, speed: 0.6, radius: 20, yOffset: 1.2 },
+    { object: venus, speed: 0.3, radius: 25, yOffset: -1.5 },
+    { object: earth, speed: 0.2, radius: 40, yOffset: 0 },
+    { object: mars, speed: 0.1, radius: 50, yOffset: -3 },
+    { object: jupiter, speed: 0.04, radius: 90, yOffset: 4 },
+    { object: saturn, speed: 0.02, radius: 130, yOffset: -3 },
+    { object: uranus, speed: 0.02, radius: 160, yOffset: 4 },
+    { object: neptune, speed: 0.01, radius: 190, yOffset: -4.5 },
   ]
 
   // 행성별 공전 각도를 저장
@@ -351,11 +356,15 @@ onMounted(() => {
     planetAngles[object.uuid] = Math.random() * Math.PI * 2 // 랜덤한 시작 각도 부여
   })
 
+  /**
+   * @todo 자전 업데이트 관련 코드 수정필요. 일단은 주석처리함.
+   * - 자전 시 행성으로 이동하여 바라보는 위치보정이 필요할듯
+   */
   const updateRotation = (delta) => {
     // 자전 업데이트
-    rotatingObjects.forEach(({ object, speed }) => {
-      object.rotation.y += delta / speed
-    })
+    // rotatingObjects.forEach(({ object, speed }) => {
+    //   object.rotation.y += delta / speed
+    // })
 
     // 공전 업데이트
     orbitingObjects.forEach(({ object, speed, radius, yOffset }) => {

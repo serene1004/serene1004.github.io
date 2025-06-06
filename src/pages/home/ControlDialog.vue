@@ -21,7 +21,7 @@ const openDialog = (dialog) => {
   } else {
     // 다른 다이얼로그가 열려있으면 모두 닫고, 선택한 다이얼로그 열기
     closeAllDialogs()
-    emit("moveToPlanet", dialog.planet)
+    // emit("moveToPlanet", dialog.planet)
     dialog.visible = true
   }
 }

@@ -362,9 +362,9 @@ onMounted(() => {
    */
   const updateRotation = (delta) => {
     // 자전 업데이트
-    // rotatingObjects.forEach(({ object, speed }) => {
-    //   object.rotation.y += delta / speed
-    // })
+    rotatingObjects.forEach(({ object, speed }) => {
+      object.rotation.y += delta / speed
+    })
 
     // 공전 업데이트
     orbitingObjects.forEach(({ object, speed, radius, yOffset }) => {

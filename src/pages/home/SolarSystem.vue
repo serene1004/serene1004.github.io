@@ -102,6 +102,7 @@ onMounted(() => {
 
   scene.add(sun)
   earth.add(moon)
+  moon.position.set(1.5, 0, 0)
   earth.rotation.x = THREE.MathUtils.degToRad(23.5)
   saturn.rotation.x = THREE.MathUtils.degToRad(27)
 
@@ -176,10 +177,10 @@ onMounted(() => {
   const planetOrbitData = [
     { name: 'mercury', object: mercury, speed: 0.32,  radius: 10, incDeg:  27, nodeDeg: 10, phaseDeg: 270 },
     { name: 'venus',   object: venus,   speed: 0.17,  radius: 11, incDeg: -18, nodeDeg: 75, phaseDeg: 225 },
-    { name: 'earth',   object: earth,   speed: 0.12,  radius: 13, incDeg:   0, nodeDeg: 45, phaseDeg: 135 },
-    { name: 'mars',    object: mars,    speed: 0.07,  radius: 15, incDeg: -36, nodeDeg: 25, phaseDeg: 270 },
-    { name: 'jupiter', object: jupiter, speed: 0.048, radius: 19, incDeg:  18, nodeDeg: 55, phaseDeg:  90 },
-    { name: 'saturn',  object: saturn,  speed: 0.027, radius: 24, incDeg: -27, nodeDeg: 90, phaseDeg: 225 },
+    { name: 'earth',   object: earth,   speed: 0.12,  radius: 14, incDeg:   0, nodeDeg: 45, phaseDeg: 135 },
+    { name: 'mars',    object: mars,    speed: 0.07,  radius: 16, incDeg: -36, nodeDeg: 25, phaseDeg: 270 },
+    { name: 'jupiter', object: jupiter, speed: 0.048, radius: 20, incDeg:  18, nodeDeg: 55, phaseDeg:  90 },
+    { name: 'saturn',  object: saturn,  speed: 0.027, radius: 25, incDeg: -27, nodeDeg: 90, phaseDeg: 225 },
     { name: 'uranus',  object: uranus,  speed: 0.022, radius: 30, incDeg:  36, nodeDeg: 75, phaseDeg: 180 },
     { name: 'neptune', object: neptune, speed: 0.012, radius: 36, incDeg: -18, nodeDeg: 15, phaseDeg: 135 },
   ]

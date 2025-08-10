@@ -10,7 +10,7 @@ const emit = defineEmits(["moveToPlanet"])
 const dialogs = reactive({
   aboutMe: { visible: false, position: 'topright', title: 'AboutMe', component: shallowRef(About), planet: 'earth' },
   skill: { visible: false, position: 'right', title: 'Skills', component: shallowRef(Skills), planet: 'jupiter'},
-  controller: { visible: false, position: 'bottomright', title: 'Controller', component: shallowRef(ControlPanel), planet: 'sun'},
+  // controller: { visible: false, position: 'bottomright', title: 'Controller', component: shallowRef(ControlPanel), planet: 'sun'},
 })
 
 // 다이얼로그 열기/닫기

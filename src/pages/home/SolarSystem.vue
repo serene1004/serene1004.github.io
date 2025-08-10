@@ -90,15 +90,15 @@ onMounted(() => {
   sun.material.emissiveMap = textures.sun
   sun.material.emissiveIntensity = 0.75
 
-  const mercury = createSphere(0.45, textures.mercury, 'mercury')
+  const mercury = createSphere(0.4, textures.mercury, 'mercury')
   const venus   = createSphere(0.9,  textures.venus,   'venus')
   const earth   = createSphere(1.0,  textures.earth,   'earth')
   const moon    = createSphere(0.25, textures.moon,    'moon')
   const mars    = createSphere(0.55, textures.mars,    'mars')
-  const jupiter = createSphere(3.0,  textures.jupiter, 'jupiter')
-  const saturn  = createSphere(2.5,  textures.saturn,  'saturn')
-  const uranus  = createSphere(1.4,  textures.uranus,  'uranus')
-  const neptune = createSphere(1.35, textures.neptune, 'neptune')
+  const jupiter = createSphere(2.5,  textures.jupiter, 'jupiter')
+  const saturn  = createSphere(2.1,  textures.saturn,  'saturn')
+  const uranus  = createSphere(0.9,  textures.uranus,  'uranus')
+  const neptune = createSphere(0.9, textures.neptune, 'neptune')
 
   scene.add(sun)
   earth.add(moon)

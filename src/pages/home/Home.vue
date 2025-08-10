@@ -1,9 +1,9 @@
 <script setup>
-import ThreeCanvas from "./ThreeCanvas.vue"
+import SolarSystem from "./SolarSystem.vue"
 </script>
 
 <template>
-  <ThreeCanvas />
+  <SolarSystem />
 </template>
 
 <style lang="scss" scoped></style>

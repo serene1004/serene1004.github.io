@@ -10,6 +10,10 @@ body {
   /* font-family: Arial, sans-serif; */
   font-family: 'Pretendard', sans-serif;
   line-height: 1.5;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* 목록 스타일 제거 */

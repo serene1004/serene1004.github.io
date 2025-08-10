@@ -15,12 +15,12 @@ const initializeApp = createApp(App).use(router).use(store)
 
 initializeApp.use(PrimeVue, {
   theme: {
-      preset: MyPreset,
-      options: {
-        prefix: 'p',
-        darkModeSelector: '.dark',
-        cssLayer: false
-      }  
+    preset: MyPreset,
+    options: {
+      prefix: 'p',
+      darkModeSelector: '.dark',
+      cssLayer: false
+    }
   },
   ripple: true
 })

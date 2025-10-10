@@ -324,6 +324,7 @@ onMounted(() => {
   // Raycaster 설정
   const raycaster = new THREE.Raycaster()
   const mouse = new THREE.Vector2()  // 마우스 좌표를 저장할 벡터
+  const planets = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
 
   // 클릭된 객체를 확인하는 함수
   const checkIntersections = (event) => {
@@ -334,10 +335,9 @@ onMounted(() => {
     // 레이 설정 (카메라 위치와 마우스 위치 기준)
     raycaster.setFromCamera(mouse, camera)
 
-    const planetMeshes = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
 
     // 레이와 교차하는 행성 찾기
-    const intersects = raycaster.intersectObjects(planetMeshes, false)
+    const intersects = raycaster.intersectObjects(planets, false)
 
     if (intersects.length > 0) {
       const clickedPlanet = intersects[0].object
@@ -349,16 +349,13 @@ onMounted(() => {
   // 마우스 클릭 이벤트 리스너
   renderer.domElement.addEventListener('click', checkIntersections)
 
-  // hover 대상
-  const hoverMeshes = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
-
   const updateCursor = (event) => {
     const rect = renderer.domElement.getBoundingClientRect()
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
 
     raycaster.setFromCamera(mouse, camera)
-    const hit = raycaster.intersectObjects(hoverMeshes, false)
+    const hit = raycaster.intersectObjects(planets, false)
 
     renderer.domElement.style.cursor = hit.length ? 'pointer' : 'default'
   }

@@ -1,5 +1,5 @@
 <template>
-  <footer class="h-12 flex items-center justify-between bg-purple-500/10 border-t border-purple-400/10 backdrop-blur-sm px-4">
+  <footer class="relative z-5 h-12 flex items-center justify-between bg-purple-500/10 border-t border-purple-400/10 backdrop-blur-sm px-4">
     <div class="w-40" />
 
     <!-- 센터영역 -->

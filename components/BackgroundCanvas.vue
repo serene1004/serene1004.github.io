@@ -1,6 +1,6 @@
 
 <template>
-  <canvas id="canvas" ref="canvas" class="absolute z-1 w-full h-full"/>
+  <canvas id="canvas" ref="canvas" class="absolute z-1 w-full h-full bg-slate-900"/>
 </template>
 
 <script lang="ts" setup>

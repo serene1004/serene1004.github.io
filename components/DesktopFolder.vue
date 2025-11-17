@@ -10,7 +10,7 @@
       class="w-12 h-12 object-contain pointer-events-none"
       draggable="false"
     />
-    <span class="w-16 text-slate-800 dark:text-slate-100 text-xs leading-tight text-center break-all">
+    <span class="w-16 text-slate-100 text-xs leading-tight text-center break-all">
       {{ label }}
     </span>
   </UButton>

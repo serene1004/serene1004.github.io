@@ -38,10 +38,14 @@ const props = withDefaults(defineProps<{
   visible?: boolean
   title?: string | null
   draggable?: boolean
+  initialOffsetX?: number
+  initialOffsetY?: number
 }>(), {
   visible: false,
   title: null,
-  draggable: false
+  draggable: false,
+  initialOffsetX: 0,
+  initialOffsetY: 0
 })
 
 const emit = defineEmits<{
@@ -55,8 +59,8 @@ const visible = computed({
 })
 
 const panel = ref<HTMLElement | null>(null)
-const offsetX = ref(0)
-const offsetY = ref(0)
+const offsetX = ref(props.initialOffsetX)
+const offsetY = ref(props.initialOffsetY)
 
 const panelStyle = computed(() => ({
   transform: `translate(calc(-50% + ${offsetX.value}px), calc(-50% + ${offsetY.value}px))`,

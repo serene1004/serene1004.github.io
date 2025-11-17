@@ -1,9 +1,9 @@
 <template>
-  <footer class="h-12 flex items-center justify-between bg-purple-700/20 dark:bg-purple-500/10 border-t border-purple-600/20 dark:border-purple-400/10 backdrop-blur-sm px-4">
+  <footer class="h-12 flex items-center justify-between bg-purple-500/10 border-t border-purple-400/10 backdrop-blur-sm px-4">
     <div class="w-40" />
 
     <!-- 센터영역 -->
-    <div class="flex flex-1 justify-center">
+    <div class="flex flex-1 justify-center gap-2">
       <div class="flex items-center gap-2">
         <UButton
           :avatar="{
@@ -19,16 +19,26 @@
           <span class="truncate">Type here to search</span>
         </div>
       </div>
+      <!-- open folders -->
+      <div class="flex items-center gap-2">
+        <UButton
+          icon="i-lucide-moon"
+          variant="ghost"
+          size="xl"
+          aria-label="폴더이름"
+          class="cursor-pointer"
+        />
+      </div>
     </div>
 
     <!-- actions/timer -->
-    <div class="flex items-center justify-end gap-2 text-slate-900 dark:text-slate-300">
+    <div class="flex items-center justify-end gap-2 text-slate-300">
       <UButton
         :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
         variant="ghost"
         size="sm"
         :aria-label="isDark ? 'Switch to light' : 'Switch to dark'"
-        class="text-slate-900 dark:text-slate-300 cursor-pointer"
+        class="text-slate-300 cursor-pointer"
         @click="toggleColorMode"
       />
       <UButton
@@ -36,20 +46,34 @@
         variant="ghost"
         size="sm"
         aria-label="Open GitHub"
-        class="text-slate-900 dark:text-slate-300 cursor-pointer"
+        class="text-slate-300 cursor-pointer"
         @click="visitGithub"
       />
 
-      <div class="flex flex-col items-end text-xs leading-tight">
-        <span>{{ timeText }}</span>
-        <span class="text-[11px]">{{ dateText }}</span>
-      </div>
+      <UButton
+        variant="ghost"
+        aria-label="Calendar/Timer"
+        class="text-slate-300 cursor-pointer"
+        @click="toggleCalendar"
+      >
+        <div class="flex flex-col items-end text-xs leading-tight">
+          <span>{{ timeText }}</span>
+          <span class="text-[11px]">{{ dateText }}</span>
+        </div>
+      </UButton>
+    </div>
+
+    <!-- TODO : 캘린더 나중에 overlay로 뜨도록 수정 -->
+    <div v-if="showCalendar" class="absolute bottom-full right-0">
+      <UCalendar v-model="calendarValue" />
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import type { DateValue } from '@internationalized/date'
+import { today, getLocalTimeZone } from '@internationalized/date'
 
 const timeText = ref<string>('')
 const dateText = ref<string>('')
@@ -81,6 +105,14 @@ const toggleColorMode = () => {
 
 const visitGithub = () => {
   window.open('https://serene1004.github.io/', '_blank', 'noopener')
+}
+
+const calendarValue = ref<DateValue | null>(
+  today(getLocalTimeZone())
+)
+const showCalendar = ref<Boolean>(false)
+const toggleCalendar = () => {
+  showCalendar.value = !showCalendar.value
 }
 
 onMounted(() => {

@@ -18,6 +18,8 @@
       :draggable="true"
       :initial-offset-x="win.offsetX"
       :initial-offset-y="win.offsetY"
+      :folder-id="win.folderId"
+      :z-index="win.zIndex"
       @close="handleClose(win.folderId)"
     >
       <component :is="getFolder(win.folderId)?.component" />
@@ -31,6 +33,7 @@ import DesktopFolder from '~/components/DesktopFolder.vue'
 import DesktopWindow from '~/components/DesktopWindow.vue'
 import AboutMePanel from '~/components/panels/AboutMePanel.vue'
 import ProjectPanel from '~/components/panels/ProjectPanel.vue'
+import { openedWindows, openWindow, closeWindow } from '~/composables/useWindowStore'
 
 interface FolderItem {
   id: string
@@ -57,41 +60,13 @@ const folders: FolderItem[] = [
 const getFolder = (id: string): FolderItem | undefined =>
   folders.find(f => f.id === id)
 
-interface OpenedWindow {
-  folderId: string
-  visible: boolean
-  offsetX: number
-  offsetY: number
-}
-
-const openedWindows = ref<OpenedWindow[]>([])
-
-const baseOffset = 0
-const offsetStep = 32
-
 const openFolder = (folderId: string) => {
   const folder = getFolder(folderId)
   if (!folder) return
-
-  const existing = openedWindows.value.find(win => win.folderId === folderId)
-  if (existing) {
-    existing.visible = true
-    return
-  }
-
-  const index = openedWindows.value.length
-
-  openedWindows.value.push({
-    folderId,
-    visible: true,
-    offsetX: baseOffset + index * offsetStep,
-    offsetY: baseOffset + index * offsetStep
-  })
+  openWindow(folderId)
 }
 
 const handleClose = (folderId: string) => {
-  openedWindows.value = openedWindows.value.filter(
-    win => win.folderId !== folderId
-  )
+  closeWindow(folderId)
 }
 </script>

@@ -5,6 +5,7 @@
       ref="panel"
       class="absolute min-w-[320px] max-w-[25vw] p-1 bg-purple-700 border border-purple-800 dark:border-purple-200"
       :style="panelStyle"
+      @pointerdown="onFocus"
     >
       <div
         class="flex items-center justify-between gap-2 pb-2 select-none"
@@ -40,6 +41,8 @@ const props = withDefaults(defineProps<{
   draggable?: boolean
   initialOffsetX?: number
   initialOffsetY?: number
+  folderId?: string | null
+  zIndex?: number
 }>(), {
   visible: false,
   title: null,
@@ -62,11 +65,18 @@ const panel = ref<HTMLElement | null>(null)
 const offsetX = ref(props.initialOffsetX)
 const offsetY = ref(props.initialOffsetY)
 
+import { bringToFront } from '~/composables/useWindowStore'
+
 const panelStyle = computed(() => ({
   transform: `translate(calc(-50% + ${offsetX.value}px), calc(-50% + ${offsetY.value}px))`,
   left: '50%',
-  top: '50%'
+  top: '50%',
+  zIndex: props.zIndex ?? 1
 }))
+
+const onFocus = () => {
+  if (props.folderId) bringToFront(props.folderId)
+}
 
 let dragging = false
 let originX = 0

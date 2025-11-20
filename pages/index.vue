@@ -14,13 +14,14 @@
       v-for="win in openedWindows"
       :key="win.folderId"
       v-model:visible="win.visible"
+      v-model:hidden="win.hidden"
       :title="getFolder(win.folderId)?.name ?? ''"
       :draggable="true"
       :initial-offset-x="win.offsetX"
       :initial-offset-y="win.offsetY"
       :folder-id="win.folderId"
       :z-index="win.zIndex"
-      @close="handleClose(win.folderId)"
+      @close="closeWindow(win.folderId)"
     >
       <component :is="getFolder(win.folderId)?.component" />
     </DesktopWindow>
@@ -28,12 +29,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, type Component } from 'vue'
+import { type Component } from 'vue'
 import DesktopFolder from '~/components/DesktopFolder.vue'
 import DesktopWindow from '~/components/DesktopWindow.vue'
 import AboutMePanel from '~/components/panels/AboutMePanel.vue'
 import ProjectPanel from '~/components/panels/ProjectPanel.vue'
-import { openedWindows, openWindow, closeWindow } from '~/composables/useWindowStore'
+import { openedWindows, openWindow } from '~/composables/useWindowStore'
 
 interface FolderItem {
   id: string
@@ -54,7 +55,7 @@ const folders: FolderItem[] = [
     name: 'Project',
     image: '/images/serene.png',
     component: ProjectPanel
-  }
+  },
 ]
 
 const getFolder = (id: string): FolderItem | undefined =>
@@ -64,9 +65,5 @@ const openFolder = (folderId: string) => {
   const folder = getFolder(folderId)
   if (!folder) return
   openWindow(folderId)
-}
-
-const handleClose = (folderId: string) => {
-  closeWindow(folderId)
 }
 </script>

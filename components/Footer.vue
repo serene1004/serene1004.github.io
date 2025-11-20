@@ -26,12 +26,12 @@
               v-for="win in visibleOpenFolders"
               :key="win.folderId"
               icon="i-lucide-smile"
-              :variant="(win.zIndex || 0) === maxZ ? 'outline' : 'ghost'"
+              :variant="isTopActive(win) ? 'outline' : 'ghost'"
               :aria-label="win.folderId"
               size="xl"
               class="cursor-pointer"
-              :class="(win.zIndex || 0) === maxZ ? 'bg-purple-500/10' : undefined"
-              @click="bringToFront(win.folderId)"
+              :class="isTopActive(win) ? 'bg-purple-500/10' : undefined"
+              @click="handleFooterClick(win.folderId)"
             />
           </template>
         </div>
@@ -81,14 +81,41 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import type { DateValue } from '@internationalized/date'
 import { today, getLocalTimeZone } from '@internationalized/date'
 
-import { openedWindows, bringToFront } from '~/composables/useWindowStore'
+import {
+  openedWindows,
+  showWindow,
+  bringToFront,
+  type OpenedWindow
+} from '~/composables/useWindowStore'
 
-const visibleOpenFolders = computed(() => (openedWindows.value || []).filter((w: any) => w.visible))
-const maxZ = computed(() => {
-  const arr = openedWindows.value || []
-  if (!arr.length) return 0
-  return arr.reduce((m, w) => Math.max(m, w.zIndex || 0), 0)
-})
+const visibleOpenFolders = computed(() =>
+  (openedWindows.value || []).filter(w => w.visible)
+)
+
+const activeWindows = computed(() =>
+  (openedWindows.value || []).filter(w => w.visible && !w.hidden)
+)
+
+const handleFooterClick = (folderId: string) => {
+  const win = openedWindows.value.find(w => w.folderId === folderId);
+  if (!win) return
+
+  if (win.hidden) {
+    showWindow(folderId)
+  } else {
+    bringToFront(folderId)
+  }
+}
+
+const maxZ = computed(() =>
+  activeWindows.value.reduce(
+    (m, w) => Math.max(m, w.zIndex ?? 0),
+    0
+  )
+)
+
+const isTopActive = (win: OpenedWindow) =>
+  !win.hidden && (win.zIndex || 0) === maxZ.value
 
 const timeText = ref<string>('')
 const dateText = ref<string>('')

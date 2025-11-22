@@ -34,7 +34,7 @@
             aria-label="Window Expand"
             @click="expand"
           >
-            <UIcon name="i-lucide-maximize" class="h-4 w-4" aria-hidden="true" />
+            <UIcon :name="!isExpanded ? 'i-lucide-square' : 'i-lucide-copy'" class="h-4 w-4" aria-hidden="true" />
           </button>
 
           <button

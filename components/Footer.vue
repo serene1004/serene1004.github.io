@@ -38,13 +38,13 @@
     </div>
 
     <!-- actions/timer -->
-    <div class="flex items-center justify-end gap-2 text-slate-300">
+    <div class="flex items-center justify-end gap-1 text-slate-300">
       <UButton
         :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
         variant="ghost"
         size="sm"
         :aria-label="isDark ? 'Switch to light' : 'Switch to dark'"
-        class="text-slate-300 cursor-pointer"
+        class="h-10 text-slate-300 cursor-pointer"
         @click="toggleColorMode"
       />
       <UButton
@@ -52,35 +52,18 @@
         variant="ghost"
         size="sm"
         aria-label="Open GitHub"
-        class="text-slate-300 cursor-pointer"
+        class="h-10 text-slate-300 cursor-pointer"
         @click="visitGithub"
       />
 
-      <UButton
-        variant="ghost"
-        aria-label="Calendar/Timer"
-        class="text-slate-300 cursor-pointer"
-        @click="toggleCalendar"
-      >
-        <div class="flex flex-col items-end text-xs leading-tight">
-          <span>{{ timeText }}</span>
-          <span class="text-[11px]">{{ dateText }}</span>
-        </div>
-      </UButton>
-    </div>
-
-    <!-- TODO : 캘린더 나중에 overlay로 뜨도록 수정 -->
-    <div v-if="showCalendar" class="absolute bottom-full right-0">
-      <UCalendar v-model="calendarValue" />
+      <WeatherButton/>
+      <CalendarButton/>
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import type { DateValue } from '@internationalized/date'
-import { today, getLocalTimeZone } from '@internationalized/date'
-
 import {
   openedWindows,
   showWindow,
@@ -117,26 +100,6 @@ const maxZ = computed(() =>
 const isTopActive = (win: OpenedWindow) =>
   !win.hidden && (win.zIndex || 0) === maxZ.value
 
-const timeText = ref<string>('')
-const dateText = ref<string>('')
-
-const updateNow = () => {
-  const now = new Date()
-
-  timeText.value = new Intl.DateTimeFormat('ko-KR', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  }).format(now)
-
-  const y = now.getFullYear()
-  const m = String(now.getMonth() + 1).padStart(2, '0')
-  const d = String(now.getDate()).padStart(2, '0')
-  dateText.value = `${y}-${m}-${d}`
-}
-
-let timerId: ReturnType<typeof setInterval> | null = null
-
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
 const toggleColorMode = () => {
@@ -146,24 +109,4 @@ const toggleColorMode = () => {
 const visitGithub = () => {
   window.open('https://github.com/serene1004', '_blank', 'noopener')
 }
-
-const calendarValue = ref<DateValue | null>(
-  today(getLocalTimeZone())
-)
-const showCalendar = ref<Boolean>(false)
-const toggleCalendar = () => {
-  showCalendar.value = !showCalendar.value
-}
-
-onMounted(() => {
-  updateNow()
-  timerId = window.setInterval(updateNow, 1000)
-})
-
-onUnmounted(() => {
-  if (timerId !== null) {
-    window.clearInterval(timerId)
-    timerId = null
-  }
-})
 </script>

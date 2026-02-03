@@ -4,24 +4,24 @@
       v-if="visible"
       v-show="!hiddenState"
       ref="panel"
-      class="absolute flex flex-col min-w-90 p-1 bg-purple-700 border border-purple-800 dark:border-purple-200"
+      class="absolute flex flex-col min-w-90 border shadow-xl backdrop-blur-md bg-white/70 dark:bg-slate-900/70 border-purple-200/60 dark:border-purple-500/50"
       :style="panelStyle"
       @pointerdown="onFocus"
     >
       <div
-        class="flex items-center justify-between gap-2 pb-2 select-none overflow-hidden"
+        class="flex items-center justify-between p-1.5 gap-2 bg-purple-500/20 select-none overflow-hidden"
         @pointerdown="isDraggable ? onDragStart($event) : undefined"
       >
-        <div class="flex items-center text-slate-100 dark:text-slate-100">
-          <UIcon name="i-lucide-smile" class="h-6 w-6 mr-2" aria-hidden="true" />
-          <h3 class="text-base font-semibold truncate">{{ title }}</h3>
+        <div class="flex items-center text-white">
+          <UIcon :name="icon || 'i-lucide-window'" class="h-5 w-5 mr-2" aria-hidden="true" />
+          <h3 class="text-sm font-semibold truncate">{{ title }}</h3>
         </div>
 
         <div class="flex items-center ml-auto gap-1">
           <button
             type="button"
             :class="controlButtonClass"
-            aria-label="Window Expand"
+            aria-label="Minimize window"
             @pointerdown.stop
             @click="hide"
           >
@@ -31,7 +31,7 @@
           <button
             type="button"
             :class="controlButtonClass"
-            aria-label="Window Expand"
+            :aria-label="!isExpanded ? 'Maximize window' : 'Restore window'"
             @click="expand"
           >
             <UIcon :name="!isExpanded ? 'i-lucide-square' : 'i-lucide-copy'" class="h-4 w-4" aria-hidden="true" />
@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <div class="flex-1 min-h-0 p-2 bg-purple-200 text-slate-800 text-sm overflow-auto">
+      <div class="flex-1 min-h-0 p-3 bg-white/70 dark:bg-slate-900/70 text-slate-800 dark:text-slate-100 text-sm overflow-auto rounded-b-md border-t border-white/30 dark:border-slate-800/70">
         <slot />
       </div>
     </div>
@@ -69,13 +69,15 @@ const props = withDefaults(defineProps<{
   folderId?: string | null
   zIndex?: number
   hidden?: boolean
+  icon?: string | null
 }>(), {
   visible: false,
   title: null,
   draggable: false,
   initialOffsetX: 0,
   initialOffsetY: 0,
-  hidden: false
+  hidden: false,
+  icon: null
 })
 
 const emit = defineEmits<{
@@ -185,5 +187,5 @@ const close = () => {
   emit('close')
 }
 
-const controlButtonClass = 'inline-flex items-center justify-center w-6 h-6 border-2 bg-purple-700 border-purple-200 border-b-purple-900 border-r-purple-900 text-white active:bg-purple-800 active:border-purple-900 active:border-b-purple-200 active:border-r-purple-200 cursor-pointer';
+const controlButtonClass = 'inline-flex items-center justify-center w-6 h-6 rounded-sm bg-white/10 border border-white/30 text-white hover:bg-white/20 active:bg-white/30 cursor-pointer';
 </script>

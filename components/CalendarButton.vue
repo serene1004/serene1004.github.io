@@ -12,7 +12,7 @@
     </UButton>
 
     <template #content>
-      <div class="p-2">
+      <div class="p-2 text-slate-800 dark:text-slate-100">
         <UCalendar v-model="calendarValue" />
       </div>
     </template>

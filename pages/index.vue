@@ -5,7 +5,7 @@
         v-for="folder in folders"
         :key="folder.id"
         :label="folder.name"
-        :image="folder.image"
+        :icon="folder.icon"
         @open="openFolder(folder.id)"
       />
     </div>
@@ -21,6 +21,7 @@
       :initial-offset-y="win.offsetY"
       :folder-id="win.folderId"
       :z-index="win.zIndex"
+      :icon="getFolder(win.folderId)?.icon"
       @close="closeWindow(win.folderId)"
     >
       <component :is="getFolder(win.folderId)?.component" />
@@ -29,34 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { type Component } from 'vue'
+import { onMounted, onUnmounted, computed } from 'vue'
 import DesktopFolder from '~/components/DesktopFolder.vue'
 import DesktopWindow from '~/components/DesktopWindow.vue'
-import AboutMePanel from '~/components/panels/AboutMePanel.vue'
-import ProjectPanel from '~/components/panels/ProjectPanel.vue'
-import { openedWindows, openWindow } from '~/composables/useWindowStore'
-
-interface FolderItem {
-  id: string
-  name: string
-  image: string
-  component: Component
-}
-
-const folders: FolderItem[] = [
-  {
-    id: 'about',
-    name: 'About Me',
-    image: '/images/serene.png',
-    component: AboutMePanel
-  },
-  {
-    id: 'project',
-    name: 'Project',
-    image: '/images/serene.png',
-    component: ProjectPanel
-  },
-]
+import { openedWindows, openWindow, bringToFront, closeWindow } from '~/composables/useWindowStore'
+import { folders, type FolderItem } from '~/data/folders'
 
 const getFolder = (id: string): FolderItem | undefined =>
   folders.find(f => f.id === id)
@@ -66,4 +44,33 @@ const openFolder = (folderId: string) => {
   if (!folder) return
   openWindow(folderId)
 }
+
+const focusOrder = computed(() =>
+  openedWindows.value
+    .filter(w => w.visible && !w.hidden)
+    .sort((a, b) => (a.zIndex ?? 0) - (b.zIndex ?? 0))
+)
+
+const handleKey = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    const top = focusOrder.value.at(-1)
+    if (top) closeWindow(top.folderId)
+  }
+
+  if (e.altKey && e.key.toLowerCase() === 'tab') {
+    e.preventDefault()
+    const arr = focusOrder.value
+    if (!arr.length) return
+    const next = arr.at(-2) ?? arr.at(-1)
+    if (next) bringToFront(next.folderId)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKey)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKey)
+})
 </script>

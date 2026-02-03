@@ -23,7 +23,7 @@
     </UButton>
 
     <template #content>
-      <ul class="flex flex-col p-2 gap-1.5 text-sm">
+      <ul class="flex flex-col p-2 gap-1.5 text-slate-800 dark:text-slate-100 text-sm">
         <h4 class="flex items-center gap-2">
           <UIcon name="i-lucide-calendar-clock" class="w-4 h-4" aria-hidden="true" />
           <div class="flex flex-col text-xs">

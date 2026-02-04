@@ -1,32 +1,71 @@
-
 <template>
   <canvas id="canvas" ref="canvas" class="absolute z-1 w-full h-full bg-slate-900"/>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from "vue"
-import * as THREE from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { onMounted, onUnmounted, ref } from 'vue'
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 
-let scene: THREE.Scene | null = null
-let camera: THREE.PerspectiveCamera | null = null
-let renderer: THREE.WebGLRenderer | null = null
-let starsGroup: THREE.Group | null = null
-const stars: THREE.Mesh[] = []
-
+let scene!: THREE.Scene
+let camera!: THREE.PerspectiveCamera
+let renderer!: THREE.WebGLRenderer
 let controls: OrbitControls | null = null
+let starsGroup: THREE.Group | null = null
+const stars: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>[] = []
 
-let planetMeshes: { mesh: THREE.Mesh, data: any }[] = []
+let planetMeshes: { mesh: THREE.Mesh; data: any }[] = []
+let planetAngles: Record<string, number> = {}
+let rafId = 0
 
-onMounted(() => {
+const setSize = () => {
+  if (!renderer || !camera) return
+  const { innerWidth, innerHeight } = window
+  camera.aspect = innerWidth / innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(innerWidth, innerHeight)
+}
+
+const cleanup = () => {
+  window.removeEventListener('resize', setSize)
+  cancelAnimationFrame(rafId)
+  if (renderer) {
+    renderer.setAnimationLoop(null)
+    renderer.dispose()
+    renderer = null as any
+  }
+  if (scene) {
+    scene.traverse((child: THREE.Object3D) => {
+      const mesh = child as THREE.Mesh
+      if (mesh.isMesh) {
+        mesh.geometry?.dispose()
+        if (Array.isArray(mesh.material)) {
+          mesh.material.forEach((m: THREE.Material | undefined) => m && m.dispose && m.dispose())
+        } else {
+          mesh.material?.dispose()
+        }
+      }
+    })
+    scene = null as any
+  }
+  if (controls) {
+    controls.dispose()
+    controls = null
+  }
+  camera = null as any
+  planetMeshes = []
+  planetAngles = {}
+}
+
+const initThree = () => {
   scene = new THREE.Scene()
 
   renderer = new THREE.WebGLRenderer({
     canvas: canvas.value as HTMLCanvasElement,
     antialias: true,
-    alpha: true,
+    alpha: true
   })
   renderer.setClearColor(0x000000, 0)
   renderer.setSize(window.innerWidth, window.innerHeight)
@@ -37,15 +76,11 @@ onMounted(() => {
   camera.position.set(32, 32, 32)
   camera.lookAt(0, 0, 0)
 
-  // Attach OrbitControls to the renderer's canvas so overlays keep receiving clicks
-  if (renderer) {
-    controls = new OrbitControls(camera, renderer.domElement)
-    controls.enableZoom = false
-    controls.enablePan = false
-    controls.enableDamping = true
-    controls.dampingFactor = 0.02
-    controls.update()
-  }
+  controls = new OrbitControls(camera, renderer.domElement)
+  controls.enableZoom = false
+  controls.enablePan = false
+  controls.enableDamping = true
+  controls.dampingFactor = 0.02
 
   const ambient = new THREE.AmbientLight(0xffffff, 0.1)
   scene.add(ambient)
@@ -61,7 +96,7 @@ onMounted(() => {
   const sunGlowMaterial = new THREE.ShaderMaterial({
     uniforms: {
       glowColor: { value: new THREE.Color(0xffcc33) },
-      viewVector: { value: new THREE.Vector3(0, 0, 1) },
+      viewVector: { value: new THREE.Vector3(0, 0, 1) }
     },
     vertexShader: `
       varying vec3 vNormal;
@@ -80,28 +115,25 @@ onMounted(() => {
     `,
     side: THREE.BackSide,
     blending: THREE.AdditiveBlending,
-    transparent: true,
+    transparent: true
   })
-  const sunGlowMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(8, 64, 64),
-    sunGlowMaterial
-  )
+  const sunGlowMesh = new THREE.Mesh(new THREE.SphereGeometry(8, 64, 64), sunGlowMaterial)
   scene.add(sunGlowMesh)
 
-  // 행성 궤도 파라미터
   const planetOrbitData = [
-    { speed: 0.32,  radius: 11, incDeg:  27, nodeDeg: 10, phaseDeg: 270 },
-    { speed: 0.17,  radius: 12, incDeg: -18, nodeDeg: 75, phaseDeg: 225 },
-    { speed: 0.12,  radius: 14, incDeg:   0, nodeDeg: 45, phaseDeg: 135 },
-    { speed: 0.07,  radius: 16, incDeg: -36, nodeDeg: 25, phaseDeg: 270 },
-    { speed: 0.048, radius: 19, incDeg:  18, nodeDeg: 55, phaseDeg:  90 },
+    { speed: 0.32, radius: 11, incDeg: 27, nodeDeg: 10, phaseDeg: 270 },
+    { speed: 0.17, radius: 12, incDeg: -18, nodeDeg: 75, phaseDeg: 225 },
+    { speed: 0.12, radius: 14, incDeg: 0, nodeDeg: 45, phaseDeg: 135 },
+    { speed: 0.07, radius: 16, incDeg: -36, nodeDeg: 25, phaseDeg: 270 },
+    { speed: 0.048, radius: 19, incDeg: 18, nodeDeg: 55, phaseDeg: 90 },
     { speed: 0.027, radius: 21, incDeg: -27, nodeDeg: 90, phaseDeg: 225 },
-    { speed: 0.022, radius: 23, incDeg:  36, nodeDeg: 75, phaseDeg: 180 },
-    { speed: 0.012, radius: 25, incDeg: -18, nodeDeg: 15, phaseDeg: 135 },
+    { speed: 0.022, radius: 23, incDeg: 36, nodeDeg: 75, phaseDeg: 180 },
+    { speed: 0.012, radius: 25, incDeg: -18, nodeDeg: 15, phaseDeg: 135 }
   ]
 
   const orbitGroup = new THREE.Group()
-  const planetAngles: Record<string, number> = {}
+  planetAngles = {}
+  planetMeshes = []
 
   planetOrbitData.forEach((p, idx) => {
     const planetSizes = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.6, 0.7]
@@ -110,14 +142,11 @@ onMounted(() => {
     const material = new THREE.MeshStandardMaterial({ color: '#FFFFFF' })
     const mesh = new THREE.Mesh(geometry, material)
 
-    // 초기 각도
-    const phase = p.phaseDeg ?? 0
-    planetAngles[mesh.uuid] = THREE.MathUtils.degToRad(phase)
+    planetAngles[mesh.uuid] = THREE.MathUtils.degToRad(p.phaseDeg ?? 0)
 
     scene.add(mesh)
     planetMeshes.push({ mesh, data: p })
 
-    // 궤도 라인 (원형, 회전으로 기울기 반영)
     const positions: number[] = []
     for (let i = 0; i <= 256; i++) {
       const t = (i / 256) * Math.PI * 2
@@ -133,11 +162,10 @@ onMounted(() => {
 
   scene.add(orbitGroup)
 
-  function createSphere(size: number) {
+  const createSphere = (size: number) => {
     const geom = new THREE.SphereGeometry(size, 32, 32)
     const mat = new THREE.MeshStandardMaterial()
-    const mesh = new THREE.Mesh(geom, mat)
-    return mesh
+    return new THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>(geom, mat)
   }
 
   starsGroup = new THREE.Group()
@@ -148,37 +176,33 @@ onMounted(() => {
     const mat = star.material as THREE.MeshStandardMaterial
     mat.emissive = new THREE.Color(0xffffff)
     mat.emissiveIntensity = 0.75
-
-    star.position.set(
-      Math.random() * 256 - 128,
-      Math.random() * 256 - 128,
-      Math.random() * 256 - 128
-    )
-
+    star.position.set(Math.random() * 256 - 128, Math.random() * 256 - 128, Math.random() * 256 - 128)
     starsGroup.add(star)
     stars.push(star)
   }
   scene.add(starsGroup)
 
-  function twinkleStars(time: number) {
-    const t = time * 0.01
-    stars.forEach((star, idx) => {
-      star.material.emissiveIntensity = (Math.sin(t + idx * 0.5) + 1) * 0.375
-    })
-    requestAnimationFrame(twinkleStars)
-  }
-  requestAnimationFrame(twinkleStars)
   let lastTime = 0
   const animate = (time: number) => {
     if (!renderer || !scene || !camera) {
-      requestAnimationFrame(animate)
+      rafId = requestAnimationFrame(animate)
       return
     }
 
     const delta = lastTime ? (time - lastTime) / 1000 : 0
     lastTime = time
 
-    // 자전
+    // twinkle stars + slow rotation
+    const twinkle = time * 0.01
+    stars.forEach((star, idx) => {
+      star.material.emissiveIntensity = (Math.sin(twinkle + idx * 0.5) + 1) * 0.375
+    })
+    if (starsGroup) {
+      const starRotationSpeed = 32
+      starsGroup.rotation.y += delta / starRotationSpeed
+    }
+
+    // planet orbits
     planetMeshes.forEach(({ mesh, data }) => {
       const p = mesh.userData || data
       const speed: number = (p.speed ?? data.speed ?? 0.01) as number
@@ -204,17 +228,12 @@ onMounted(() => {
 
     if (controls) controls.update()
 
-    if (starsGroup) {
-      const starRotationSpeed = 32
-      starsGroup.rotation.y += delta / starRotationSpeed
-    }
-
     renderer.render(scene, camera)
-    requestAnimationFrame(animate)
+    rafId = requestAnimationFrame(animate)
   }
-  requestAnimationFrame(animate)
+  rafId = requestAnimationFrame(animate)
 
-  const setSize = () => {
+  function setSize() {
     if (!renderer || !camera) return
     const { innerWidth, innerHeight } = window
     camera.aspect = innerWidth / innerHeight
@@ -222,35 +241,19 @@ onMounted(() => {
     renderer.setSize(innerWidth, innerHeight)
   }
 
-  window.addEventListener("resize", setSize)
+  window.addEventListener('resize', setSize)
+}
 
-  onUnmounted(() => {
-    window.removeEventListener("resize", setSize)
-    if (renderer) {
-      renderer.setAnimationLoop(null)
-      renderer.dispose()
-      renderer = null
-    }
-    if (scene) {
-      scene.traverse((child: THREE.Object3D) => {
-        const mesh = child as THREE.Mesh
-        if (mesh.isMesh) {
-          mesh.geometry?.dispose()
-          if (Array.isArray(mesh.material)) {
-              mesh.material.forEach((m: THREE.Material | undefined) => { if (m) (m as THREE.Material).dispose && (m as THREE.Material).dispose() })
-          } else {
-            mesh.material?.dispose()
-          }
-        }
-      })
-    }
-    if (controls) {
-      controls.dispose()
-      controls = null
-    }
-    scene = null
-    camera = null
-    planetMeshes = []
-  })
+onMounted(() => {
+  const kickoff = () => initThree()
+  if (typeof requestIdleCallback !== 'undefined') {
+    requestIdleCallback(() => kickoff(), { timeout: 300 })
+  } else {
+    setTimeout(() => kickoff(), 50)
+  }
+})
+
+onUnmounted(() => {
+  cleanup()
 })
 </script>

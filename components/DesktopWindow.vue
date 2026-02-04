@@ -8,10 +8,11 @@
       :style="panelStyle"
       @pointerdown="onFocus"
     >
-      <div
-        class="flex items-center justify-between p-1.5 gap-2 bg-purple-500/20 select-none overflow-hidden"
-        @pointerdown="isDraggable ? onDragStart($event) : undefined"
-      >
+        <div
+          class="flex items-center justify-between p-1.5 gap-2 bg-purple-500/20 select-none overflow-hidden"
+          style="touch-action: none;"
+          @pointerdown="isDraggable ? onDragStart($event) : undefined"
+        >
         <div class="flex items-center text-white">
           <UIcon :name="icon || 'i-lucide-window'" class="h-5 w-5 mr-2" aria-hidden="true" />
           <h3 class="text-sm font-semibold truncate">{{ title }}</h3>

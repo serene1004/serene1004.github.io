@@ -27,10 +27,10 @@ type OpenMeteoResponse = {
   current?: OpenMeteoCurrent;
 };
 
-const splitIsoToDateTime = (iso?: string) => {
+const splitIsoToDateTime = (iso?: string): { date: string; time: string } => {
   if (typeof iso !== 'string') return { date: '', time: '' };
   const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/.exec(iso);
-  return m ? { date: m[1], time: m[2] } : { date: '', time: '' };
+  return m ? { date: m[1] ?? '', time: m[2] ?? '' } : { date: '', time: '' };
 };
 
 export const useWeather = (

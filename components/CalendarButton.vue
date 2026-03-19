@@ -20,7 +20,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { DateValue } from '@internationalized/date'
 import { today, getLocalTimeZone } from '@internationalized/date'
 
 const timeText = ref<string>('')
@@ -43,7 +42,7 @@ const updateNow = () => {
 
 let timerId: ReturnType<typeof setInterval> | null = null
 
-const calendarValue = ref<DateValue | null>(
+const calendarValue = ref<any>(
   today(getLocalTimeZone())
 )
 

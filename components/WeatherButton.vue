@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { useWeather } from '@/composables/useWeather';
+import { useWeather } from '~/composables/useWeather';
 
 const seoulLatLon = ref<{lat: number, lon: number}>({
   lat: 37.566,

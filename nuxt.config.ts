@@ -1,7 +1,7 @@
-export default defineNuxtConfig({
+﻿export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
-  modules: ['@nuxt/ui', '@nuxtjs/color-mode'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/color-mode'],
   ssr: false,
   app: {
     baseURL: '/',
@@ -19,3 +19,4 @@ export default defineNuxtConfig({
     }
   }
 })
+

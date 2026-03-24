@@ -4,7 +4,7 @@
       v-if="visible"
       v-show="!hiddenState"
       ref="panel"
-      class="absolute flex min-w-90 flex-col overflow-hidden rounded-lg border border-purple-200/60 bg-white/70 shadow-xl backdrop-blur-md dark:border-purple-500/50 dark:bg-slate-900/70"
+      class="absolute flex min-w-90 flex-col overflow-hidden rounded-lg border border-purple-400/50 dark:border-purple-500/50 bg-purple-200/20 dark:bg-slate-900/70 shadow-xl backdrop-blur-md"
       :style="panelStyle"
       @pointerdown="onFocus"
     >
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div class="flex-1 min-h-0 overflow-auto border-t border-white/30 bg-white/70 p-3 text-sm text-slate-800 dark:border-slate-800/70 dark:bg-slate-900/70 dark:text-slate-100">
+      <div class="flex-1 min-h-0 overflow-auto border-t border-purple-400/50 dark:border-purple-500/50 bg-slate-50/70 p-3 text-sm text-slate-800 dark:bg-slate-900/70 dark:text-slate-100">
         <slot />
       </div>
     </div>

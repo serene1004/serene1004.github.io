@@ -3,7 +3,7 @@
     <UButton
       variant="ghost"
       aria-label="Calendar/Timer"
-      class="text-slate-300 cursor-pointer"
+      :class="footerPopoverButtonClass"
     >
       <div class="flex flex-col items-end text-xs leading-tight">
         <span>{{ timeText }}</span>
@@ -41,6 +41,9 @@ const updateNow = () => {
 }
 
 let timerId: ReturnType<typeof setInterval> | null = null
+
+const footerPopoverButtonClass =
+  'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6'
 
 const calendarValue = ref<any>(
   today(getLocalTimeZone())

@@ -1,5 +1,5 @@
 ﻿<template>
-  <footer class="relative z-5 h-12 flex items-center justify-between bg-purple-500/10 border-t border-purple-400/10 backdrop-blur-sm px-4">
+  <footer class="relative z-5 flex h-12 items-center justify-between border-t border-purple-300/25 bg-purple-500/16 px-4 shadow-[0_-10px_24px_rgba(168,85,247,0.08)] backdrop-blur-xl dark:border-purple-400/18 dark:bg-purple-500/10 dark:shadow-[0_-10px_28px_rgba(15,23,42,0.18)]">
     <div class="w-40" />
 
     <div class="flex flex-1 justify-center gap-2">
@@ -16,7 +16,7 @@
               size: 'sm'
             }"
             variant="ghost"
-            class="cursor-pointer"
+            class="cursor-pointer rounded-full border border-white/18 bg-white/20 shadow-[0_8px_20px_rgba(168,85,247,0.08)] backdrop-blur-xl hover:border-white/26 hover:bg-white/28 dark:border-white/14 dark:bg-white/8 dark:shadow-[0_8px_20px_rgba(15,23,42,0.14)] dark:hover:border-white/24 dark:hover:bg-white/12"
             aria-label="Start menu"
           />
           <template #content>
@@ -35,7 +35,7 @@
           </template>
         </UPopover>
 
-        <div class="hidden md:flex items-center min-w-60 px-4 py-2 gap-2 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300">
+        <div class="hidden min-w-60 items-center gap-2 rounded-full border border-white/18 bg-white/22 px-4 py-2 text-xs text-slate-50/90 shadow-[0_8px_20px_rgba(168,85,247,0.08)] md:flex dark:border-white/12 dark:bg-white/6 dark:text-slate-300 dark:shadow-[0_8px_20px_rgba(15,23,42,0.14)]">
           <UIcon name="i-lucide-search" class="w-4 h-4" />
           <span class="truncate">Type here to search</span>
         </div>
@@ -65,8 +65,8 @@
                 :class="[
                   'h-5 w-5 transition duration-200',
                   isTopActive(win)
-                    ? 'scale-105 drop-shadow-[0_4px_12px_rgba(192,132,252,0.45)]'
-                    : 'text-slate-100/90'
+                    ? 'scale-105 text-white drop-shadow-[0_4px_12px_rgba(168,85,247,0.3)] dark:text-white dark:drop-shadow-[0_4px_12px_rgba(192,132,252,0.45)]'
+                    : 'text-slate-50/90 dark:text-slate-100/90'
                 ]"
                 aria-hidden="true"
               />
@@ -77,13 +77,13 @@
     </div>
 
     <!-- actions/timer -->
-    <div class="flex items-center justify-end gap-1 text-slate-300">
+    <div class="flex items-center justify-end gap-1 text-slate-50/90 dark:text-slate-300">
       <UButton
-        :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
+        :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
         variant="ghost"
         size="sm"
         :aria-label="isDark ? 'Switch to light' : 'Switch to dark'"
-        class="h-10 text-slate-300 cursor-pointer"
+        :class="footerActionButtonClass"
         @click="toggleColorMode"
       />
       <UButton
@@ -91,7 +91,7 @@
         variant="ghost"
         size="sm"
         aria-label="Open GitHub"
-        class="h-10 text-slate-300 cursor-pointer"
+        :class="footerActionButtonClass"
         @click="visitGithub"
       />
 
@@ -170,11 +170,14 @@ const getFolderName = (folderId: string) =>
   folders.find(folder => folder.id === folderId)?.name ?? folderId
 
 const taskbarButtonBaseClass =
-  'border-white/10 bg-white/6 text-slate-100/90 shadow-[0_8px_18px_rgba(15,23,42,0.18)] hover:-translate-y-0.5'
+  'border-white/18 bg-white/18 text-slate-50/90 shadow-[0_10px_24px_rgba(168,85,247,0.08)] hover:-translate-y-0.5 dark:border-white/14 dark:bg-white/8 dark:text-slate-100/90 dark:shadow-[0_10px_24px_rgba(15,23,42,0.16)]'
 
 const taskbarButtonIdleClass =
-  'hover:border-white/18 hover:bg-white/10 hover:text-white'
+  'hover:border-white/26 hover:bg-white/26 hover:text-white dark:hover:border-white/24 dark:hover:bg-white/12 dark:hover:text-white'
 
 const taskbarButtonActiveClass =
-  'border-purple-300/35 bg-[linear-gradient(180deg,rgba(192,132,252,0.2),rgba(255,255,255,0.12))] text-white shadow-[0_12px_28px_rgba(168,85,247,0.22),inset_0_1px_0_rgba(255,255,255,0.16)]'
+  'border-purple-300/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.24),rgba(216,180,254,0.34))] text-white shadow-[0_12px_24px_rgba(168,85,247,0.18),inset_0_1px_0_rgba(255,255,255,0.28)] dark:border-purple-300/34 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(192,132,252,0.18))] dark:text-white dark:shadow-[0_12px_28px_rgba(168,85,247,0.22),inset_0_1px_0_rgba(255,255,255,0.14)]'
+
+const footerActionButtonClass =
+  'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6'
 </script>

@@ -15,12 +15,12 @@
           </h3>
         </div>
 
-        <ul class="space-y-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <ul class="space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
           <li
             v-for="item in section.items"
             :key="item.text"
             :class="[
-              'flex items-start text-sm leading-6 text-slate-600 dark:text-slate-300',
+              'flex items-start text-sm leading-6 text-slate-700 dark:text-slate-200',
               item.icon ? 'gap-2' : ''
             ]"
           >

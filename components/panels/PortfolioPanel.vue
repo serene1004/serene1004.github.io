@@ -10,7 +10,7 @@
         </h2>
       </div>
 
-      <div class="space-y-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+      <div class="space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
         <p>Three.js로 만든 우주공간을 배경으로 한 테스크탑 UI 느낌의 포트폴리오 사이트를 만들고 있어요.</p>
       </div>
     </section>
@@ -30,7 +30,7 @@
           </h3>
         </div>
 
-        <ul class="text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <ul class="text-sm leading-6 text-slate-700 dark:text-slate-200">
           <li
             v-for="item in section.items"
             :key="item"

@@ -3,7 +3,7 @@
     <UButton
       variant="ghost"
       :aria-label="ariaLabel"
-      class="h-10 text-slate-300 cursor-pointer"
+      :class="footerPopoverButtonClass"
       :disabled="isLoading"
     >
       <UIcon
@@ -61,6 +61,9 @@ const seoulLatLon = ref<{lat: number, lon: number}>({
   lon: 126.9784
 })
 const { current, pending, error } = useWeather(seoulLatLon.value.lat, seoulLatLon.value.lon);
+
+const footerPopoverButtonClass =
+  'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6'
 
 type WmoInfo = {
   text: string;

@@ -24,4 +24,18 @@ html, body {
 
 :root {
   color-scheme: dark;
+  --selection-bg: color-mix(in srgb, rgba(168, 85, 247, 0.5) 78%, rgba(56, 189, 248, 0.28));
+  --selection-text: rgba(248, 250, 252, 0.98);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+  text-shadow: none;
 }

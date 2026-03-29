@@ -104,21 +104,29 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { folders } from '~/data/folders'
+import { useGuestbookAvailability } from '~/composables/useGuestbookAvailability'
 import { useWindowStore, type OpenedWindow } from '~/stores/WindowStore'
 
 const windowStore = useWindowStore()
 const { openedWindows } = storeToRefs(windowStore)
+const { isFolderVisible, visibleFolders } = useGuestbookAvailability()
 
 const visibleOpenFolders = computed(() =>
-  openedWindows.value.filter(windowItem => windowItem.visible)
+  openedWindows.value.filter(
+    windowItem => windowItem.visible && isFolderVisible(windowItem.folderId)
+  )
 )
 
 const activeWindows = computed(() =>
-  openedWindows.value.filter(windowItem => windowItem.visible && !windowItem.hidden)
+  openedWindows.value.filter(
+    windowItem =>
+      windowItem.visible && !windowItem.hidden && isFolderVisible(windowItem.folderId)
+  )
 )
 
 const handleFooterClick = (folderId: string) => {
+  if (!isFolderVisible(folderId)) return
+
   const windowItem = openedWindows.value.find(item => item.folderId === folderId)
   if (!windowItem) return
 
@@ -151,7 +159,7 @@ const visitGithub = () => {
 
 const startOpen = ref(false)
 const startItems = computed(() =>
-  folders.map(folder => ({
+  visibleFolders.value.map(folder => ({
     id: folder.id,
     icon: folder.icon ?? 'i-lucide-folder',
     label: folder.name
@@ -159,15 +167,16 @@ const startItems = computed(() =>
 )
 
 const openFromStart = (folderId: string) => {
+  if (!isFolderVisible(folderId)) return
   windowStore.openWindow(folderId)
   startOpen.value = false
 }
 
 const getFolderIcon = (folderId: string) =>
-  folders.find(folder => folder.id === folderId)?.icon ?? 'i-lucide-folder'
+  visibleFolders.value.find(folder => folder.id === folderId)?.icon ?? 'i-lucide-folder'
 
 const getFolderName = (folderId: string) =>
-  folders.find(folder => folder.id === folderId)?.name ?? folderId
+  visibleFolders.value.find(folder => folder.id === folderId)?.name ?? folderId
 
 const taskbarButtonBaseClass =
   'border-white/18 bg-white/18 text-slate-50/90 shadow-[0_10px_24px_rgba(168,85,247,0.08)] hover:-translate-y-0.5 dark:border-white/14 dark:bg-white/8 dark:text-slate-100/90 dark:shadow-[0_10px_24px_rgba(15,23,42,0.16)]'

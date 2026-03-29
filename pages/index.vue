@@ -1,8 +1,8 @@
-﻿<template>
+<template>
   <div class="h-full">
     <div class="absolute z-10 left-4 top-4 flex flex-col gap-4">
       <DesktopFolder
-        v-for="folder in folders"
+        v-for="folder in visibleFolders"
         :key="folder.id"
         :label="folder.name"
         :icon="folder.icon"
@@ -11,7 +11,7 @@
     </div>
 
     <DesktopWindow
-      v-for="win in openedWindows"
+      v-for="win in visibleWindows"
       :key="win.folderId"
       v-model:visible="win.visible"
       v-model:hidden="win.hidden"
@@ -26,24 +26,34 @@
       :icon="getFolder(win.folderId)?.icon"
       @close="windowStore.closeWindow(win.folderId)"
     >
-      <component :is="getFolder(win.folderId)?.component" />
+      <component
+        :is="getFolder(win.folderId)?.component"
+        v-bind="getFolder(win.folderId)?.componentProps"
+      />
     </DesktopWindow>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import DesktopFolder from '~/components/DesktopFolder.vue'
 import DesktopWindow from '~/components/DesktopWindow.vue'
-import { folders, type FolderItem } from '~/data/folders'
+import { type FolderItem } from '~/data/folders'
+import { useGuestbookAvailability } from '~/composables/useGuestbookAvailability'
 import { useWindowStore } from '~/stores/WindowStore'
 
 const windowStore = useWindowStore()
 const { openedWindows } = storeToRefs(windowStore)
+const { guestbookAvailable, guestbookAvailabilityChecked, refreshGuestbookAvailability, visibleFolders, isFolderVisible } =
+  useGuestbookAvailability()
 
 const getFolder = (id: string): FolderItem | undefined =>
-  folders.find(folder => folder.id === id)
+  visibleFolders.value.find(folder => folder.id === id)
+
+const visibleWindows = computed(() =>
+  openedWindows.value.filter(windowItem => isFolderVisible(windowItem.folderId))
+)
 
 const openFolder = (folderId: string) => {
   const folder = getFolder(folderId)
@@ -52,10 +62,16 @@ const openFolder = (folderId: string) => {
 }
 
 const focusOrder = computed(() =>
-  openedWindows.value
+  visibleWindows.value
     .filter(windowItem => windowItem.visible && !windowItem.hidden)
     .sort((left, right) => (left.zIndex ?? 0) - (right.zIndex ?? 0))
 )
+
+const closeUnavailableWindows = () => {
+  openedWindows.value
+    .filter(windowItem => !isFolderVisible(windowItem.folderId))
+    .forEach(windowItem => windowStore.closeWindow(windowItem.folderId))
+}
 
 const handleKey = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
@@ -72,12 +88,25 @@ const handleKey = (event: KeyboardEvent) => {
   }
 }
 
+let availabilityIntervalId: number | null = null
+
+watch([guestbookAvailabilityChecked, guestbookAvailable], ([checked, available]) => {
+  if (!checked || available) return
+  closeUnavailableWindows()
+})
+
 onMounted(() => {
   window.addEventListener('keydown', handleKey)
+  void refreshGuestbookAvailability()
+  availabilityIntervalId = window.setInterval(() => {
+    void refreshGuestbookAvailability()
+  }, 15000)
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKey)
+  if (availabilityIntervalId !== null) {
+    window.clearInterval(availabilityIntervalId)
+  }
 })
 </script>
-

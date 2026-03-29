@@ -21,10 +21,12 @@ logs
 # Local env files
 .env
 .env.*
-!.env.example
 
 #legacy files
 _legacy-vue
 
 #lock
 *.lock
+
+#agent
+*.codex

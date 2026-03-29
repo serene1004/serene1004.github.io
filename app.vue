@@ -1,6 +1,6 @@
 <template>
   <ColorScheme placeholder=" ">
-    <UApp>
+    <UApp :toaster="{ position: 'bottom-right', expand: true }">
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>

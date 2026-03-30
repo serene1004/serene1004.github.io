@@ -1,55 +1,51 @@
 <template>
-  <section class="mx-auto space-y-3 px-0.5 text-slate-800 dark:text-slate-100">
+  <section class="mx-auto space-y-4 px-0.5 text-slate-800 dark:text-slate-100">
     <UForm
       :state="form"
-      class="space-y-2.5"
+      class="space-y-3.5"
       @submit="submitEntry"
     >
-      <div class="flex items-start gap-2.5">
-        <UAvatar
-          src="/images/serene.png"
-          alt="Guestbook"
-          size="xl"
-          class="mt-0.5 shrink-0 ring-1 ring-slate-200/80 dark:ring-white/10"
-        />
+      <div class="flex items-start gap-3">
+        <UButton
+          type="button"
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          :class="guestbookAuthorButtonClass"
+          aria-label="랜덤 닉네임 생성"
+          @click="assignRandomAuthor"
+        >
+          <span :class="guestbookAuthorButtonTextClass">
+            {{ getAuthorInitial(form.author) }}
+          </span>
+        </UButton>
 
-        <div class="min-w-0 flex-1 space-y-2.5">
-          <div class="flex flex-col gap-2 sm:flex-row">
-            <UFormField
-              name="author"
-              class="min-w-0 flex-1"
-            >
-              <div class="space-y-1">
-                <UInput
-                  v-model="form.author"
-                  placeholder="닉네임"
-                  maxlength="10"
-                  color="neutral"
-                  size="lg"
-                  class="w-full"
-                  @update:model-value="clearFieldError('author')"
-                />
+        <div class="min-w-0 flex-1 space-y-3">
+          <UFormField
+            name="author"
+            class="min-w-0"
+          >
+            <div class="space-y-1">
+              <UInput
+                v-model="form.author"
+                placeholder="닉네임"
+                maxlength="10"
+                variant="none"
+                color="neutral"
+                size="lg"
+                class="w-full"
+                :ui="guestbookFieldUi"
+                @update:model-value="clearFieldError('author')"
+              />
 
-                <p
-                  v-if="fieldErrors.author"
-                  class="pl-1 text-xs text-rose-500/90 dark:text-rose-300/90"
-                >
-                  {{ fieldErrors.author }}
-                </p>
-              </div>
-            </UFormField>
-
-            <UButton
-              type="button"
-              color="neutral"
-              variant="soft"
-              size="lg"
-              class="justify-center sm:self-start"
-              @click="assignRandomAuthor"
-            >
-              랜덤 변경
-            </UButton>
-          </div>
+              <p
+                v-if="fieldErrors.author"
+                class="pl-1 text-xs text-rose-500/90 dark:text-rose-300/90"
+              >
+                {{ fieldErrors.author }}
+              </p>
+            </div>
+          </UFormField>
 
           <UFormField name="message">
             <div class="space-y-1">
@@ -59,9 +55,11 @@
                 maxlength="50"
                 :rows="2"
                 autoresize
-                :maxrows="2"
+                :maxrows="3"
+                variant="none"
                 color="neutral"
                 class="w-full"
+                :ui="guestbookFieldUi"
                 @update:model-value="clearFieldError('message')"
               />
 
@@ -77,11 +75,24 @@
           <div class="flex justify-end">
             <UButton
               type="submit"
-              :loading="submitting"
-              size="lg"
-              class="rounded-full px-5"
+              :disabled="submitting"
+              variant="ghost"
+              :class="guestbookSubmitButtonClass"
             >
-              방명록 남기기
+              <span class="pointer-events-none absolute inset-y-0 right-[-18%] w-16 rounded-full bg-[radial-gradient(circle,_rgba(125,211,252,0.34)_0%,rgba(125,211,252,0)_72%)] blur-2xl dark:bg-[radial-gradient(circle,_rgba(192,132,252,0.14)_0%,rgba(192,132,252,0)_72%)]" />
+
+              <span class="relative flex items-center gap-1">
+                <span :class="guestbookSubmitIconClass">
+                  <UIcon
+                    :name="submitting ? 'i-lucide-loader-circle' : 'i-lucide-pencil-line'"
+                    :class="['h-3.5 w-3.5', submitting ? 'animate-spin' : '']"
+                  />
+                </span>
+
+                <span class="pr-1.5 text-xs font-medium tracking-[-0.01em]">
+                  {{ submitting ? '남기는 중...' : '방명록 남기기' }}
+                </span>
+              </span>
             </UButton>
           </div>
         </div>
@@ -97,7 +108,7 @@
       />
     </UForm>
 
-    <section class="space-y-1 border-t border-slate-200/80 pt-2.5 dark:border-white/10">
+    <section class="space-y-1 border-t border-slate-200/80 pt-2 dark:border-white/10">
       <div
         v-if="loading"
         class="flex min-h-24 items-center justify-center text-sm text-slate-500 dark:text-slate-400"
@@ -131,25 +142,25 @@
         <li
           v-for="entry in entries"
           :key="entry.id"
-          class="flex gap-3 py-2.5 first:pt-0 last:pb-0"
+          class="flex gap-3 p-2 first:pt-0 last:pb-0"
         >
-          <UAvatar
-            :text="getAuthorInitial(entry.author)"
-            size="lg"
-            class="mt-0.5 shrink-0 bg-sky-100 text-sky-700 ring-1 ring-sky-200 dark:bg-sky-500/15 dark:text-sky-200 dark:ring-sky-400/15"
-          />
+          <div :class="guestbookEntryAvatarClass">
+            <span :class="guestbookEntryAvatarTextClass">
+              {{ getAuthorInitial(entry.author) }}
+            </span>
+          </div>
 
           <div class="min-w-0 flex-1">
-            <div class="flex flex-wrap items-center gap-2">
-              <p class="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p class="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">
                 {{ entry.author }}
               </p>
-              <span class="text-[11px] text-slate-400 dark:text-slate-500">
+              <span class="text-xs text-slate-500 dark:text-slate-400">
                 {{ formatMessageMeta(entry.createdAt) }}
               </span>
             </div>
 
-            <p class="mt-1 whitespace-pre-line text-sm leading-6 text-slate-700 dark:text-slate-200">
+            <p class="whitespace-pre-line text-sm text-slate-700/95 dark:text-slate-200/95">
               {{ entry.message }}
             </p>
           </div>
@@ -180,25 +191,35 @@ interface GuestbookFormError {
 }
 
 const adjectives = [
-  '신나는',
-  '반짝이는',
   '달콤한',
-  '고요한',
-  '조용한',
-  '부지런한',
-  '따뜻한',
-  '졸린'
+  '상큼한',
+  '아삭한',
+  '싱싱한',
+  '말랑한',
+  '시끄러운',
+  '즐거운',
+  '놀라는',
+  '졸린',
+  '슬픈',
+  '멋쟁이'
 ]
 
 const nouns = [
-  '기린',
-  '고양이',
-  '강아지',
-  '토끼',
-  '바다표범',
-  '코알라',
-  '수달',
-  '멧돼지'
+  '사과',
+  '딸기',
+  '포도',
+  '당근',
+  '오이',
+  '양파',
+  '감자',
+  '망고',
+  '키위',
+  '수박',
+  '메론',
+  '토마토',
+  '바나나',
+  '코코넛',
+  '파인애플',
 ]
 
 const config = useRuntimeConfig()
@@ -220,7 +241,29 @@ const fieldErrors = reactive<Record<keyof GuestbookFormState, string>>({
   message: ''
 })
 
-const formatMessageMeta = (value: string) =>
+const guestbookAuthorButtonClass =
+  'group cursor-pointer h-10 w-10 items-center justify-center rounded-[14px] border backdrop-blur-xl transition duration-200 border-purple-300/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.4),rgba(216,180,254,0.3))] text-slate-700 shadow-[0_12px_24px_rgba(168,85,247,0.14),inset_0_1px_0_rgba(255,255,255,0.28)] hover:-translate-y-0.5 hover:border-purple-300/70 hover:text-slate-900 dark:border-purple-300/34 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(192,132,252,0.18))] dark:text-white dark:shadow-[0_12px_28px_rgba(168,85,247,0.22),inset_0_1px_0_rgba(255,255,255,0.14)] dark:hover:border-purple-200/40 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-300/55 dark:focus-visible:ring-purple-300/28'
+
+const guestbookAuthorButtonTextClass =
+  'text-sm font-medium leading-none transition duration-200 group-hover:scale-105'
+
+const guestbookEntryAvatarClass =
+  'flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-purple-200/45 bg-[linear-gradient(180deg,rgba(255,255,255,0.3),rgba(243,232,255,0.34))] text-slate-700 shadow-[0_10px_24px_rgba(168,85,247,0.08)] backdrop-blur-xl dark:border-purple-300/18 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(192,132,252,0.12))] dark:text-slate-100/90 dark:shadow-[0_10px_24px_rgba(15,23,42,0.16)]'
+
+const guestbookEntryAvatarTextClass =
+  'text-sm font-medium leading-none'
+
+const guestbookFieldUi = {
+  base: 'rounded-lg border border-white/42 bg-[linear-gradient(180deg,rgba(255,255,255,0.34),rgba(248,250,252,0.22))] text-slate-800 placeholder:text-slate-400/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] backdrop-blur-xl ring-0 transition duration-200 hover:border-white/58 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.4),rgba(248,250,252,0.28))] focus:border-purple-200/75 focus:bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(250,245,255,0.34))] focus:shadow-[inset_0_1px_0_rgba(255,255,255,0.26),0_0_0_1px_rgba(216,180,254,0.26)] focus-visible:ring-0 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(30,41,59,0.46),rgba(15,23,42,0.32))] dark:text-slate-100 dark:placeholder:text-slate-400/75 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] dark:hover:border-white/14 dark:hover:bg-[linear-gradient(180deg,rgba(30,41,59,0.54),rgba(15,23,42,0.38))] dark:focus:border-purple-300/24 dark:focus:bg-[linear-gradient(180deg,rgba(49,46,129,0.18),rgba(17,24,39,0.44))] dark:focus:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_0_1px_rgba(192,132,252,0.14)]'
+}
+
+const guestbookSubmitButtonClass =
+  'group cursor-pointer relative isolate justify-start overflow-hidden rounded-full border border-white/60 bg-[linear-gradient(135deg,rgba(248,250,252,0.88),rgba(240,249,255,0.8)_52%,rgba(245,243,255,0.84))] p-1 text-slate-900 shadow-[0_10px_20px_rgba(148,163,184,0.12)] ring-1 ring-white/75 backdrop-blur-xl transition duration-200 hover:-translate-y-0.5 hover:border-purple-200/90 hover:shadow-[0_16px_28px_rgba(168,85,247,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300/60 disabled:cursor-wait disabled:opacity-85 disabled:hover:translate-y-0 dark:border-white/12 dark:bg-[linear-gradient(135deg,rgba(30,41,59,0.8),rgba(15,23,42,0.84)_52%,rgba(49,46,129,0.24))] dark:text-slate-50 dark:ring-white/8 dark:hover:border-purple-300/24 dark:hover:shadow-[0_16px_28px_rgba(15,23,42,0.28)] dark:focus-visible:ring-purple-300/28'
+
+const guestbookSubmitIconClass =
+  'flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(14,165,233,0.95),rgba(168,85,247,0.92))] text-white shadow-[0_10px_20px_rgba(14,165,233,0.22)] transition duration-200 group-hover:scale-105 dark:bg-[linear-gradient(135deg,rgba(125,211,252,0.18),rgba(196,181,253,0.22))] dark:text-sky-50 dark:shadow-[0_10px_22px_rgba(15,23,42,0.2)]'
+
+const formatMessageMeta = (value: string | Date) =>
   new Intl.DateTimeFormat('ko-KR', {
     month: 'numeric',
     day: 'numeric',
@@ -319,6 +362,7 @@ const submitEntry = async () => {
     entries.value = [created, ...entries.value]
     lastLoadedAt.value = new Date()
     form.message = ''
+    assignRandomAuthor()
     syncFieldErrors([])
 
     toast.add({

@@ -63,88 +63,88 @@ interface SummarySection {
 const summarySections: SummarySection[] = [
   {
     label: 'About',
-    title: '사용자 경험을 디자인하는 프론트엔드 개발자에요',
+    title: '사용자 경험을 디자인하는 프론트엔드 개발자입니다',
     items: [
       {
-        text: '웹 퍼블리셔로 커리어를 시작하여 현재는 Vue.js와 Nuxt.js를 기반으로 프론트엔드 개발을 하고 있어요. 단순히 화면을 보기 좋게 만드는 데서 그치지 않고, 사용자의 흐름과 경험까지 함께 설계하는 일을 중요하게 생각해요.'
+        text: '웹 퍼블리셔로 커리어를 시작하여 현재는 Vue.js와 Nuxt.js를 기반으로 프론트엔드 개발을 하고 있습니다. 단순히 화면을 보기 좋게 만드는 데서 그치지 않고, 사용자의 흐름과 경험까지 함께 설계하는 일을 중요하게 생각합니다.'
       },
       {
-        text: '인터랙션이 자연스럽게 이어지는 UI를 좋아해요. 3D와 애니메이션이 더해진 화면을 구현하는 과정에도 관심이 많아요.'
+        text: '인터랙션이 자연스럽게 이어지는 UI를 선호합니다. 3D와 애니메이션이 더해진 화면을 구현하는 과정에도 관심이 많습니다.'
       },
       {
-        text: '현재는 방송통신대학교 컴퓨터과학과에 재학하며 학업과 실무를 함께 이어가고 있어요.'
+        text: '현재는 방송통신대학교 컴퓨터과학과에 재학하며 학업과 실무를 함께 이어가고 있습니다.'
       }
     ]
   },
   {
     label: 'Focus',
-    title: '이런 일에 집중하고 있어요',
+    title: '이런 일에 집중하고 있습니다',
     items: [
       {
-        text: 'Vue.js와 Nuxt.js를 기반으로 프론트엔드 개발을 하고 있어요.',
+        text: 'Vue.js와 Nuxt.js를 기반으로 프론트엔드 개발을 하고 있습니다.',
         icon: 'i-lucide-sparkles'
       },
       {
-        text: '인터랙션을 좋아해서 3D와 애니메이션이 더해진 UI를 구현하는 일에 관심이 많아요.',
+        text: '인터랙션을 선호하며 3D와 애니메이션이 더해진 UI를 구현하는 일에 관심이 많습니다.',
         icon: 'i-lucide-orbit'
       },
       {
-        text: '보기 좋은 화면뿐 아니라 유지보수하기 좋은 컴포넌트 구조와 상태 설계도 함께 고민해요.',
+        text: '보기 좋은 화면뿐 아니라 유지보수하기 좋은 컴포넌트 구조와 상태 설계도 함께 고민합니다.',
         icon: 'i-lucide-layers-3'
       }
     ]
   },
   {
     label: 'Stack',
-    title: '이런 기술들을 사용하고 있어요',
+    title: '이런 기술들을 사용하고 있습니다',
     items: [
       {
-        text: 'JavaScript와 TypeScript로 화면과 로직을 함께 다룰 수 있어요.',
+        text: 'JavaScript와 TypeScript로 화면과 로직을 함께 다룰 수 있습니다.',
         icon: 'i-lucide-code-2'
       },
       {
-        text: 'Vue.js와 Nuxt.js를 중심으로 프론트엔드 구조를 만들고 있어요.',
+        text: 'Vue.js와 Nuxt.js를 중심으로 프론트엔드 구조를 만들고 있습니다.',
         icon: 'i-lucide-layout-template'
       },
       {
-        text: 'Pinia로 상태를 역할에 맞게 나누고 관리하는 방식을 선호해요.',
+        text: 'Pinia로 상태를 역할에 맞게 나누고 관리하는 방식을 선호합니다.',
         icon: 'i-lucide-database'
       },
       {
-        text: 'Tailwind CSS 4와 SCSS로 스타일을 빠르게 정리하고 다듬어요.',
+        text: 'Tailwind CSS 4와 SCSS로 스타일을 빠르게 정리하고 다듬습니다.',
         icon: 'i-lucide-palette'
       },
       {
-        text: 'Three.js와 Cesium.js로 3D가 들어가는 화면도 구현할 수 있어요.',
+        text: 'Three.js와 Cesium.js로 3D가 들어가는 화면도 구현할 수 있습니다.',
         icon: 'i-lucide-box'
       },
       {
-        text: '필요한 경우 Electron.js로 데스크톱 환경 작업도 할 수 있어요.',
+        text: '필요한 경우 Electron.js로 데스크톱 환경 작업도 할 수 있습니다.',
         icon: 'i-lucide-monitor'
       }
     ]
   },
   {
     label: 'Work Style',
-    title: '이렇게 일하고 있어요',
+    title: '이렇게 일하고 있습니다',
     items: [
       {
-        text: '디자인 의도가 화면에서 자연스럽게 느껴지도록 꼼꼼하게 구현해요.',
+        text: '디자인 의도가 화면에서 자연스럽게 느껴지도록 꼼꼼하게 구현합니다.',
         icon: 'i-lucide-pencil-ruler'
       },
       {
-        text: '나중에도 수정하기 편한 구조와 상태 관리를 먼저 생각해요.',
+        text: '나중에도 수정하기 편한 구조와 상태 관리를 먼저 생각합니다.',
         icon: 'i-lucide-workflow'
       },
       {
-        text: '기획, 디자인, 개발이 같은 방향을 볼 수 있게 자주 소통해요.',
+        text: '기획, 디자인, 개발이 같은 방향을 볼 수 있게 자주 소통합니다.',
         icon: 'i-lucide-messages-square'
       }
     ]
   },
   {
     label: 'Contact',
-    title: '이곳으로 편하게 연락주세요',
+    title: '이곳으로 편하게 연락해 주시기 바랍니다',
     items: [
       {
         text: 'vcbxnzn@gmail.com',

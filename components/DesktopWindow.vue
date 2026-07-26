@@ -4,17 +4,22 @@
       v-if="visible"
       v-show="!hiddenState"
       ref="panel"
-      class="absolute flex min-w-90 flex-col overflow-hidden rounded-lg border border-purple-400/50 dark:border-purple-500/50 bg-purple-200/20 dark:bg-slate-900/70 shadow-xl backdrop-blur-md"
+      :class="windowStyle === 'note'
+        ? 'absolute flex flex-col overflow-hidden rounded-sm bg-purple-500/16 text-slate-50 ring-1 ring-purple-300/25 shadow-[0_0_28px_rgba(168,85,247,0.2),8px_10px_24px_rgba(15,23,42,0.38)] backdrop-blur-xl dark:bg-purple-500/10 dark:text-slate-100 dark:ring-purple-400/18 dark:shadow-[0_0_28px_rgba(168,85,247,0.16),8px_10px_24px_rgba(2,6,23,0.55)]'
+        : 'absolute flex min-w-90 flex-col overflow-hidden rounded-lg border border-purple-500/50 bg-slate-900/70 shadow-xl backdrop-blur-md dark:border-purple-500/50 dark:bg-slate-900/70'"
       :style="panelStyle"
       @pointerdown="onFocus"
     >
       <div
-        class="flex items-center justify-between gap-2 overflow-hidden bg-purple-500/20 p-1.5 select-none"
+        :class="windowStyle === 'note'
+          ? 'flex items-center justify-between gap-2 overflow-hidden p-3 select-none'
+          : 'flex items-center justify-between gap-2 overflow-hidden bg-purple-500/20 p-1.5 select-none'"
         style="touch-action: none;"
         @pointerdown="isDraggable ? onDragStart($event) : undefined"
       >
-        <div class="flex items-center text-white">
-          <UIcon :name="icon || 'i-lucide-window'" class="h-5 w-5 mr-2" aria-hidden="true" />
+        <div :class="windowStyle === 'note' ? 'flex items-center text-slate-50 dark:text-slate-100' : 'flex items-center text-white'">
+          <img v-if="image" :src="image" alt="" class="mr-2 h-5 w-5 object-contain" />
+          <UIcon v-else :name="icon || 'i-lucide-window'" class="h-5 w-5 mr-2" aria-hidden="true" />
           <h3 class="text-sm font-semibold truncate">{{ title }}</h3>
         </div>
 
@@ -51,7 +56,11 @@
         </div>
       </div>
 
-      <div class="flex-1 min-h-0 overflow-auto border-t border-purple-400/50 dark:border-purple-500/50 bg-slate-50/70 p-3 text-sm text-slate-800 dark:bg-slate-900/70 dark:text-slate-100">
+      <div
+        :class="windowStyle === 'note'
+          ? 'flex-1 min-h-0 overflow-auto p-4 text-sm text-slate-800'
+          : 'dark flex-1 min-h-0 overflow-auto border-t border-purple-500/50 bg-slate-900/70 p-3 text-sm text-slate-100 backdrop-blur-xl dark:border-purple-500/50 dark:bg-slate-900/70 dark:text-slate-100'"
+      >
         <slot />
       </div>
     </div>
@@ -76,6 +85,8 @@ const props = withDefaults(defineProps<{
   zIndex?: number
   hidden?: boolean
   icon?: string | null
+  image?: string | null
+  windowStyle?: 'note' | null
 }>(), {
   visible: false,
   title: null,
@@ -85,7 +96,9 @@ const props = withDefaults(defineProps<{
   windowWidth: null,
   windowHeight: null,
   hidden: false,
-  icon: null
+  icon: null,
+  image: null,
+  windowStyle: null
 })
 
 const emit = defineEmits<{
@@ -198,5 +211,9 @@ const close = () => {
   emit('close')
 }
 
-const controlButtonClass = 'inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border border-white/30 bg-white/10 text-white hover:bg-white/20 active:bg-white/30'
+const controlButtonClass = computed(() =>
+  props.windowStyle === 'note'
+    ? 'inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-slate-50/90 hover:bg-white/16 active:bg-white/24 dark:text-slate-300 dark:hover:bg-white/6 dark:active:bg-white/10'
+    : 'inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border border-white/30 bg-white/10 text-white hover:bg-white/20 active:bg-white/30'
+)
 </script>

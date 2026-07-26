@@ -51,7 +51,7 @@
             <div class="space-y-1">
               <UTextarea
                 v-model="form.message"
-                placeholder="방명록을 작성해주세요."
+                placeholder="방명록을 작성해 주시기 바랍니다."
                 maxlength="50"
                 :rows="2"
                 autoresize
@@ -132,7 +132,7 @@
         v-else-if="!entries.length"
         class="flex min-h-20 items-center justify-center text-center"
       >
-        <p class="text-sm text-slate-500 dark:text-slate-400">작성된 방명록이 없어요.</p>
+        <p class="text-sm text-slate-500 dark:text-slate-400">작성된 방명록이 없습니다.</p>
       </div>
 
       <ul
@@ -296,14 +296,14 @@ const validateForm = (state: GuestbookFormState): GuestbookFormError[] => {
   if (author.length < 2 || author.length > 10) {
     errors.push({
       name: 'author',
-      message: '이름은 2자 이상 10자 이하로 입력해 주세요.'
+      message: '이름은 2자 이상 10자 이하로 입력해야 합니다.'
     })
   }
 
   if (message.length < 1 || message.length > 50) {
     errors.push({
       name: 'message',
-      message: '내용은 1자 이상 50자 이하로 입력해 주세요.'
+      message: '내용은 1자 이상 50자 이하로 입력해야 합니다.'
     })
   }
 
@@ -328,7 +328,7 @@ const loadEntries = async () => {
     lastLoadedAt.value = new Date()
   }
   catch {
-    loadError.value = '방명록을 불러오지 못했습니다. API 서버가 실행 중인지 확인해 주세요.'
+    loadError.value = '방명록을 불러오지 못했습니다. API 서버가 실행 중인지 확인해야 합니다.'
   }
   finally {
     loading.value = false
@@ -366,8 +366,8 @@ const submitEntry = async () => {
     syncFieldErrors([])
 
     toast.add({
-      title: '방명록이 등록되었어요',
-      description: `${author}님이 방명록을 남겼어요.`,
+      title: '방명록이 등록되었습니다',
+      description: `${author}님이 방명록을 남겼습니다.`,
       icon: 'i-lucide-book-text',
       avatar: {
         src: '/images/serene.png',
@@ -380,7 +380,7 @@ const submitEntry = async () => {
     })
   }
   catch {
-    submitError.value = '방명록을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.'
+    submitError.value = '방명록을 저장하지 못했습니다. 잠시 후 다시 시도해 주시기 바랍니다.'
   }
   finally {
     submitting.value = false

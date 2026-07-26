@@ -1,5 +1,5 @@
 <template>
-  <UPopover>
+  <UPopover :ui="popoverUi">
     <UButton
       variant="ghost"
       aria-label="Calendar/Timer"
@@ -20,10 +20,19 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
 import { today, getLocalTimeZone } from '@internationalized/date'
 
 const timeText = ref<string>('')
 const dateText = ref<string>('')
+const colorMode = useColorMode()
+const popoverUi = computed(() =>
+  colorMode.value === 'dark'
+    ? {}
+    : {
+        content: 'dark border border-purple-300/18 bg-slate-900/90 text-slate-100 shadow-[0_16px_28px_rgba(15,23,42,0.28)] backdrop-blur-xl'
+      }
+)
 
 const updateNow = () => {
   const now = new Date()

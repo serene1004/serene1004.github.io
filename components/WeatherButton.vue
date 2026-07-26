@@ -1,5 +1,5 @@
 <template>
-  <UPopover>
+  <UPopover :ui="popoverUi">
     <UButton
       variant="ghost"
       :aria-label="ariaLabel"
@@ -52,15 +52,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue'
 
-import { useWeather } from '~/composables/useWeather';
+import { useWeather } from '~/composables/useWeather'
 
-const seoulLatLon = ref<{lat: number, lon: number}>({
-  lat: 37.566,
-  lon: 126.9784
-})
-const { current, pending, error } = useWeather(seoulLatLon.value.lat, seoulLatLon.value.lon);
+const { current, pending, error } = useWeather()
+const colorMode = useColorMode()
+const popoverUi = computed(() =>
+  colorMode.value === 'dark'
+    ? {}
+    : {
+        content: 'dark border border-purple-300/18 bg-slate-900/90 text-slate-100 shadow-[0_16px_28px_rgba(15,23,42,0.28)] backdrop-blur-xl'
+      }
+)
 
 const footerPopoverButtonClass =
   'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6'

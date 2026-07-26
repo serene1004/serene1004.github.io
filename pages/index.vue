@@ -1,13 +1,27 @@
 <template>
   <div class="h-full">
-    <div class="absolute z-10 left-4 top-4 flex flex-col gap-4">
-      <DesktopFolder
-        v-for="folder in visibleFolders"
-        :key="folder.id"
-        :label="folder.name"
-        :icon="folder.icon"
-        @open="openFolder(folder.id)"
-      />
+    <div class="absolute z-10 left-4 top-4 flex gap-5">
+      <div class="flex flex-col gap-4">
+        <DesktopFolder
+          v-for="folder in companyFolders"
+          :key="folder.id"
+          :label="folder.name"
+          :icon="folder.icon"
+          :image="folder.image"
+          @open="openFolder(folder.id)"
+        />
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <DesktopFolder
+          v-for="folder in personalFolders"
+          :key="folder.id"
+          :label="folder.name"
+          :icon="folder.icon"
+          :image="folder.image"
+          @open="openFolder(folder.id)"
+        />
+      </div>
     </div>
 
     <DesktopWindow
@@ -24,6 +38,8 @@
       :folder-id="win.folderId"
       :z-index="win.zIndex"
       :icon="getFolder(win.folderId)?.icon"
+      :image="getFolder(win.folderId)?.image"
+      :window-style="getFolder(win.folderId)?.windowStyle"
       @close="windowStore.closeWindow(win.folderId)"
     >
       <component
@@ -53,6 +69,14 @@ const getFolder = (id: string): FolderItem | undefined =>
 
 const visibleWindows = computed(() =>
   openedWindows.value.filter(windowItem => isFolderVisible(windowItem.folderId))
+)
+
+const companyFolderIds = new Set(['about', 'aisct', 'danbichat', 'heidi'])
+const companyFolders = computed(() =>
+  visibleFolders.value.filter(folder => companyFolderIds.has(folder.id))
+)
+const personalFolders = computed(() =>
+  visibleFolders.value.filter(folder => !companyFolderIds.has(folder.id))
 )
 
 const openFolder = (folderId: string) => {

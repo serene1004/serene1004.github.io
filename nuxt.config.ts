@@ -15,6 +15,9 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/color-mode'],
   ssr: false,
   app: {
+    head: {
+      title: 'Serene1004 | Frontend Portfolio'
+    },
     baseURL: '/',
     buildAssetsDir: '/_nuxt/'
   },

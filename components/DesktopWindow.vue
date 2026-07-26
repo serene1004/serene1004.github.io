@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <teleport to="body">
     <div
       v-if="visible"
@@ -18,7 +18,7 @@
         @pointerdown="isDraggable ? onDragStart($event) : undefined"
       >
         <div :class="windowStyle === 'note' ? 'flex items-center text-slate-50 dark:text-slate-100' : 'flex items-center text-white'">
-          <img v-if="image" :src="image" alt="" class="mr-2 h-5 w-5 object-contain" />
+          <img v-if="image" :src="image" alt="" class="mr-2 h-5 w-5 object-contain" >
           <UIcon v-else :name="icon || 'i-lucide-window'" class="h-5 w-5 mr-2" aria-hidden="true" />
           <h3 class="text-sm font-semibold truncate">{{ title }}</h3>
         </div>
@@ -68,10 +68,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useWindowStore } from '~/stores/WindowStore'
+import { computed, ref } from 'vue';
+import { useWindowStore } from '~/stores/WindowStore';
 
-const windowStore = useWindowStore()
+const windowStore = useWindowStore();
 
 const props = withDefaults(defineProps<{
   visible?: boolean
@@ -98,32 +98,32 @@ const props = withDefaults(defineProps<{
   hidden: false,
   icon: null,
   image: null,
-  windowStyle: null
-})
+  windowStyle: null,
+});
 
 const emit = defineEmits<{
   'update:visible': [value: boolean]
   'update:hidden': [value: boolean]
   close: []
-}>()
+}>();
 
 const visible = computed({
   get: () => props.visible,
-  set: value => emit('update:visible', value)
-})
+  set: (value) => emit('update:visible', value),
+});
 
 const hiddenState = computed({
   get: () => props.hidden ?? false,
-  set: value => emit('update:hidden', value)
-})
+  set: (value) => emit('update:hidden', value),
+});
 
-const panel = ref<HTMLElement | null>(null)
-const offsetX = ref(props.initialOffsetX)
-const offsetY = ref(props.initialOffsetY)
+const panel = ref<HTMLElement | null>(null);
+const offsetX = ref(props.initialOffsetX);
+const offsetY = ref(props.initialOffsetY);
 
-const isExpanded = ref(false)
-const prevOffsetX = ref(0)
-const prevOffsetY = ref(0)
+const isExpanded = ref(false);
+const prevOffsetX = ref(0);
+const prevOffsetY = ref(0);
 
 const panelStyle = computed(() => {
   if (isExpanded.value) {
@@ -134,8 +134,8 @@ const panelStyle = computed(() => {
       width: '100vw',
       height: 'calc(100vh - 48px)',
       borderRadius: '0',
-      zIndex: props.zIndex ?? 1
-    }
+      zIndex: props.zIndex ?? 1,
+    };
   }
 
   return {
@@ -144,76 +144,74 @@ const panelStyle = computed(() => {
     top: '50%',
     zIndex: props.zIndex ?? 1,
     ...(props.windowWidth ? { width: props.windowWidth } : {}),
-    ...(props.windowHeight ? { height: props.windowHeight } : {})
-  }
-})
+    ...(props.windowHeight ? { height: props.windowHeight } : {}),
+  };
+});
 
 const onFocus = () => {
-  if (props.folderId) windowStore.bringToFront(props.folderId)
+  if (props.folderId) windowStore.bringToFront(props.folderId);
+};
+
+let dragging = false;
+let originX = 0;
+let originY = 0;
+
+const isDraggable = computed(() => props.draggable && !isExpanded.value);
+
+function onDragMove(event: PointerEvent) {
+  if (!dragging || !panel.value) return;
+
+  const panelRect = panel.value.getBoundingClientRect();
+  const nextX = event.clientX - originX;
+  const nextY = event.clientY - originY;
+
+  const maxX = (window.innerWidth - panelRect.width) / 2;
+  const minX = -maxX;
+  const maxY = (window.innerHeight - panelRect.height) / 2;
+  const minY = -maxY;
+
+  offsetX.value = Math.min(Math.max(nextX, minX), maxX);
+  offsetY.value = Math.min(Math.max(nextY, minY), maxY);
 }
 
-let dragging = false
-let originX = 0
-let originY = 0
-
-const isDraggable = computed(() => props.draggable && !isExpanded.value)
+function onDragEnd() {
+  dragging = false;
+  window.removeEventListener('pointermove', onDragMove);
+}
 
 const onDragStart = (event: PointerEvent) => {
-  if (!isDraggable.value) return
-  dragging = true
-  originX = event.clientX - offsetX.value
-  originY = event.clientY - offsetY.value
-  window.addEventListener('pointermove', onDragMove)
-  window.addEventListener('pointerup', onDragEnd, { once: true })
-}
-
-const onDragMove = (event: PointerEvent) => {
-  if (!dragging || !panel.value) return
-
-  const panelRect = panel.value.getBoundingClientRect()
-  const nextX = event.clientX - originX
-  const nextY = event.clientY - originY
-
-  const maxX = (window.innerWidth - panelRect.width) / 2
-  const minX = -maxX
-  const maxY = (window.innerHeight - panelRect.height) / 2
-  const minY = -maxY
-
-  offsetX.value = Math.min(Math.max(nextX, minX), maxX)
-  offsetY.value = Math.min(Math.max(nextY, minY), maxY)
-}
-
-const onDragEnd = () => {
-  dragging = false
-  window.removeEventListener('pointermove', onDragMove)
-}
+  if (!isDraggable.value) return;
+  dragging = true;
+  originX = event.clientX - offsetX.value;
+  originY = event.clientY - offsetY.value;
+  window.addEventListener('pointermove', onDragMove);
+  window.addEventListener('pointerup', onDragEnd, { once: true });
+};
 
 const expand = () => {
   if (!isExpanded.value) {
-    prevOffsetX.value = offsetX.value
-    prevOffsetY.value = offsetY.value
-    isExpanded.value = true
-    return
+    prevOffsetX.value = offsetX.value;
+    prevOffsetY.value = offsetY.value;
+    isExpanded.value = true;
+    return;
   }
 
-  isExpanded.value = false
-  offsetX.value = prevOffsetX.value
-  offsetY.value = prevOffsetY.value
-}
+  isExpanded.value = false;
+  offsetX.value = prevOffsetX.value;
+  offsetY.value = prevOffsetY.value;
+};
 
 const hide = () => {
-  hiddenState.value = true
-}
+  hiddenState.value = true;
+};
 
 const close = () => {
-  if (!visible.value) return
-  visible.value = false
-  emit('close')
-}
+  if (!visible.value) return;
+  visible.value = false;
+  emit('close');
+};
 
-const controlButtonClass = computed(() =>
-  props.windowStyle === 'note'
-    ? 'inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-slate-50/90 hover:bg-white/16 active:bg-white/24 dark:text-slate-300 dark:hover:bg-white/6 dark:active:bg-white/10'
-    : 'inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border border-white/30 bg-white/10 text-white hover:bg-white/20 active:bg-white/30'
-)
+const controlButtonClass = computed(() => (props.windowStyle === 'note'
+  ? 'inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-slate-50/90 hover:bg-white/16 active:bg-white/24 dark:text-slate-300 dark:hover:bg-white/6 dark:active:bg-white/10'
+  : 'inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border border-white/30 bg-white/10 text-white hover:bg-white/20 active:bg-white/30'));
 </script>

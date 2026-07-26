@@ -59,12 +59,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { getProjectById } from '~/data/projects'
+import { computed } from 'vue';
+import { getProjectById } from '~/data/projects';
 
 const props = defineProps<{
   projectId: string
-}>()
+}>();
 
-const project = computed(() => getProjectById(props.projectId))
+const project = computed(() => getProjectById(props.projectId));
 </script>

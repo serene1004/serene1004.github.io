@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed } from 'vue';
 
 type WeatherNowView = {
   temperature?: number
@@ -18,12 +18,14 @@ type OpenMeteoResponse = {
 }
 
 const splitIsoToDateTime = (iso?: string) => {
-  const [date = '', time = ''] = iso?.split('T') ?? []
-  return { date, time }
-}
+  const [date = '', time = ''] = iso?.split('T') ?? [];
+  return { date, time };
+};
 
 export const useWeather = () => {
-  const { data, pending, error, refresh } = useFetch<OpenMeteoResponse>(
+  const {
+    data, pending, error, refresh,
+  } = useFetch<OpenMeteoResponse>(
     'https://api.open-meteo.com/v1/forecast',
     {
       key: 'seoul-weather',
@@ -31,23 +33,25 @@ export const useWeather = () => {
         latitude: 37.566,
         longitude: 126.9784,
         timezone: 'Asia/Seoul',
-        current: 'temperature_2m,wind_speed_10m,weather_code'
-      }
-    }
-  )
+        current: 'temperature_2m,wind_speed_10m,weather_code',
+      },
+    },
+  );
 
   const current = computed<WeatherNowView>(() => {
-    const weather = data.value?.current
-    const { date, time } = splitIsoToDateTime(weather?.time)
+    const weather = data.value?.current;
+    const { date, time } = splitIsoToDateTime(weather?.time);
 
     return {
       temperature: weather?.temperature_2m,
       windspeed: weather?.wind_speed_10m,
       weathercode: weather?.weather_code,
       date,
-      time
-    }
-  })
+      time,
+    };
+  });
 
-  return { current, pending, error, refresh }
-}
+  return {
+    current, pending, error, refresh,
+  };
+};

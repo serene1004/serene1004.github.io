@@ -29,9 +29,9 @@ const props = defineProps<{
   label: string
   icon?: string
   image?: string
-}>()
+}>();
 
 const emit = defineEmits<{
   open: []
-}>()
+}>();
 </script>

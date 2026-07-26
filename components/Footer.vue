@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <footer class="relative z-5 flex h-12 items-center justify-between border-t border-purple-400/18 bg-purple-500/10 px-4 shadow-[0_-10px_28px_rgba(15,23,42,0.18)] backdrop-blur-xl dark:border-purple-400/18 dark:bg-purple-500/10 dark:shadow-[0_-10px_28px_rgba(15,23,42,0.18)]">
     <div class="w-40" />
 
@@ -74,79 +74,64 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useGuestbookAvailability } from '~/composables/useGuestbookAvailability'
-import { useWindowStore, type OpenedWindow } from '~/stores/WindowStore'
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useGuestbookAvailability } from '~/composables/useGuestbookAvailability';
+import { useWindowStore, type OpenedWindow } from '~/stores/WindowStore';
 
-const windowStore = useWindowStore()
-const { openedWindows } = storeToRefs(windowStore)
-const { isFolderVisible, visibleFolders } = useGuestbookAvailability()
+const windowStore = useWindowStore();
+const { openedWindows } = storeToRefs(windowStore);
+const { isFolderVisible, visibleFolders } = useGuestbookAvailability();
 
-const visibleOpenFolders = computed(() =>
-  openedWindows.value.filter(
-    windowItem => windowItem.visible && isFolderVisible(windowItem.folderId)
-  )
-)
+const visibleOpenFolders = computed(() => openedWindows.value.filter(
+  (windowItem) => windowItem.visible && isFolderVisible(windowItem.folderId),
+));
 
-const activeWindows = computed(() =>
-  openedWindows.value.filter(
-    windowItem =>
-      windowItem.visible && !windowItem.hidden && isFolderVisible(windowItem.folderId)
-  )
-)
+const activeWindows = computed(() => openedWindows.value.filter(
+  (windowItem) => windowItem.visible && !windowItem.hidden && isFolderVisible(windowItem.folderId),
+));
 
 const handleFooterClick = (folderId: string) => {
-  if (!isFolderVisible(folderId)) return
+  if (!isFolderVisible(folderId)) return;
 
-  const windowItem = openedWindows.value.find(item => item.folderId === folderId)
-  if (!windowItem) return
+  const windowItem = openedWindows.value.find((item) => item.folderId === folderId);
+  if (!windowItem) return;
 
   if (windowItem.hidden) {
-    windowStore.showWindow(folderId)
+    windowStore.showWindow(folderId);
   } else {
-    windowStore.bringToFront(folderId)
+    windowStore.bringToFront(folderId);
   }
-}
+};
 
-const maxZ = computed(() =>
-  activeWindows.value.reduce(
-    (maxValue, windowItem) => Math.max(maxValue, windowItem.zIndex ?? 0),
-    0
-  )
-)
+const maxZ = computed(() => activeWindows.value.reduce(
+  (maxValue, windowItem) => Math.max(maxValue, windowItem.zIndex ?? 0),
+  0,
+));
 
-const isTopActive = (win: OpenedWindow) =>
-  !win.hidden && (win.zIndex ?? 0) === maxZ.value
+const isTopActive = (win: OpenedWindow) => !win.hidden && (win.zIndex ?? 0) === maxZ.value;
 
-const colorMode = useColorMode()
-const isDark = computed(() => colorMode.value === 'dark')
+const colorMode = useColorMode();
+const isDark = computed(() => colorMode.value === 'dark');
 const toggleColorMode = () => {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
-}
+  colorMode.preference = isDark.value ? 'light' : 'dark';
+};
 
 const visitGithub = () => {
-  window.open('https://github.com/serene1004', '_blank', 'noopener')
-}
+  window.open('https://github.com/serene1004', '_blank', 'noopener');
+};
 
-const getFolderIcon = (folderId: string) =>
-  visibleFolders.value.find(folder => folder.id === folderId)?.icon ?? 'i-lucide-folder'
+const getFolderIcon = (folderId: string) => visibleFolders.value.find((folder) => folder.id === folderId)?.icon ?? 'i-lucide-folder';
 
-const getFolderImage = (folderId: string) =>
-  visibleFolders.value.find(folder => folder.id === folderId)?.image
+const getFolderImage = (folderId: string) => visibleFolders.value.find((folder) => folder.id === folderId)?.image;
 
-const getFolderName = (folderId: string) =>
-  visibleFolders.value.find(folder => folder.id === folderId)?.name ?? folderId
+const getFolderName = (folderId: string) => visibleFolders.value.find((folder) => folder.id === folderId)?.name ?? folderId;
 
-const taskbarButtonBaseClass =
-  'text-slate-50/90 hover:-translate-y-0.5 dark:text-slate-100/90'
+const taskbarButtonBaseClass = 'text-slate-50/90 hover:-translate-y-0.5 dark:text-slate-100/90';
 
-const taskbarButtonIdleClass =
-  'hover:scale-105 hover:text-white dark:hover:text-white'
+const taskbarButtonIdleClass = 'hover:scale-105 hover:text-white dark:hover:text-white';
 
-const taskbarButtonActiveClass =
-  'scale-105 text-white'
+const taskbarButtonActiveClass = 'scale-105 text-white';
 
-const footerActionButtonClass =
-  'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6'
+const footerActionButtonClass = 'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6';
 </script>

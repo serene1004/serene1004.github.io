@@ -51,86 +51,80 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import DesktopFolder from '~/components/DesktopFolder.vue'
-import DesktopWindow from '~/components/DesktopWindow.vue'
-import { type FolderItem } from '~/data/folders'
-import { useGuestbookAvailability } from '~/composables/useGuestbookAvailability'
-import { useWindowStore } from '~/stores/WindowStore'
+import {
+  computed, onMounted, onUnmounted, watch,
+} from 'vue';
+import { storeToRefs } from 'pinia';
+import DesktopFolder from '~/components/DesktopFolder.vue';
+import DesktopWindow from '~/components/DesktopWindow.vue';
+import type { FolderItem } from '~/data/folders';
+import { useGuestbookAvailability } from '~/composables/useGuestbookAvailability';
+import { useWindowStore } from '~/stores/WindowStore';
 
-const windowStore = useWindowStore()
-const { openedWindows } = storeToRefs(windowStore)
-const { guestbookAvailable, guestbookAvailabilityChecked, refreshGuestbookAvailability, visibleFolders, isFolderVisible } =
-  useGuestbookAvailability()
+const windowStore = useWindowStore();
+const { openedWindows } = storeToRefs(windowStore);
+const {
+  guestbookAvailable, guestbookAvailabilityChecked, refreshGuestbookAvailability, visibleFolders, isFolderVisible,
+} = useGuestbookAvailability();
 
-const getFolder = (id: string): FolderItem | undefined =>
-  visibleFolders.value.find(folder => folder.id === id)
+const getFolder = (id: string): FolderItem | undefined => visibleFolders.value.find((folder) => folder.id === id);
 
-const visibleWindows = computed(() =>
-  openedWindows.value.filter(windowItem => isFolderVisible(windowItem.folderId))
-)
+const visibleWindows = computed(() => openedWindows.value.filter((windowItem) => isFolderVisible(windowItem.folderId)));
 
-const companyFolderIds = new Set(['about', 'aisct', 'danbichat', 'heidi'])
-const companyFolders = computed(() =>
-  visibleFolders.value.filter(folder => companyFolderIds.has(folder.id))
-)
-const personalFolders = computed(() =>
-  visibleFolders.value.filter(folder => !companyFolderIds.has(folder.id))
-)
+const companyFolderIds = new Set(['about', 'aisct', 'danbichat', 'heidi']);
+const companyFolders = computed(() => visibleFolders.value.filter((folder) => companyFolderIds.has(folder.id)));
+const personalFolders = computed(() => visibleFolders.value.filter((folder) => !companyFolderIds.has(folder.id)));
 
 const openFolder = (folderId: string) => {
-  const folder = getFolder(folderId)
-  if (!folder) return
-  windowStore.openWindow(folderId)
-}
+  const folder = getFolder(folderId);
+  if (!folder) return;
+  windowStore.openWindow(folderId);
+};
 
-const focusOrder = computed(() =>
-  visibleWindows.value
-    .filter(windowItem => windowItem.visible && !windowItem.hidden)
-    .sort((left, right) => (left.zIndex ?? 0) - (right.zIndex ?? 0))
-)
+const focusOrder = computed(() => visibleWindows.value
+  .filter((windowItem) => windowItem.visible && !windowItem.hidden)
+  .sort((left, right) => (left.zIndex ?? 0) - (right.zIndex ?? 0)));
 
 const closeUnavailableWindows = () => {
   openedWindows.value
-    .filter(windowItem => !isFolderVisible(windowItem.folderId))
-    .forEach(windowItem => windowStore.closeWindow(windowItem.folderId))
-}
+    .filter((windowItem) => !isFolderVisible(windowItem.folderId))
+    .forEach((windowItem) => windowStore.closeWindow(windowItem.folderId));
+};
 
 const handleKey = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
-    const top = focusOrder.value.at(-1)
-    if (top) windowStore.closeWindow(top.folderId)
+    const top = focusOrder.value.at(-1);
+    if (top) windowStore.closeWindow(top.folderId);
   }
 
   if (event.altKey && event.key.toLowerCase() === 'tab') {
-    event.preventDefault()
-    const orderedWindows = focusOrder.value
-    if (!orderedWindows.length) return
-    const next = orderedWindows.at(-2) ?? orderedWindows.at(-1)
-    if (next) windowStore.bringToFront(next.folderId)
+    event.preventDefault();
+    const orderedWindows = focusOrder.value;
+    if (!orderedWindows.length) return;
+    const next = orderedWindows.at(-2) ?? orderedWindows.at(-1);
+    if (next) windowStore.bringToFront(next.folderId);
   }
-}
+};
 
-let availabilityIntervalId: number | null = null
+let availabilityIntervalId: number | null = null;
 
 watch([guestbookAvailabilityChecked, guestbookAvailable], ([checked, available]) => {
-  if (!checked || available) return
-  closeUnavailableWindows()
-})
+  if (!checked || available) return;
+  closeUnavailableWindows();
+});
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKey)
-  void refreshGuestbookAvailability()
+  window.addEventListener('keydown', handleKey);
+  refreshGuestbookAvailability();
   availabilityIntervalId = window.setInterval(() => {
-    void refreshGuestbookAvailability()
-  }, 15000)
-})
+    refreshGuestbookAvailability();
+  }, 15000);
+});
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKey)
+  window.removeEventListener('keydown', handleKey);
   if (availabilityIntervalId !== null) {
-    window.clearInterval(availabilityIntervalId)
+    window.clearInterval(availabilityIntervalId);
   }
-})
+});
 </script>

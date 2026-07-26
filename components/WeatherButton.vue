@@ -52,22 +52,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-import { useWeather } from '~/composables/useWeather'
+import { useWeather } from '~/composables/useWeather';
 
-const { current, pending, error } = useWeather()
-const colorMode = useColorMode()
-const popoverUi = computed(() =>
-  colorMode.value === 'dark'
-    ? {}
-    : {
-        content: 'dark border border-purple-300/18 bg-slate-900/90 text-slate-100 shadow-[0_16px_28px_rgba(15,23,42,0.28)] backdrop-blur-xl'
-      }
-)
+const { current, pending, error } = useWeather();
+const colorMode = useColorMode();
+const popoverUi = computed(() => (colorMode.value === 'dark'
+  ? {}
+  : {
+    content: 'dark border border-purple-300/18 bg-slate-900/90 text-slate-100 shadow-[0_16px_28px_rgba(15,23,42,0.28)] backdrop-blur-xl',
+  }));
 
-const footerPopoverButtonClass =
-  'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6'
+const footerPopoverButtonClass = 'h-10 cursor-pointer rounded-xl border border-transparent text-slate-50/90 hover:border-white/18 hover:bg-white/16 hover:text-white dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-white/6';
 
 type WmoInfo = {
   text: string;
@@ -88,7 +85,7 @@ const wmoInfo = (code?: number | null, isDay?: number | boolean): WmoInfo => {
   if ([1, 2, 3].includes(code)) {
     return {
       text: '구름 조금',
-      icon: day ? 'i-lucide-cloud-sun' : 'i-lucide-cloud-moon'
+      icon: day ? 'i-lucide-cloud-sun' : 'i-lucide-cloud-moon',
     };
   }
 

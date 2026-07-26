@@ -11,6 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import BackgroundCanvas from '~/components/BackgroundCanvas.vue'
-import Footer from '~/components/Footer.vue'
+import BackgroundCanvas from '~/components/BackgroundCanvas.vue';
+import Footer from '~/components/Footer.vue';
 </script>

@@ -40,5 +40,5 @@ defineProps<{
   summary: string
   highlights: string[]
   url: string
-}>()
+}>();
 </script>

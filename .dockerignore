@@ -1,0 +1,9 @@
+.git
+.nuxt
+.output
+node_modules
+api
+.env
+.env.*
+dist
+output

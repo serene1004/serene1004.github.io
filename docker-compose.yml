@@ -29,5 +29,17 @@ services:
     ports:
       - '4000:4000'
 
+  frontend:
+    build:
+      context: .
+      args:
+        NUXT_PUBLIC_API_BASE: /api
+    container_name: serene-frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - '3080:80'
+
 volumes:
   guestbook-db-data:

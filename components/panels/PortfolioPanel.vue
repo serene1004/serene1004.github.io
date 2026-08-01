@@ -1,73 +1,41 @@
 <template>
-  <div class="space-y-6 text-slate-800 dark:text-slate-100">
-    <section class="space-y-2">
+  <div class="space-y-5 text-slate-800 dark:text-slate-100">
+    <div class="space-y-1">
+      <p class="text-[11px] uppercase tracking-[0.28em] text-purple-500/80">
+        Portfolio Site
+      </p>
+      <h2 class="text-2xl font-semibold tracking-tight">
+        Serene Portfolio
+      </h2>
+      <p class="pt-1 text-sm leading-6 text-slate-700 dark:text-slate-200">
+        Three.js로 만든 우주공간을 배경으로 한 데스크톱 UI 느낌의 포트폴리오 사이트입니다.
+      </p>
+    </div>
+
+    <section class="space-y-2 border-t border-slate-200/80 pt-4 dark:border-white/10">
       <div class="space-y-1">
         <p class="text-[11px] uppercase tracking-[0.28em] text-purple-500/80">
-          Portfolio Site
+          Overview
         </p>
-        <h2 class="text-2xl font-semibold tracking-tight">
-          Serene Portfolio
-        </h2>
+        <h3 class="text-base font-semibold leading-6">
+          이 사이트를 이렇게 보여주고자 했습니다
+        </h3>
       </div>
 
-      <div class="space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
-        <p>Three.js로 만든 우주공간을 배경으로 한 데스크톱 UI 느낌의 포트폴리오 사이트를 만들고 있습니다.</p>
-      </div>
-    </section>
-
-    <section class="space-y-4">
-      <article
-        v-for="section in portfolioSections"
-        :key="section.label"
-        class="space-y-2 pt-2 first:pt-0"
-      >
-        <div class="space-y-1">
-          <p class="text-[11px] uppercase tracking-[0.28em] text-purple-500/80">
-            {{ section.label }}
-          </p>
-          <h3 class="text-base font-semibold leading-6">
-            {{ section.title }}
-          </h3>
-        </div>
-
-        <ul class="text-sm leading-6 text-slate-700 dark:text-slate-200">
-          <li
-            v-for="item in section.items"
-            :key="item"
-            class="flex items-start gap-2"
-          >
-            <span class="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-500/70" />
-            <span>{{ item }}</span>
-          </li>
-        </ul>
-      </article>
+      <ul class="space-y-3 text-sm leading-6 text-slate-700 dark:text-slate-200">
+        <li v-for="item in portfolioItems" :key="item" class="flex items-start gap-2">
+          <span class="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-500/70" />
+          <span>{{ item }}</span>
+        </li>
+      </ul>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-interface PortfolioSection {
-  label: string
-  title: string
-  items: string[]
-}
-
-const portfolioSections: PortfolioSection[] = [
-  {
-    label: 'Overview',
-    title: '이 사이트를 이렇게 보여주고자 했습니다',
-    items: [
-      '프로젝트를 단순히 읽는 화면보다, 직접 눌러보고 열어보면서 분위기와 흐름을 먼저 느낄 수 있는 구조를 목표로 했습니다.',
-      '사이트를 처음 보는 순간에도 제가 선호하는 인터랙션 방향이 자연스럽게 드러나기를 바랐습니다.',
-    ],
-  },
-  {
-    label: 'In Progress',
-    title: '지금도 계속 다듬고 있는 부분입니다',
-    items: [
-      '폴더(패널별 콘텐츠)를 추가할 예정입니다.',
-      '디자인 톤과 사용감이 더 자연스럽게 연결되도록 세부 UI를 다듬고 있습니다.',
-    ],
-  },
+const portfolioItems = [
+  '폴더와 창을 장식이 아닌 탐색 구조로 사용해, 프로젝트를 열고 비교하는 흐름을 만들었습니다.',
+  '실제 컴퓨터를 다루듯 폴더를 열고 창을 옮기며 포트폴리오를 탐색하는 재미를 느끼도록 구성했습니다.',
+  '프로젝트별 설명은 제품 소개, 역할, 담당 업무, 핵심 구현 순으로 정리했습니다.',
 ];
 </script>

@@ -71,7 +71,9 @@ const getFolder = (id: string): FolderItem | undefined => visibleFolders.value.f
 
 const visibleWindows = computed(() => openedWindows.value.filter((windowItem) => isFolderVisible(windowItem.folderId)));
 
-const companyFolderIds = new Set(['about', 'aisct', 'danbichat', 'heidi']);
+const companyFolderIds = new Set([
+  'about', 'project', 'aisct', 'danbichat', 'heidi', 'aetem-v2',
+]);
 const companyFolders = computed(() => visibleFolders.value.filter((folder) => companyFolderIds.has(folder.id)));
 const personalFolders = computed(() => visibleFolders.value.filter((folder) => !companyFolderIds.has(folder.id)));
 

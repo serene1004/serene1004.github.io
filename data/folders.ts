@@ -4,7 +4,8 @@ import ExternalProjectPanel from '~/components/panels/ExternalProjectPanel.vue';
 import GuestbookPanel from '~/components/panels/GuestbookPanel.vue';
 import PortfolioPanel from '~/components/panels/PortfolioPanel.vue';
 import ProjectCasePanel from '~/components/panels/ProjectCasePanel.vue';
-import { projects } from '~/data/projects';
+import ProjectGroupPanel from '~/components/panels/ProjectGroupPanel.vue';
+import { projectGroups, projects } from '~/data/projects';
 
 export interface FolderWindowOptions {
   width?: string
@@ -59,6 +60,8 @@ const externalProjects = [
   },
 ];
 
+const groupedProjectIds = new Set(projectGroups.flatMap((group) => group.projectIds));
+
 export const folders: FolderItem[] = [
   {
     id: 'about',
@@ -90,13 +93,24 @@ export const folders: FolderItem[] = [
       height: 'min(34rem, calc(100vh - 7rem))',
     },
   },
-  ...projects.map((project) => ({
+  ...projects.filter((project) => !groupedProjectIds.has(project.id)).map((project) => ({
     id: project.id,
     name: project.folderName,
-    image: `/images/folder-icons/${project.id}.svg`,
+    image: `/images/folder-icons/${project.id.replace('-admin', '')}.svg`,
     component: ProjectCasePanel,
     componentProps: {
       projectId: project.id,
+    },
+    window: projectWindow,
+  })),
+  ...projectGroups.map((group) => ({
+    id: group.id,
+    name: group.folderName,
+    image: `/images/folder-icons/${group.id}.svg`,
+    component: ProjectGroupPanel,
+    componentProps: {
+      projectIds: group.projectIds,
+      tabs: group.tabs,
     },
     window: projectWindow,
   })),

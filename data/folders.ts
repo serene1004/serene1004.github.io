@@ -35,6 +35,14 @@ const noteWindow: FolderWindowOptions = {
 
 const externalProjects = [
   {
+    id: 'kotoba-daily',
+    name: 'Kotoba Daily',
+    image: '/images/folder-icons/kotoba-daily.svg',
+    summary: '하루 10개의 일본어 단어를 뜻을 직접 입력하며 학습하고, 헷갈리는 단어를 단어장으로 복습하는 학습 앱입니다.',
+    highlights: ['매일 랜덤 일본어 단어 10개 학습', '학습 현황·주간 기록 대시보드', '헷갈리는 단어 단어장 저장과 Jisho 사전 연결'],
+    url: 'https://serene1004.github.io/kotoba-daily/',
+  },
+  {
     id: 'webcanvas',
     name: 'WebCanvas',
     image: 'https://serene1004.github.io/WebCanvas/favicon.svg',

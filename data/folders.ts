@@ -1,7 +1,6 @@
 import type { Component } from 'vue';
 import AboutMePanel from '~/components/panels/AboutMePanel.vue';
 import ExternalProjectPanel from '~/components/panels/ExternalProjectPanel.vue';
-import GuestbookPanel from '~/components/panels/GuestbookPanel.vue';
 import PortfolioPanel from '~/components/panels/PortfolioPanel.vue';
 import ProjectCasePanel from '~/components/panels/ProjectCasePanel.vue';
 import ProjectGroupPanel from '~/components/panels/ProjectGroupPanel.vue';
@@ -34,6 +33,14 @@ const noteWindow: FolderWindowOptions = {
 };
 
 const externalProjects = [
+  {
+    id: 'ima-kotoba',
+    name: 'Ima Kotoba',
+    image: '/images/folder-icons/ima-kotoba.svg',
+    summary: '짧은 일본어 한두 문장으로 지금의 감정과 생각을 기록하고, 한 주의 흐름을 돌아보는 개인 기록 서비스입니다.',
+    highlights: ['로그인 없이 Local Storage로 쓰는 체험 모드', 'Google OAuth와 Supabase 기반 개인 기록 저장', '주간 기록 수와 감정 통계 차트'],
+    url: 'https://ima-kotoba.vercel.app/',
+  },
   {
     id: 'kotoba-daily',
     name: 'Kotoba Daily',
@@ -91,16 +98,6 @@ export const folders: FolderItem[] = [
       height: 'min(38rem, calc(100vh - 7rem))',
     },
   },
-  {
-    id: 'guestbook',
-    name: 'Guestbook',
-    image: '/images/folder-icons/guestbook.svg',
-    component: GuestbookPanel,
-    window: {
-      width: 'min(40rem, calc(100vw - 2rem))',
-      height: 'min(34rem, calc(100vh - 7rem))',
-    },
-  },
   ...projects.filter((project) => !groupedProjectIds.has(project.id)).map((project) => ({
     id: project.id,
     name: project.folderName,
@@ -125,6 +122,7 @@ export const folders: FolderItem[] = [
   ...externalProjects.map((project) => ({
     id: project.id,
     name: project.name,
+    icon: project.icon,
     image: project.image,
     component: ExternalProjectPanel,
     componentProps: {

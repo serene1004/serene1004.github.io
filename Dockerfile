@@ -9,8 +9,6 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
-ARG NUXT_PUBLIC_API_BASE=/api
-ENV NUXT_PUBLIC_API_BASE=$NUXT_PUBLIC_API_BASE
 RUN yarn generate
 
 FROM nginx:1.27-alpine

@@ -76,24 +76,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useGuestbookAvailability } from '~/composables/useGuestbookAvailability';
+import { folders } from '~/data/folders';
 import { useWindowStore, type OpenedWindow } from '~/stores/WindowStore';
 
 const windowStore = useWindowStore();
 const { openedWindows } = storeToRefs(windowStore);
-const { isFolderVisible, visibleFolders } = useGuestbookAvailability();
-
-const visibleOpenFolders = computed(() => openedWindows.value.filter(
-  (windowItem) => windowItem.visible && isFolderVisible(windowItem.folderId),
-));
+const visibleOpenFolders = computed(() => openedWindows.value.filter((windowItem) => windowItem.visible));
 
 const activeWindows = computed(() => openedWindows.value.filter(
-  (windowItem) => windowItem.visible && !windowItem.hidden && isFolderVisible(windowItem.folderId),
+  (windowItem) => windowItem.visible && !windowItem.hidden,
 ));
 
 const handleFooterClick = (folderId: string) => {
-  if (!isFolderVisible(folderId)) return;
-
   const windowItem = openedWindows.value.find((item) => item.folderId === folderId);
   if (!windowItem) return;
 
@@ -121,11 +115,11 @@ const visitGithub = () => {
   window.open('https://github.com/serene1004', '_blank', 'noopener');
 };
 
-const getFolderIcon = (folderId: string) => visibleFolders.value.find((folder) => folder.id === folderId)?.icon ?? 'i-lucide-folder';
+const getFolderIcon = (folderId: string) => folders.find((folder) => folder.id === folderId)?.icon ?? 'i-lucide-folder';
 
-const getFolderImage = (folderId: string) => visibleFolders.value.find((folder) => folder.id === folderId)?.image;
+const getFolderImage = (folderId: string) => folders.find((folder) => folder.id === folderId)?.image;
 
-const getFolderName = (folderId: string) => visibleFolders.value.find((folder) => folder.id === folderId)?.name ?? folderId;
+const getFolderName = (folderId: string) => folders.find((folder) => folder.id === folderId)?.name ?? folderId;
 
 const taskbarButtonBaseClass = 'text-slate-50/90 hover:-translate-y-0.5 dark:text-slate-100/90';
 

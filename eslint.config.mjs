@@ -8,7 +8,7 @@ airbnb.forEach((config) => Reflect.deleteProperty(config, 'plugins'));
 
 export default withNuxt(
   {
-    ignores: ['.nuxt/**', '.output/**', 'api/**', '_legacy-vue/**', 'dist/**'],
+    ignores: ['.nuxt/**', '.output/**', '_legacy-vue/**', 'dist/**'],
   },
   ...airbnb,
   {

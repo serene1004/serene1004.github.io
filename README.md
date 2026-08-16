@@ -1,6 +1,7 @@
 # Serene1004 Portfolio
 
-데스크톱 UI를 콘셉트로 한 Nuxt 4 포트폴리오입니다. Three.js 우주 배경 위에서 폴더를 열고, 창을 드래그·최소화·최대화할 수 있습니다. 다크 모드, 서울 날씨, 달력도 제공합니다.
+데스크톱 UI를 콘셉트로 한 Nuxt 4 포트폴리오입니다.
+Three.js 우주 배경 위에서 폴더를 열고, 창을 드래그·최소화·최대화할 수 있습니다.
 
 ## Stack
 
@@ -9,11 +10,12 @@
 
 ## Run
 
-Node.js와 Yarn 1이 필요합니다.
+Node.js와 pnpm이 필요합니다. Corepack을 사용하면 별도 전역 설치 없이 pnpm 버전을 맞출 수 있습니다.
 
 ```bash
-yarn install
-yarn dev
+corepack enable
+pnpm install
+pnpm dev
 ```
 
 `http://localhost:3000`에서 확인할 수 있습니다.
@@ -21,14 +23,14 @@ yarn dev
 ## Commands
 
 ```bash
-yarn lint       # ESLint 검사
-yarn lint:fix   # 자동 수정 가능한 항목 수정
-yarn build      # 프로덕션 빌드
-yarn generate   # 정적 사이트 생성
-yarn deploy     # GitHub Pages 배포
+pnpm lint       # ESLint 검사
+pnpm lint:fix   # 자동 수정 가능한 항목 수정
+pnpm build      # 프로덕션 빌드
+pnpm generate   # 정적 사이트 생성
+pnpm deploy     # GitHub Pages 배포
 ```
 
-`yarn deploy`는 `.output/public`만 GitHub Pages에 배포합니다.
+`pnpm deploy`는 `.output/public`만 GitHub Pages에 배포합니다.
 
 ## Content map
 

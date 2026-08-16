@@ -20,6 +20,16 @@ pnpm dev
 
 `http://localhost:3000`에서 확인할 수 있습니다.
 
+## Docker
+
+Docker Compose로 프로덕션 빌드를 실행할 수 있습니다.
+
+```bash
+docker compose up --build
+```
+
+실행 후 `http://localhost:3080`에서 확인할 수 있습니다. 종료하려면 `docker compose down`을 실행하세요.
+
 ## Commands
 
 ```bash

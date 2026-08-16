@@ -1,0 +1,11 @@
+name: serene1004
+
+services:
+  portfolio:
+    container_name: serene-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3080:80'
+    restart: unless-stopped

@@ -9,8 +9,12 @@ export interface OpenedWindow {
   zIndex?: number
 }
 
-const baseOffset = 0;
-const offsetStep = 32;
+const randomOffsetRange = {
+  x: 280,
+  y: 180,
+};
+
+const getRandomOffset = (range: number) => Math.round((Math.random() * 2 - 1) * range);
 
 const getMaxZ = (openedWindows: OpenedWindow[]) => (
   openedWindows.reduce(
@@ -33,15 +37,14 @@ export const useWindowStore = defineStore('window', {
         return;
       }
 
-      const index = this.openedWindows.length;
       const maxZ = getMaxZ(this.openedWindows);
 
       this.openedWindows.push({
         folderId,
         visible: true,
         hidden: false,
-        offsetX: baseOffset + index * offsetStep,
-        offsetY: baseOffset + index * offsetStep,
+        offsetX: getRandomOffset(randomOffsetRange.x),
+        offsetY: getRandomOffset(randomOffsetRange.y),
         zIndex: maxZ + 1,
       });
     },

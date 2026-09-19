@@ -37,7 +37,7 @@ const externalProjects = [
     image: '/images/folder-icons/ima-kotoba.svg',
     summary: '짧은 일본어 한두 문장으로 지금의 감정과 생각을 기록하고, 한 주의 흐름을 돌아보는 개인 기록 서비스입니다.',
     highlights: ['로그인 없이 Local Storage로 쓰는 체험 모드', 'Google OAuth와 Supabase 기반 개인 기록 저장', '주간 기록 수와 감정 통계 차트'],
-    url: 'https://ima-kotoba.vercel.app/',
+    url: 'https://ima-kotoba.serene1004.dev/',
   },
   {
     id: 'kotoba-daily',
@@ -50,7 +50,7 @@ const externalProjects = [
   {
     id: 'webcanvas',
     name: 'WebCanvas',
-    image: 'https://serene1004.github.io/WebCanvas/favicon.svg',
+    image: '/images/folder-icons/webcanvas.svg',
     summary: '캔버스 드로잉과 사진 보정을 하나의 작업 흐름으로 묶은 브라우저 기반 이미지 에디터입니다.',
     highlights: ['펜, 지우개, 참조 이미지 배치', '톤, 블러, 채도, 색조 보정', '편집 상태 JSON 및 PNG 내보내기'],
     url: 'https://serene1004.github.io/WebCanvas/',
@@ -58,7 +58,7 @@ const externalProjects = [
   {
     id: 'tactical-map',
     name: 'Tactical Map',
-    image: 'https://serene1004.github.io/tactical-map/favicon.svg',
+    image: '/images/folder-icons/tactical-map.svg',
     summary: '지도 위에서 아군, 적군 전력과 전술 표식을 편성하고 GeoJSON으로 내보낼 수 있는 전술 상황판입니다.',
     highlights: ['MapLibre 기반 3D 지형 지도', '군사 표식 기반 전력 배치와 편성 현황', 'GeoJSON 복사, 다운로드 및 지형 토글'],
     url: 'https://serene1004.github.io/tactical-map/',

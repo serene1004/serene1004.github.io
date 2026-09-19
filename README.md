@@ -47,7 +47,6 @@ pnpm lint:fix   # 자동 수정 가능한 ESLint 문제 수정
 pnpm build      # 프로덕션 빌드
 pnpm preview    # 빌드 결과 로컬 미리보기
 pnpm generate   # 정적 사이트 생성
-pnpm deploy     # .output/public을 GitHub Pages에 배포
 ```
 
 ## Project structure
@@ -81,5 +80,6 @@ stores/
 
 ## Deployment
 
-`pnpm deploy`는 먼저 정적 사이트를 생성한 뒤 `.output/public`을 GitHub Pages에 배포합니다.
+`master` 브랜치에 push하면 GitHub Actions가 정적 사이트를 생성하고 GitHub Pages에 자동 배포합니다.
+저장소의 `Settings > Pages > Build and deployment > Source`에서 `GitHub Actions`를 선택해야 합니다.
 배포 전 `pnpm lint`와 `pnpm generate`를 실행해 코드와 정적 빌드를 확인하세요.

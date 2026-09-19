@@ -14,6 +14,7 @@ export default withNuxt(
   {
     rules: {
       'import/extensions': 'off',
+      'import/named': 'off',
       'import/no-unresolved': 'off',
       'import/prefer-default-export': 'off',
       'max-len': ['error', {

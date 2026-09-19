@@ -50,14 +50,15 @@
 
     <!-- actions/timer -->
     <div class="flex items-center justify-end gap-1 text-slate-50/90 dark:text-slate-300">
-      <UButton
+      <!-- 테마변경버튼 주석 -->
+      <!-- <UButton
         :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
         variant="ghost"
         size="sm"
         :aria-label="isDark ? 'Switch to light' : 'Switch to dark'"
         :class="footerActionButtonClass"
         @click="toggleColorMode"
-      />
+      /> -->
       <UButton
         icon="i-lucide-github"
         variant="ghost"
@@ -66,7 +67,6 @@
         :class="footerActionButtonClass"
         @click="visitGithub"
       />
-
       <WeatherButton />
       <CalendarButton />
     </div>

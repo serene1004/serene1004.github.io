@@ -122,7 +122,6 @@ export const folders: FolderItem[] = [
   ...externalProjects.map((project) => ({
     id: project.id,
     name: project.name,
-    icon: project.icon,
     image: project.image,
     component: ExternalProjectPanel,
     componentProps: {

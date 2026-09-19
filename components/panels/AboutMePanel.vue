@@ -7,15 +7,15 @@
       <h2 class="text-2xl font-semibold tracking-tight">
         사용자 경험을 디자인하는 프론트엔드 개발자 윤용준입니다
       </h2>
-      <div class="flow-root space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
+      <div class="flow-root text-sm leading-6 text-slate-700 dark:text-slate-200">
         <img
           src="/images/serene.png"
           alt="Serene 프로필 이미지"
           class="float-right mb-2 ml-4 h-28 w-28 rounded-2xl object-cover ring-1 ring-white/15"
         >
-        <p>웹 퍼블리셔로 커리어를 시작해 Vue.js와 Nuxt.js를 기반으로 프론트엔드 개발을 하고 있습니다. 화면의 완성도뿐 아니라 사용자의 흐름과 경험까지 함께 설계하는 일을 중요하게 생각합니다.</p>
-        <p>현재는 방송통신대학교 컴퓨터과학과에 재학하며 학업과 실무를 함께 이어가고 있습니다.</p>
-        <p>Window OS 컨셉으로 만든 포트폴리오입니다. Three.js로 구현한 우주 배경 위에서 폴더를 열어 각 프로젝트의 소개와 작업 내용을 살펴볼 수 있습니다.</p>
+        <p class="mb-2">웹 퍼블리셔로 커리어를 시작해 Vue.js와 Nuxt.js를 기반으로 프론트엔드 개발을 하고 있습니다. 화면의 완성도뿐 아니라 사용자의 흐름과 경험까지 함께 설계하는 일을 중요하게 생각합니다.</p>
+        <p class="mb-2">현재는 방송통신대학교 컴퓨터과학과에 재학하며 학업과 실무를 함께 이어가고 있습니다.</p>
+        <p class="clear-both">Window OS 컨셉으로 만든 포트폴리오입니다. Three.js로 구현한 우주 배경 위에서 폴더를 열어 각 프로젝트의 소개와 작업 내용을 살펴볼 수 있습니다.</p>
       </div>
     </section>
 

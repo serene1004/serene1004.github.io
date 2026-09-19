@@ -11,7 +11,7 @@
 
     <section class="space-y-4 border-t border-slate-200/80 pt-4 dark:border-white/10">
       <div class="space-y-1.5">
-        <p class="text-[11px] uppercase tracking-[0.28em] text-purple-500/80">
+        <p class="text-sm font-semibold text-slate-200/90">
           역할
         </p>
         <p class="text-sm leading-6 text-slate-700 dark:text-slate-200">
@@ -24,7 +24,7 @@
         :key="section.label"
         class="space-y-2.5 border-t border-slate-200/80 pt-4 dark:border-white/10"
       >
-        <p class="text-[11px] uppercase tracking-[0.28em] text-purple-500/80">
+        <p class="text-sm font-semibold text-slate-200/90">
           {{ section.label }}
         </p>
         <ul class="space-y-1.5 text-sm leading-6 text-slate-700 dark:text-slate-200">

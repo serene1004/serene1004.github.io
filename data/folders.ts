@@ -1,7 +1,5 @@
 import type { Component } from 'vue';
-import AboutMePanel from '~/components/panels/AboutMePanel.vue';
 import ExternalProjectPanel from '~/components/panels/ExternalProjectPanel.vue';
-import PortfolioPanel from '~/components/panels/PortfolioPanel.vue';
 import ProjectCasePanel from '~/components/panels/ProjectCasePanel.vue';
 import ProjectGroupPanel from '~/components/panels/ProjectGroupPanel.vue';
 import { projectGroups, projects } from '~/data/projects';
@@ -45,8 +43,8 @@ const externalProjects = [
     id: 'kotoba-daily',
     name: 'Kotoba Daily',
     image: '/images/folder-icons/kotoba-daily.svg',
-    summary: '하루 10개의 일본어 단어를 뜻을 직접 입력하며 학습하고, 헷갈리는 단어를 단어장으로 복습하는 학습 앱입니다.',
-    highlights: ['매일 랜덤 일본어 단어 10개 학습', '학습 현황·주간 기록 대시보드', '헷갈리는 단어 단어장 저장과 Jisho 사전 연결'],
+    summary: 'JLPT N5 718개 단어를 기반으로 신규 단어와 복습 단어를 함께 출제하고, 뜻을 직접 입력하며 학습하는 일본어 단어 학습 앱입니다. 데이터 생성부터 정답 판정, 복습 일정 계산, 단어장 관리까지 학습 흐름을 하나로 구성했습니다.',
+    highlights: ['JLPT CSV → OpenAI Responses API 보강 → JSON Schema 검증 → n5.json 정규화 파이프라인', '신규 단어와 복습 단어를 함께 출제하고 입력 답안을 사전 뜻과 비교', '정답·오답 결과에 따른 다음 복습일 계산과 헷갈리는 단어 단어장 저장', '사전 뜻·품사·자연스러운 예문·Jisho 링크를 제공하는 학습 피드백', 'LocalStorage 기반 진행률·학습 위치·북마크 저장과 로딩·오류·빈 데이터 상태 대응'],
     url: 'https://serene1004.github.io/kotoba-daily/',
   },
   {
@@ -69,8 +67,8 @@ const externalProjects = [
     id: 'simulated-investment',
     name: '모의투자 서바이벌',
     image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23e45745'/%3E%3Cpath d='M14 40 26 28l8 8 16-18' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E",
-    summary: '5개 페이즈의 시장 흐름을 읽고 종목을 한 번씩 거래하며 최종 자산 순위를 겨루는 모의투자 게임입니다.',
-    highlights: ['개장 전 흐름을 통한 종목 선택', '페이즈별 종목 1회 거래 제한', '최종 자산 점수 기반 랭킹'],
+    summary: '가상의 시장 이슈와 종목 데이터를 바탕으로 투자 판단을 연습하는 웹 기반 주식 투자 시뮬레이션 게임입니다. 초기 자금으로 종목을 매수·매도하고, 페이즈마다 달라지는 시장 이벤트에 대응해 최종 자산과 수익률을 높이는 것이 목표입니다.',
+    highlights: ['연습 모드와 랭킹 모드 제공', '5개 페이즈의 시장 브리핑·이벤트 기반 주가 변동·종목별 미니 차트', '매수·매도·전량 거래와 보유 자산 추적', '게임 진행 상태와 로컬 랭킹 저장 및 Supabase 연동 온라인 랭킹', 'Vue Router 화면 전환과 GitHub Pages 배포'],
     url: 'https://serene1004.github.io/simulated-investment/',
   },
 ];
@@ -78,26 +76,6 @@ const externalProjects = [
 const groupedProjectIds = new Set(projectGroups.flatMap((group) => group.projectIds));
 
 export const folders: FolderItem[] = [
-  {
-    id: 'about',
-    name: 'About Me',
-    image: '/images/folder-icons/about.svg',
-    component: AboutMePanel,
-    window: {
-      width: 'min(40rem, calc(100vw - 2rem))',
-      height: 'min(34rem, calc(100vh - 7rem))',
-    },
-  },
-  {
-    id: 'project',
-    name: 'Portfolio',
-    image: '/images/folder-icons/portfolio.svg',
-    component: PortfolioPanel,
-    window: {
-      width: 'min(50rem, calc(100vw - 2rem))',
-      height: 'min(38rem, calc(100vh - 7rem))',
-    },
-  },
   ...projects.filter((project) => !groupedProjectIds.has(project.id)).map((project) => ({
     id: project.id,
     name: project.folderName,
@@ -125,7 +103,6 @@ export const folders: FolderItem[] = [
     image: project.image,
     component: ExternalProjectPanel,
     componentProps: {
-      title: project.name,
       summary: project.summary,
       highlights: project.highlights,
       url: project.url,

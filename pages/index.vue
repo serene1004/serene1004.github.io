@@ -65,7 +65,7 @@ const getFolder = (id: string): FolderItem | undefined => folders.find((folder) 
 const visibleWindows = computed(() => openedWindows.value);
 
 const companyFolderIds = new Set([
-  'about', 'project', 'aisct', 'danbichat', 'heidi', 'aetem-v2',
+  'aisct', 'danbichat', 'heidi', 'aetem-v2',
 ]);
 const companyFolders = computed(() => folders.filter((folder) => companyFolderIds.has(folder.id)));
 const personalFolders = computed(() => folders.filter((folder) => !companyFolderIds.has(folder.id)));

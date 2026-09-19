@@ -1,9 +1,6 @@
 <template>
   <div class="space-y-5 text-slate-50 dark:text-slate-100">
     <section class="space-y-2">
-      <h2 class="text-xl font-semibold tracking-tight">
-        {{ title }}
-      </h2>
       <p class="text-sm leading-6 text-slate-50/85 dark:text-slate-200">
         {{ summary }}
       </p>
@@ -25,7 +22,7 @@
         :href="url"
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 text-sm font-semibold text-purple-100 hover:text-white dark:text-purple-200 dark:hover:text-white"
+        class="inline-flex items-center gap-2 text-sm font-semibold text-slate-200/90 hover:text-white dark:text-slate-200 dark:hover:text-white"
       >
         프로젝트 열기
         <UIcon name="i-lucide-external-link" class="h-4 w-4" aria-hidden="true" />
@@ -36,7 +33,6 @@
 
 <script setup lang="ts">
 defineProps<{
-  title: string
   summary: string
   highlights: string[]
   url: string

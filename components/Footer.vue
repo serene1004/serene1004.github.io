@@ -1,8 +1,21 @@
 <template>
   <footer class="relative z-5 flex h-12 items-center justify-between border-t border-purple-400/18 bg-purple-500/10 px-4 shadow-[0_-10px_28px_rgba(15,23,42,0.18)] backdrop-blur-xl dark:border-purple-400/18 dark:bg-purple-500/10 dark:shadow-[0_-10px_28px_rgba(15,23,42,0.18)]">
-    <div class="w-40" />
-
-    <div class="flex flex-1 justify-center gap-2">
+    <div class="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1">
+      <UTooltip text="About Me" placement="top">
+        <UButton
+          variant="ghost"
+          size="sm"
+          aria-label="Open About Me"
+          class="h-10 w-10 cursor-pointer justify-center rounded-xl p-1 transition hover:-translate-y-0.5 hover:bg-white/16"
+          @click="isAboutMeOpen = !isAboutMeOpen"
+        >
+          <img
+            src="/images/serene.png"
+            alt=""
+            class="h-8 w-8 rounded-full object-cover"
+          >
+        </UButton>
+      </UTooltip>
       <!-- open folders -->
       <div class="flex items-center gap-1">
         <template v-if="visibleOpenFolders.length">
@@ -49,7 +62,7 @@
     </div>
 
     <!-- actions/timer -->
-    <div class="flex items-center justify-end gap-1 text-slate-50/90 dark:text-slate-300">
+    <div class="absolute right-4 top-1/2 z-10 flex -translate-y-1/2 items-center justify-end gap-1 text-slate-50/90 dark:text-slate-300">
       <!-- 테마변경버튼 주석 -->
       <!-- <UButton
         :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
@@ -71,15 +84,19 @@
       <CalendarButton />
     </div>
   </footer>
+
+  <AboutMeMenu :open="isAboutMeOpen" @close="isAboutMeOpen = false" />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
+import AboutMeMenu from '~/components/AboutMeMenu.vue';
 import { folders } from '~/data/folders';
 import { useWindowStore, type OpenedWindow } from '~/stores/WindowStore';
 
 const windowStore = useWindowStore();
+const isAboutMeOpen = ref(false);
 const { openedWindows } = storeToRefs(windowStore);
 const visibleOpenFolders = computed(() => openedWindows.value.filter((windowItem) => windowItem.visible));
 

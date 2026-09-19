@@ -5,7 +5,7 @@
       v-show="!hiddenState"
       ref="panel"
       :class="windowStyle === 'note'
-        ? 'absolute flex flex-col overflow-hidden rounded-sm bg-purple-500/16 text-slate-50 ring-1 ring-purple-300/25 shadow-[0_0_28px_rgba(168,85,247,0.2),8px_10px_24px_rgba(15,23,42,0.38)] backdrop-blur-xl dark:bg-purple-500/10 dark:text-slate-100 dark:ring-purple-400/18 dark:shadow-[0_0_28px_rgba(168,85,247,0.16),8px_10px_24px_rgba(2,6,23,0.55)]'
+        ? 'absolute flex flex-col overflow-hidden rounded-lg border border-slate-500/35 bg-slate-900/55 text-slate-50 shadow-xl backdrop-blur-md dark:border-slate-500/35 dark:bg-slate-900/55 dark:text-slate-100'
         : 'absolute flex min-w-90 flex-col overflow-hidden rounded-lg border border-purple-500/50 bg-slate-900/70 shadow-xl backdrop-blur-md dark:border-purple-500/50 dark:bg-slate-900/70'"
       :style="panelStyle"
       @pointerdown="onFocus"
@@ -56,19 +56,45 @@
         </div>
       </div>
 
-      <div
-        :class="windowStyle === 'note'
-          ? 'flex-1 min-h-0 overflow-auto p-4 text-sm text-slate-800'
-          : 'dark flex-1 min-h-0 overflow-auto border-t border-purple-500/50 bg-slate-900/70 p-3 text-sm text-slate-100 backdrop-blur-xl dark:border-purple-500/50 dark:bg-slate-900/70 dark:text-slate-100'"
-      >
-        <slot />
+      <div class="relative flex-1 min-h-0">
+        <div
+          ref="scrollViewport"
+          :class="windowStyle === 'note'
+            ? 'custom-scrollbar-viewport h-full overflow-auto p-4 text-sm text-slate-800'
+            : 'custom-scrollbar-viewport dark h-full overflow-auto border-t border-purple-500/50 bg-slate-900/70 p-3 text-sm text-slate-100 backdrop-blur-xl dark:border-purple-500/50 dark:bg-slate-900/70 dark:text-slate-100'"
+          @scroll="syncScrollState"
+        >
+          <slot />
+        </div>
+        <div
+          v-if="hasOverflow"
+          ref="scrollbarTrack"
+          class="custom-scrollbar-track pointer-events-auto cursor-pointer"
+          aria-label="Scroll window content"
+          @pointerdown="onScrollbarTrackPointerDown"
+        >
+          <span
+            class="custom-scrollbar-thumb cursor-grab active:cursor-grabbing"
+            :style="{
+              height: `${thumbHeight}%`,
+              transform: `translateY(${thumbTop}%)`,
+            }"
+            @pointerdown.stop="onScrollbarThumbPointerDown"
+          />
+        </div>
       </div>
     </div>
   </teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import {
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+} from 'vue';
 import { useWindowStore } from '~/stores/WindowStore';
 
 const windowStore = useWindowStore();
@@ -118,9 +144,91 @@ const hiddenState = computed({
 });
 
 const panel = ref<HTMLElement | null>(null);
+const scrollViewport = ref<HTMLElement | null>(null);
+const scrollbarTrack = ref<HTMLElement | null>(null);
+const hasOverflow = ref(false);
+const thumbHeight = ref(100);
+const thumbTop = ref(0);
+let resizeObserver: ResizeObserver | null = null;
+let mutationObserver: MutationObserver | null = null;
+let scrollbarDragOffset = 0;
+
+const syncScrollState = () => {
+  const viewport = scrollViewport.value;
+  if (!viewport) return;
+
+  hasOverflow.value = viewport.scrollHeight > viewport.clientHeight;
+  if (!hasOverflow.value) {
+    thumbHeight.value = 100;
+    thumbTop.value = 0;
+    return;
+  }
+
+  thumbHeight.value = Math.max((viewport.clientHeight / viewport.scrollHeight) * 100, 12);
+  thumbTop.value = (viewport.scrollTop / (viewport.scrollHeight - viewport.clientHeight))
+    * (100 - thumbHeight.value);
+};
+
+const updateScrollFromPointer = (event: PointerEvent, offset = 0) => {
+  const viewport = scrollViewport.value;
+  const track = scrollbarTrack.value;
+  if (!viewport || !track) return;
+
+  const trackRect = track.getBoundingClientRect();
+  const availableTrackHeight = trackRect.height * (1 - thumbHeight.value / 100);
+  const position = Math.min(
+    Math.max(event.clientY - trackRect.top - offset, 0),
+    Math.max(availableTrackHeight, 0),
+  );
+  viewport.scrollTop = (position / Math.max(availableTrackHeight, 1))
+    * (viewport.scrollHeight - viewport.clientHeight);
+  syncScrollState();
+};
+
+const onScrollbarPointerMove = (event: PointerEvent) => {
+  updateScrollFromPointer(event, scrollbarDragOffset);
+};
+
+const onScrollbarPointerUp = () => {
+  window.removeEventListener('pointermove', onScrollbarPointerMove);
+  scrollbarDragOffset = 0;
+};
+
+const onScrollbarTrackPointerDown = (event: PointerEvent) => {
+  if (event.target !== event.currentTarget) return;
+  event.preventDefault();
+  updateScrollFromPointer(event);
+};
+
+const onScrollbarThumbPointerDown = (event: PointerEvent) => {
+  event.preventDefault();
+  scrollbarDragOffset = event.clientY - (event.currentTarget as HTMLElement).getBoundingClientRect().top;
+  window.addEventListener('pointermove', onScrollbarPointerMove);
+  window.addEventListener('pointerup', onScrollbarPointerUp, { once: true });
+};
+
+onMounted(() => {
+  nextTick(syncScrollState);
+  resizeObserver = new ResizeObserver(syncScrollState);
+  mutationObserver = new MutationObserver(() => requestAnimationFrame(syncScrollState));
+  if (scrollViewport.value) {
+    resizeObserver.observe(scrollViewport.value);
+    mutationObserver.observe(scrollViewport.value, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  }
+});
+
+onUnmounted(() => {
+  resizeObserver?.disconnect();
+  mutationObserver?.disconnect();
+  window.removeEventListener('pointermove', onScrollbarPointerMove);
+});
+
 const offsetX = ref(props.initialOffsetX);
 const offsetY = ref(props.initialOffsetY);
-
 const isExpanded = ref(false);
 const prevOffsetX = ref(0);
 const prevOffsetY = ref(0);

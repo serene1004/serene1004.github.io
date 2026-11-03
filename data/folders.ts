@@ -57,11 +57,11 @@ const externalProjects = [
   },
   {
     id: 'webcanvas',
-    name: 'WebCanvas',
+    name: 'webCanvas',
     image: '/images/folder-icons/webcanvas.svg',
     summary: '캔버스 드로잉과 사진 보정을 하나의 작업 흐름으로 묶은 브라우저 기반 이미지 에디터입니다.',
     highlights: ['펜, 지우개, 참조 이미지 배치', '톤, 블러, 채도, 색조 보정', '편집 상태 JSON 및 PNG 내보내기'],
-    url: 'https://serene1004.github.io/WebCanvas/',
+    url: 'https://serene1004.github.io/webCanvas/',
   },
   // {
   //   id: 'tactical-map',

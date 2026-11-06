@@ -76,7 +76,12 @@ const externalProjects = [
   //   name: 'Tactical Map',
   //   image: '/images/folder-icons/tactical-map.svg',
   //   summary: '아군·적군 유닛을 배치하고 전술 상황을 관리하며 GeoJSON으로 주고받을 수 있는 2D 전술 지도입니다.',
-  //   highlights: ['아군·적군 유닛 배치, 선택·편집과 드래그 이동', '편성현황 검색·상태 필터와 작전 범위 표시', '거리·방위 측정과 실행 취소·다시 실행', 'GeoJSON 가져오기·내보내기와 전술 상황 저장'],
+  //   highlights: [
+  //     '아군·적군 유닛 배치, 선택·편집과 드래그 이동',
+  //     '편성현황 검색·상태 필터와 작전 범위 표시',
+  //     '거리·방위 측정과 실행 취소·다시 실행',
+  //     'GeoJSON 가져오기·내보내기와 전술 상황 저장',
+  //   ],
   //   url: 'https://serene1004.github.io/tactical-map/',
   // },
   {

@@ -155,8 +155,9 @@ const sideProject = computed(() => getSideProjectById(props.folderId));
 const project = computed(() => getProjectById(props.folderId));
 const projectGroup = computed(() => projectGroups.find((item) => item.id === props.folderId));
 const activeProject = computed(() => {
-  if (!projectGroup.value) return undefined;
-  return getProjectById(projectGroup.value.projectIds[activeIndex.value]);
+  const projectId = projectGroup.value?.projectIds[activeIndex.value];
+  if (projectId === undefined) return undefined;
+  return getProjectById(projectId);
 });
 
 const focusWindow = () => nextTick(() => closeButton.value?.focus());

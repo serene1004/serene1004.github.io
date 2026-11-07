@@ -1,8 +1,8 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
-  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/color-mode', '@nuxt/eslint'],
-  ssr: false,
+  buildDir: '.nuxt',
+  modules: ['@nuxt/eslint'],
   app: {
     head: {
       title: 'Serene1004 | Frontend Portfolio',
@@ -40,10 +40,5 @@ export default defineNuxtConfig({
     baseURL: '/',
     buildAssetsDir: '/_nuxt/',
   },
-  css: ['~/assets/css/main.css'],
-  colorMode: {
-    preference: 'dark',
-    fallback: 'dark',
-    classSuffix: '',
-  },
+  css: ['pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css', '~/assets/css/main.css'],
 });

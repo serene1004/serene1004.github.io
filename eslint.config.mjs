@@ -15,11 +15,17 @@ export default withNuxt(
     rules: {
       'import/extensions': 'off',
       'import/named': 'off',
+      'import/no-extraneous-dependencies': ['error', { packageDir: import.meta.dirname }],
       'import/no-unresolved': 'off',
       'import/prefer-default-export': 'off',
       'max-len': ['error', {
         code: 100, ignoreStrings: true, ignoreTemplateLiterals: true, ignoreUrls: true,
       }],
+      'no-mixed-operators': 'off',
+      'no-nested-ternary': 'off',
+      'no-restricted-syntax': 'off',
+      'no-shadow': 'off',
+      'no-use-before-define': 'off',
     },
   },
   {

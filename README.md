@@ -1,32 +1,26 @@
 # Serene1004 Portfolio
 
-Window OSf를 모티브로 만든 프론트엔드 포트폴리오입니다.
-Three.js 우주 배경 위에서 데스크톱 아이콘을 선택하면 Work와 Side Projects를 각각 플로팅 윈도우로 확인할 수 있습니다.
+Windows OS를 모티브로 한 Vue 3·Nuxt 프론트엔드 포트폴리오입니다. 프로젝트 폴더를 열면 요약과 주요 작업을, AboutMe 폴더를 열면 소개와 연락처를 확인할 수 있습니다.
 
 ## Features
 
-- Nuxt 4 SPA 기반의 데스크톱 UI
-- Three.js로 구현한 우주 배경 캔버스
-- 폴더를 기반으로 한 프로젝트 탐색 및 플로팅 윈도우
-- 창 열기, 포커스, 드래그, 최소화, 복원, 최대화, 닫기 지원
-- 키보드 `Escape`를 통한 열린 창 닫기
-- 커스텀 스크롤바의 트랙 클릭 및 thumb 드래그 지원
-- About Me 다이얼로그와 프로필 이미지
-- 다크 테마, 반응형 레이아웃, 파비콘 및 앱 아이콘
+- 픽셀아트 요소를 적용한 데스크톱 워크스페이스
+- 폴더를 열어 확인하는 프로젝트 정보 창
+- 모바일에서 한 번 탭으로 열리는 화면 맞춤 프로젝트 창
+- AboutMe 폴더에서 프로필과 연락처 확인
+- 종이색 바탕, 먹색 텍스트, 절제된 청록 포인트
 
 ## Stack
 
 - Nuxt 4, Vue 3, TypeScript
-- Pinia, Nuxt UI, Tailwind CSS
-- Three.js
-- GitHub Pages 배포
+- CSS custom properties와 직접 작성한 반응형 스타일
+- Pretendard Variable
+- GitHub Pages 정적 배포
 
 ## Requirements
 
 - Node.js 22 이상
 - pnpm 11 이상
-
-프로젝트의 `packageManager` 설정을 사용하려면 Corepack을 활성화하세요.
 
 ## Getting started
 
@@ -52,34 +46,26 @@ pnpm generate   # 정적 사이트 생성
 ## Project structure
 
 ```text
+pages/
+└─ index.vue              # 프로필과 프로젝트 폴더가 있는 데스크톱 화면
+
 components/
-├─ AboutMeMenu.vue       # About Me 실행 버튼과 다이얼로그
-├─ DesktopWindow.vue     # 공통 플로팅 윈도우와 스크롤 UI
-├─ Footer.vue            # 하단 런처와 열린 창 목록
-└─ panels/
-   ├─ AboutMePanel.vue   # About Me 본문
-   ├─ ExternalProjectPanel.vue # Side Projects 소개
-   ├─ ProjectCasePanel.vue     # Work 상세
-   └─ ProjectGroupPanel.vue    # Work 그룹
+├─ ProjectWindow.vue      # 폴더에서 여는 프로젝트 정보 창
+└─ ProjectContent.vue     # 업무 프로젝트 내용
 
 data/
-├─ folders.ts            # 데스크톱 폴더와 창 메타데이터
-└─ projects.ts           # Work 및 프로젝트 그룹 데이터
-
-stores/
-└─ WindowStore.ts        # 창 열기·포커스·최소화·닫기 상태
+├─ folders.ts             # 데스크톱 폴더 목록
+├─ projects.ts            # Work 상세 및 그룹 정보
+└─ side-projects.ts       # Side Projects 설명과 링크
 ```
 
 ## Content editing
 
-- 데스크톱에 표시할 항목과 연결할 패널은 `data/folders.ts`에서 관리합니다.
-- Work의 상세 내용과 그룹 구성은 `data/projects.ts`에서 수정합니다.
-- Side Projects의 설명, 주요 기능, 링크는 `data/folders.ts`의 외부 프로젝트 목록에서 수정합니다.
-- About Me 내용은 `components/panels/AboutMePanel.vue`에서 수정합니다.
-- 정적 이미지와 파비콘은 `public/` 아래에 둡니다.
+- 폴더 이름과 아이콘은 `data/folders.ts`에서 관리합니다.
+- Work 상세와 그룹 탭은 `data/projects.ts`에서 관리합니다.
+- Side Projects 상세, 기능, 링크는 `data/side-projects.ts`에서 관리합니다.
+- 정적 자산은 `public/` 아래에 둡니다.
 
 ## Deployment
 
-`master` 브랜치에 push하면 GitHub Actions가 정적 사이트를 생성하고 GitHub Pages에 자동 배포합니다.
-저장소의 `Settings > Pages > Build and deployment > Source`에서 `GitHub Actions`를 선택해야 합니다.
-배포 전 `pnpm lint`와 `pnpm generate`를 실행해 코드와 정적 빌드를 확인하세요.
+`master` 브랜치에 push하면 GitHub Actions가 정적 사이트를 생성하고 GitHub Pages에 자동 배포합니다. 배포 전 `pnpm lint`와 `pnpm generate`로 확인하세요.

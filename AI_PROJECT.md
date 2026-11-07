@@ -2,18 +2,18 @@
 
 ## 프로젝트
 
-- 목적: Nuxt 기반 개인 프론트엔드 포트폴리오. 데스크톱 OS 형태의 UI에서 Work와 Side Projects를 탐색합니다.
-- 언어 / 프레임워크 / 런타임: TypeScript, Vue 3, Nuxt 4 SPA, Node.js 22 이상.
+- 목적: Windows OS를 모티브로 한 개인 프론트엔드 포트폴리오. 데스크톱의 프로젝트 폴더에서 상세 정보와 역할을 확인하고, AboutMe 폴더에서 소개와 연락처를 확인합니다.
+- 언어 / 프레임워크 / 런타임: TypeScript, Vue 3, Nuxt 4 정적 생성 사이트, Node.js 22 이상.
 - 패키지 관리자 / 버전: pnpm 11.22.0 (Corepack 사용 가능).
-- 주요 디렉터리: `components/` UI, `pages/` 화면, `layouts/` 레이아웃, `composables/` 공통 로직, `stores/` Pinia 상태, `data/` 콘텐츠 데이터, `assets/` 스타일, `public/` 정적 파일.
-- 아키텍처와 데이터 흐름: Nuxt SPA(`ssr: false`), Pinia로 창 상태 관리. `data/folders.ts`가 데스크톱 항목의 기준이며 프로젝트 상세는 `data/projects.ts`에서 관리합니다.
+- 주요 디렉터리: `components/` UI, `pages/` 화면, `layouts/` 레이아웃, `data/` 콘텐츠 데이터, `assets/` 스타일, `public/` 정적 파일.
+- 아키텍처와 데이터 흐름: 폴더 선택 상태는 홈 화면에서 관리하고 정보 창으로 표시합니다. 단일 데스크톱 화면을 Nuxt로 정적 생성합니다. `data/folders.ts`가 포트폴리오 목록의 기준이며 업무 프로젝트는 `data/projects.ts`, 개인 프로젝트 정보는 `data/side-projects.ts`에서 관리합니다.
 
 ## 소유권과 경계
 
 - 자동 생성 파일 및 원본 정의: `.nuxt/`, `.output/`, `dist/` 등은 생성 산출물입니다. 원본 설정과 코드를 수정합니다.
 - API / DB 스키마 / 마이그레이션 규칙: 확인된 서버 API·DB·마이그레이션은 없습니다.
 - 인증·권한·민감 데이터 경계: 공개 포트폴리오 사이트이며 서버 측 인증 흐름은 확인되지 않았습니다. 비밀값을 클라이언트 코드나 정적 자산에 넣지 않습니다.
-- 이 저장소에서 금지하거나 주의할 작업: Nuxt 4 SPA와 OS형 상호작용을 유지합니다. 배포는 `master` 브랜치 푸시로 GitHub Actions가 수행하므로 배포·푸시는 별도 요청 없이 진행하지 않습니다.
+- 이 저장소에서 금지하거나 주의할 작업: Nuxt 4와 Vue 3를 유지하고 폴더에서 프로젝트 정보 창을 여는 흐름을 보존합니다. 소개와 연락처는 AboutMe 폴더 안에서 제공합니다. 배포는 `master` 브랜치 푸시로 GitHub Actions가 수행하므로 배포·푸시는 별도 요청 없이 진행하지 않습니다.
 
 ## 검증 명령
 
@@ -29,10 +29,10 @@
 
 ## 참고할 기존 예시
 
-- 대표 기능 구현: `components/`, `pages/`, `stores/WindowStore.ts`.
+- 대표 기능 구현: `pages/`, `components/ProjectContent.vue`, `data/`.
 - 폼·오류 처리 예시: 해당 기능 패턴을 작업 시 확인합니다.
 - API / DB 접근 예시: 확인된 API·DB 접근 패턴은 없습니다.
-- UI 컴포넌트 또는 서버 모듈 패턴: `.codex/rules/site-rules.md`의 데스크톱 UI와 Pinia 규칙을 따릅니다.
+- UI 컴포넌트 또는 서버 모듈 패턴: `.impeccable.md`의 디자인 맥락과 CSS 토큰을 기준으로 합니다.
 
 ## 완료 기준
 

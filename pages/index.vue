@@ -1,105 +1,91 @@
 <template>
-  <div class="h-full">
-    <div class="absolute z-10 left-4 top-4 flex gap-5">
-      <div class="flex flex-col gap-4">
-        <DesktopFolder
-          v-for="folder in companyFolders"
-          :key="folder.id"
-          :label="folder.name"
-          :icon="folder.icon"
-          :image="folder.image"
-          @open="openFolder(folder.id)"
-        />
-      </div>
+  <div class="desktop-screen">
+    <section class="desktop-group" aria-label="프로필">
+      <ul class="desktop-folder-grid">
+        <li>
+          <button class="desktop-folder desktop-shortcut" type="button" @click="openFolder(profileFolder.id)">
+            <PixelFolderIcon :src="profileFolder.icon" />
+            <span>{{ profileFolder.name }}</span>
+          </button>
+        </li>
+      </ul>
+    </section>
 
-      <div class="flex flex-col gap-4">
-        <DesktopFolder
-          v-for="folder in personalFolders"
-          :key="folder.id"
-          :label="folder.name"
-          :icon="folder.icon"
-          :image="folder.image"
-          @open="openFolder(folder.id)"
-        />
-      </div>
-    </div>
+    <section class="desktop-group" aria-label="진행 프로젝트">
+      <ul class="desktop-folder-grid" aria-label="진행 프로젝트 폴더">
+        <li v-for="folder in workFolders" :key="folder.id">
+          <button class="desktop-folder" type="button" @click="openFolder(folder.id)">
+            <PixelFolderIcon :src="folder.icon" />
+            <span>{{ folder.name }}</span>
+          </button>
+        </li>
+      </ul>
+    </section>
 
-    <DesktopWindow
-      v-for="win in visibleWindows"
-      :key="win.folderId"
-      v-model:visible="win.visible"
-      v-model:hidden="win.hidden"
-      :title="getFolder(win.folderId)?.name ?? ''"
-      :draggable="true"
-      :initial-offset-x="win.offsetX"
-      :initial-offset-y="win.offsetY"
-      :window-width="getFolder(win.folderId)?.window?.width"
-      :window-height="getFolder(win.folderId)?.window?.height"
-      :folder-id="win.folderId"
-      :z-index="win.zIndex"
-      :icon="getFolder(win.folderId)?.icon"
-      :image="getFolder(win.folderId)?.image"
-      :window-style="getFolder(win.folderId)?.windowStyle"
-      @close="windowStore.closeWindow(win.folderId)"
-    >
-      <component
-        :is="getFolder(win.folderId)?.component"
-        v-bind="getFolder(win.folderId)?.componentProps"
-      />
-    </DesktopWindow>
+    <section class="desktop-group" aria-label="개인 사이드 프로젝트">
+      <ul class="desktop-folder-grid" aria-label="개인 사이드 프로젝트 폴더">
+        <li v-for="folder in sideProjectFolders" :key="folder.id">
+          <button class="desktop-folder" type="button" @click="openFolder(folder.id)">
+            <PixelFolderIcon :src="folder.icon" />
+            <span>{{ folder.name }}</span>
+          </button>
+        </li>
+      </ul>
+    </section>
+
+    <ProjectWindow
+      v-for="(window, index) in visibleWindows"
+      :key="window.id"
+      :folder-id="window.id"
+      :maximized="window.maximized"
+      :style="windowStyle(window, index)"
+      @close="closeWindowAndFocus(window.id)"
+      @minimize="minimizeWindowAndFocus(window.id)"
+      @toggle-maximize="toggleMaximize(window.id)"
+      @activate="moveToFront(window.id)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue';
-import { storeToRefs } from 'pinia';
-import DesktopFolder from '~/components/DesktopFolder.vue';
-import DesktopWindow from '~/components/DesktopWindow.vue';
-import { folders, type FolderItem } from '~/data/folders';
-import { useWindowStore } from '~/stores/WindowStore';
+import { computed, nextTick } from 'vue';
+import PixelFolderIcon from '~/components/PixelFolderIcon.vue';
+import ProjectWindow from '~/components/ProjectWindow.vue';
+import { useDesktopWindows } from '~/composables/useDesktopWindows';
+import { profileFolder, workFolders, sideProjectFolders } from '~/data/folders';
 
-const windowStore = useWindowStore();
-const { openedWindows } = storeToRefs(windowStore);
-const getFolder = (id: string): FolderItem | undefined => folders.find((folder) => folder.id === id);
-
-const visibleWindows = computed(() => openedWindows.value);
-
-const companyFolderIds = new Set([
-  'aisct', 'danbichat', 'heidi', 'aetem-v2',
-]);
-const companyFolders = computed(() => folders.filter((folder) => companyFolderIds.has(folder.id)));
-const personalFolders = computed(() => folders.filter((folder) => !companyFolderIds.has(folder.id)));
-
-const openFolder = (folderId: string) => {
-  const folder = getFolder(folderId);
-  if (!folder) return;
-  windowStore.openWindow(folderId);
-};
-
-const focusOrder = computed(() => visibleWindows.value
-  .filter((windowItem) => windowItem.visible && !windowItem.hidden)
-  .sort((left, right) => (left.zIndex ?? 0) - (right.zIndex ?? 0)));
-
-const handleKey = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    const top = focusOrder.value.at(-1);
-    if (top) windowStore.closeWindow(top.folderId);
-  }
-
-  if (event.altKey && event.key.toLowerCase() === 'tab') {
-    event.preventDefault();
-    const orderedWindows = focusOrder.value;
-    if (!orderedWindows.length) return;
-    const next = orderedWindows.at(-2) ?? orderedWindows.at(-1);
-    if (next) windowStore.bringToFront(next.folderId);
-  }
-};
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKey);
+useSeoMeta({
+  title: 'Serene1004 | Frontend Developer Portfolio',
+  description: '윤용준의 프론트엔드 포트폴리오. 폴더를 열어 업무 프로젝트와 개인 프로젝트를 살펴보세요.',
 });
 
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKey);
+const {
+  windows, zOrder, openWindow, closeWindow, minimizeWindow, toggleMaximize, moveToFront,
+  activeWindowId,
+} = useDesktopWindows();
+const visibleWindows = computed(() => windows.value
+  .filter((window) => !window.minimized)
+  .sort((first, second) => zOrder.value.indexOf(first.id) - zOrder.value.indexOf(second.id)));
+
+const openFolder = (folderId: string) => {
+  openWindow(folderId);
+};
+const focusActiveWindow = async () => {
+  await nextTick();
+  if (activeWindowId.value) {
+    document.getElementById(`project-window-${activeWindowId.value}`)?.focus();
+  }
+};
+const closeWindowAndFocus = async (id: string) => {
+  closeWindow(id);
+  await focusActiveWindow();
+};
+const minimizeWindowAndFocus = async (id: string) => {
+  minimizeWindow(id);
+  await focusActiveWindow();
+};
+const windowStyle = (window: { id: string }, index: number) => ({
+  zIndex: activeWindowId.value === window.id ? 29 : 20 + Math.min(index, 8),
+  '--window-offset': `${Math.min(index, 5) * 18}px`,
 });
 </script>

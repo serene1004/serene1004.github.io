@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light;
+
+  /* Color */
+  --color-paper: #F3F0E7;
+  --color-surface: #FBFAF6;
+  --color-ink: #252B29;
+  --color-text: #414B46;
+  --color-muted: #5E6863;
+  --color-teal: #39766F;
+  --color-teal-hover: #2E655F;
+  --color-teal-tint: #DCE9E4;
+  --color-line: #D6D8D0;
+  --color-selection: #C5DDD2;
+  --color-surface-hover: #FFFDF8;
+  --color-close-hover: #E8D8D3;
+  --color-shadow: #9EB7A7;
+  --color-grid: rgb(37 43 41 / 2%);
+  --color-highlight: rgb(255 255 255 / 85%);
+  --color-white: #FFF;
+
+  /* Typography */
+  --font-family-sans: 'Pretendard Variable', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  --font-size-caption: 12px;
+  --font-size-small: 12px;
+  --font-size-tray: 11px;
+  --font-size-body: 14px;
+  --font-size-large: 16px;
+  --font-size-project-copy: 16px;
+  --font-size-title: 20px;
+  --font-size-heading: 24px;
+  --font-size-display: 28px;
+  --line-height-normal: 1.45;
+  --line-height-content: 1.6;
+  --line-height-readable: 1.8;
+  --line-height-copy: 1.9;
+
+  /* Spacing: even values, with 4px as the main increment */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 28px;
+  --space-9: 32px;
+  --space-10: 40px;
+  --space-11: 48px;
+  --space-12: 64px;
+  --space-13: 72px;
+
+  /* Shared dimensions and effects */
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --focus-outline-width: 3px;
+  --scrollbar-size: 6px;
+  --motion-fast: 90ms;
+  --motion-step: steps(2, end);
+  --shadow-window: 8px 8px 0 var(--color-shadow);
+  --shadow-menu: 5px 5px 0 var(--color-shadow);
+  --shadow-popover: 4px 4px 0 var(--color-shadow);
+  --shadow-button: 2px 2px 0 var(--color-ink);
+  --shadow-button-hover: 1px 1px 0 var(--color-ink);
+
+  font-family: var(--font-family-sans);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,31 @@
+*, *::before, *::after { box-sizing: border-box; }
+* { scrollbar-width: thin; scrollbar-color: var(--color-muted) transparent; }
+*::-webkit-scrollbar { width: var(--scrollbar-size); height: var(--scrollbar-size); }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--color-muted); }
+*::-webkit-scrollbar-thumb:hover { background: var(--color-teal); }
+
+html { min-width: 320px; min-height: 100%; }
+body { min-width: 320px; min-height: 100vh; margin: 0; }
+button, a { font: inherit; }
+input, textarea, [contenteditable='true'] { cursor: text; }
+a { color: inherit; }
+::selection { color: var(--color-ink); background: var(--color-selection); }
+:focus-visible { outline: var(--focus-outline-width) solid var(--color-teal); outline-offset: var(--space-1); }
+
+button, .tray-popover summary {
+  transition:
+    transform var(--motion-fast) var(--motion-step),
+    box-shadow var(--motion-fast) var(--motion-step),
+    background-color var(--motion-fast) var(--motion-step),
+    border-color var(--motion-fast) var(--motion-step),
+    color var(--motion-fast) var(--motion-step);
+}
+button:hover, .tray-popover summary:hover { transform: translate(var(--space-1), var(--space-1)); box-shadow: var(--shadow-button-hover); }
+button:active, .tray-popover summary:active { transform: translate(var(--space-2), var(--space-2)); box-shadow: none; }
+.taskbar-app.is-active:hover { box-shadow: var(--shadow-button-hover), inset 0 -2px 0 var(--color-teal); }
+.taskbar-measure button { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

@@ -1,0 +1,131 @@
+.desktop-taskbar {
+  position: fixed;
+  z-index: 30;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  min-height: 48px;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-top: var(--border-width-strong) solid var(--color-ink);
+  background: var(--color-paper);
+  box-shadow: 0 -2px 0 var(--color-highlight);
+  color: var(--color-ink);
+}
+.taskbar-start-wrap { position: relative; flex: 0 0 auto; }
+.taskbar-start, .taskbar-app {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--color-ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  font-weight: 700;
+}
+.taskbar-start { width: 36px; height: 36px; flex: 0 0 36px; justify-content: center; padding: 0; border: 0; background: transparent; }
+.taskbar-start:hover, .taskbar-app:hover, .taskbar-app.is-minimized { background: var(--color-teal-tint); }
+.taskbar-start:hover { background: transparent; }
+.taskbar-app.is-active { box-shadow: inset 0 -2px 0 var(--color-teal); }
+.taskbar-open-apps { position: relative; display: flex; min-width: 0; flex: 1; align-items: center; gap: var(--space-2); overflow: visible; }
+.taskbar-app { width: max-content; min-width: 150px; max-width: 210px; flex: 0 0 auto; justify-content: flex-start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.taskbar-measure { position: fixed; top: 0; left: -10000px; display: flex; width: max-content; gap: var(--space-2); visibility: hidden; pointer-events: none; }
+.taskbar-more-wrap { position: relative; flex: 0 0 auto; }
+.taskbar-more-button { display: flex; min-width: 48px; min-height: 36px; align-items: center; justify-content: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--color-ink); background: var(--color-surface); color: var(--color-ink); cursor: pointer; font-size: var(--font-size-large); font-weight: 750; line-height: 1; }
+.taskbar-more-button span { font-size: var(--font-size-caption); }
+.taskbar-more-button:hover, .taskbar-more-button[aria-expanded='true'] { background: var(--color-teal-tint); }
+.taskbar-more-button.is-active { box-shadow: inset 0 -2px 0 var(--color-teal); }
+.taskbar-more-menu {
+  position: absolute;
+  z-index: 35;
+  right: 0;
+  bottom: calc(100% + var(--space-3));
+  display: grid;
+  width: min(260px, calc(100vw - 24px));
+  max-height: min(60vh, 380px);
+  gap: var(--space-1);
+  overflow: auto;
+  padding: var(--space-2);
+  border: var(--border-width-strong) solid var(--color-ink);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-menu);
+}
+.taskbar-more-item { display: flex; min-height: 40px; align-items: center; gap: var(--space-3); overflow: hidden; padding: var(--space-2) var(--space-3); border: var(--border-width) solid transparent; background: transparent; color: var(--color-ink); cursor: pointer; font-size: var(--font-size-small); font-weight: 650; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.taskbar-more-item:hover, .taskbar-more-item.is-active { border-color: var(--color-line); background: var(--color-teal-tint); }
+.taskbar-more-item.is-minimized { color: var(--color-muted); }
+.taskbar-app .pixel-folder-icon { width: 22px; height: 22px; }
+
+.taskbar-tray { display: flex; flex: 0 0 auto; align-items: center; gap: var(--space-1); padding-left: var(--space-3); border-left: var(--border-width) solid var(--color-line); }
+.tray-language { display: grid; min-width: 34px; min-height: 32px; place-items: center; color: var(--color-muted); font-size: var(--font-size-small); font-weight: 750; }
+.tray-popover { position: relative; }
+.tray-popover summary { display: flex; min-height: 36px; align-items: center; justify-content: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: var(--border-width) solid transparent; color: var(--color-ink); cursor: pointer; font-size: var(--font-size-small); list-style: none; font-variant-numeric: tabular-nums; }
+.tray-popover summary::-webkit-details-marker { display: none; }
+.tray-popover summary:hover, .tray-popover[open] summary { border-color: var(--color-line); background: var(--color-surface); }
+.weather-icon { display: block; width: 24px; height: 24px; flex: 0 0 24px; object-fit: contain; image-rendering: pixelated; }
+.taskbar-tray .pixel-folder-icon, .start-menu .pixel-folder-icon { width: 24px; height: 24px; }
+
+.calendar-popover summary { width: max-content; flex-direction: column; align-items: flex-end; gap: var(--space-1); padding-inline: var(--space-2); text-align: right; white-space: nowrap; }
+.calendar-popover summary strong, .calendar-popover summary span { font-size: var(--font-size-tray); }
+.calendar-popover summary span { color: var(--color-muted); }
+.calendar-card, .weather-card { position: absolute; right: 0; bottom: calc(100% + var(--space-3)); margin: 0; border: var(--border-width-strong) solid var(--color-ink); background: var(--color-surface); box-shadow: var(--shadow-popover); color: var(--color-ink); }
+.calendar-card { width: 248px; padding: var(--space-4); font-size: var(--font-size-small); }
+.calendar-card > strong { display: block; margin-bottom: var(--space-3); font-size: var(--font-size-body); }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-1); text-align: center; }
+.calendar-grid span { display: grid; min-height: 28px; place-items: center; font-size: var(--font-size-small); }
+.calendar-grid .calendar-weekday { color: var(--color-muted); font-size: var(--font-size-caption); font-weight: 700; }
+.calendar-grid .is-today { background: var(--color-teal); color: var(--color-white); font-weight: 750; }
+.calendar-grid .is-empty { visibility: hidden; }
+
+.weather-card { width: 200px; padding: var(--space-3); }
+.weather-overview { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.weather-overview > div { display: grid; gap: var(--space-2); }
+.weather-overview > div span { color: var(--color-muted); font-size: var(--font-size-small); }
+.weather-overview > div strong { font-size: var(--font-size-body); }
+.weather-temperature { font-size: var(--font-size-display); font-weight: 750; font-variant-numeric: tabular-nums; }
+.weather-metrics { display: grid; grid-template-columns: 1fr; gap: var(--space-2); margin: var(--space-4) 0 var(--space-3); }
+.weather-metrics > div { display: flex; justify-content: space-between; gap: var(--space-2); padding: var(--space-2); background: var(--color-paper); font-size: var(--font-size-small); }
+.weather-metrics dt { color: var(--color-muted); }
+.weather-metrics dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.weather-source { display: block; padding-top: var(--space-3); border-top: var(--border-width) solid var(--color-line); color: var(--color-muted); font-size: var(--font-size-caption); text-align: right; text-decoration: underline; text-underline-offset: var(--space-1); }
+.weather-source:hover { color: var(--color-teal); }
+
+.start-menu {
+  position: absolute;
+  bottom: calc(100% + var(--space-3));
+  left: 0;
+  display: grid;
+  width: min(300px, calc(100vw - 24px));
+  max-height: min(65vh, 460px);
+  overflow: auto;
+  padding: var(--space-3);
+  border: var(--border-width-strong) solid var(--color-ink);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-menu);
+}
+.start-menu p { margin: var(--space-1) var(--space-2) var(--space-3); color: var(--color-muted); font-size: var(--font-size-caption); font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+.start-menu button { display: flex; min-height: 40px; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border: 0; background: transparent; color: var(--color-ink); cursor: pointer; font-size: var(--font-size-small); text-align: left; }
+.start-menu button:hover { background: var(--color-teal-tint); }
+
+@media (max-width: 760px) {
+  .desktop-taskbar { width: 100%; gap: var(--space-1); padding-inline: var(--space-2); }
+  .taskbar-start, .taskbar-app { gap: var(--space-2); padding-inline: var(--space-2); }
+  .taskbar-app { min-width: 120px; max-width: 144px; }
+  .taskbar-tray { gap: 0; padding-left: var(--space-2); }
+  .tray-language { min-width: 28px; }
+  .tray-popover summary { gap: var(--space-2); padding-inline: var(--space-2); }
+}
+
+@media (max-width: 420px) {
+  .desktop-taskbar { min-height: 50px; }
+  .taskbar-start { min-height: 32px; font-size: var(--font-size-caption); }
+  .taskbar-app { min-width: 100px; max-width: 104px; font-size: var(--font-size-caption); }
+  .tray-language { min-width: 24px; font-size: var(--font-size-caption); }
+  .tray-popover summary { padding-inline: var(--space-1); font-size: var(--font-size-caption); }
+  .weather-card { width: min(200px, calc(100vw - 24px)); }
+}

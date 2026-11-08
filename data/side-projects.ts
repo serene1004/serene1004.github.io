@@ -30,7 +30,7 @@ export const sideProjects: SideProject[] = [
   },
   {
     id: 'web-puzzle',
-    name: 'WebPuzzle',
+    name: 'webPuzzle',
     summary: '이미지와 난이도를 고른 뒤, 전체 화면 캔버스에서 조각을 연결해 완성하는 브라우저 기반 직소 퍼즐입니다.',
     highlights: ['이미지 선택과 Easy·Normal·Hard 난이도 설정', '조각 연결·그룹 이동·분리와 캔버스 확대·이동', '원본 이미지 참조, 진행 이어하기와 완성 시간 확인'],
     url: 'https://serene1004.github.io/webPuzzle/',

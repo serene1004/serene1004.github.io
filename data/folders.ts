@@ -53,7 +53,7 @@ export const sideProjectFolders: PortfolioFolder[] = [
   },
   {
     id: 'web-puzzle',
-    name: 'WebPuzzle',
+    name: 'webPuzzle',
     icon: '/images/folder-icons/web-puzzle.png',
   },
   {
@@ -61,11 +61,13 @@ export const sideProjectFolders: PortfolioFolder[] = [
     name: 'webCanvas',
     icon: '/images/folder-icons/webcanvas.svg',
   },
-  {
-    id: 'simulated-investment',
-    name: '모의투자 서바이벌',
-    icon: '/images/folder-icons/simulatedinvestment.svg',
-  },
+  // 프로젝트 보완 후 오픈
+  // {
+  //   id: 'simulated-investment',
+  //   name: '모의투자 서바이벌',
+  //   nameJa: '模擬投資サバイバル',
+  //   icon: '/images/folder-icons/simulatedinvestment.svg',
+  // },
 ];
 
 export const folders: PortfolioFolder[] = [profileFolder, ...workFolders, ...sideProjectFolders];

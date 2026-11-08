@@ -241,7 +241,9 @@ const updateTaskbarWindowLimit = () => {
   let visibleCount = 0;
 
   for (let index = 0; index < appButtons.length; index += 1) {
-    const nextWidth = usedWidth + (index ? gap : 0) + appButtons[index].offsetWidth;
+    const appButton = appButtons.item(index);
+    if (!appButton) break;
+    const nextWidth = usedWidth + (index ? gap : 0) + appButton.offsetWidth;
     const hasMore = index < appButtons.length - 1;
     if (hasMore && moreCount) moreCount.textContent = `+${appButtons.length - index - 1}`;
     const requiredWidth = nextWidth + (hasMore ? gap + moreButton.offsetWidth : 0);

@@ -32,7 +32,7 @@
 .window-control:hover { background: var(--color-teal-tint); }
 .window-close:hover { background: var(--color-close-hover); }
 .window-body { min-height: 0; overflow: auto; padding: var(--space-7) clamp(var(--space-5), 4vw, var(--space-9)) var(--space-9); }
-.project-window.is-terminal-window .window-body { padding: 0; background: var(--color-ink); }
+.project-window.is-terminal-window .window-body { flex: 1; padding: 0; background: var(--color-ink); }
 .window-body > .eyebrow { margin-bottom: var(--space-2); }
 .eyebrow { display: flex; align-items: center; gap: var(--space-3); margin: 0 0 var(--space-4); color: var(--color-teal); font-size: var(--font-size-caption); font-weight: 750; letter-spacing: .12em; }
 .window-heading { margin: 0; font-size: var(--font-size-heading); font-weight: 750; letter-spacing: -.045em; line-height: 1.4; }

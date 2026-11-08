@@ -40,7 +40,7 @@
 .pixel-folder-icon[src$="/folder-icons/aisct.png"],
 .pixel-folder-icon[src$="/folder-icons/danbichat.png"],
 .pixel-folder-icon[src$="/folder-icons/heidi.png"] { transform: scale(1.2); }
-.pixel-folder-icon[src$="/images/serene.png"] { border-radius: 50%; object-fit: cover; }
+.pixel-folder-icon[src$="/images/brand/serene.png"] { border-radius: 50%; object-fit: cover; }
 .desktop-folder .pixel-folder-icon { width: 72px; height: 72px; flex: 0 0 72px; }
 
 @media (max-width: 760px) {

@@ -40,7 +40,7 @@
         <template v-if="props.folderId === 'serene1004'">
           <p class="eyebrow">ABOUT ME</p>
           <header class="about-page-header">
-            <img class="about-avatar" src="/images/serene.png" alt="윤용준 프로필 사진" width="80" height="80">
+            <img class="about-avatar" src="/images/brand/serene.png" alt="윤용준 프로필 사진" width="80" height="80">
             <div>
               <h3 class="window-heading">사용자 경험을 디자인하는<br>프론트엔드 개발자 윤용준입니다.</h3>
             </div>
@@ -64,16 +64,16 @@
             <h4>연락 채널</h4>
             <div class="contact-options">
               <a class="contact-option" href="mailto:vcbxnzn@gmail.com">
-                <img class="contact-option-icon" src="/images/folder-icons/email.png" alt="">
+                <img class="contact-option-icon" src="/images/contact/email.png" alt="">
                 <span><small>EMAIL</small><strong>vcbxnzn@gmail.com</strong></span>
               </a>
               <a class="contact-option" href="https://github.com/serene1004" target="_blank" rel="noopener noreferrer">
-                <img class="contact-option-icon" src="/images/folder-icons/github.png" alt="">
+                <img class="contact-option-icon" src="/images/contact/github.png" alt="">
                 <span><small>GITHUB</small><strong>github.com/serene1004</strong></span>
                 <ExternalLink class="contact-option-external" :size="14" :stroke-width="2.25" aria-hidden="true" />
               </a>
               <a class="contact-option" href="https://www.linkedin.com/in/yongjun-yun-301623439/" target="_blank" rel="noopener noreferrer">
-                <img class="contact-option-icon" src="/images/folder-icons/linkedin.png" alt="">
+                <img class="contact-option-icon" src="/images/contact/linkedin.png" alt="">
                 <span><small>LINKEDIN</small><strong>linkedin.com/in/yongjun-yun-301623439</strong></span>
                 <ExternalLink class="contact-option-external" :size="14" :stroke-width="2.25" aria-hidden="true" />
               </a>

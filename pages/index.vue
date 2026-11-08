@@ -34,11 +34,11 @@
     </section>
 
     <ProjectWindow
-      v-for="(window, index) in visibleWindows"
+      v-for="window in visibleWindows"
       :key="window.id"
       :folder-id="window.id"
       :maximized="window.maximized"
-      :style="windowStyle(window, index)"
+      :style="windowStyle(window)"
       @close="closeWindowAndFocus(window.id)"
       @minimize="minimizeWindowAndFocus(window.id)"
       @toggle-maximize="toggleMaximize(window.id)"
@@ -84,8 +84,10 @@ const minimizeWindowAndFocus = async (id: string) => {
   minimizeWindow(id);
   await focusActiveWindow();
 };
-const windowStyle = (window: { id: string }, index: number) => ({
-  zIndex: activeWindowId.value === window.id ? 29 : 20 + Math.min(index, 8),
-  '--window-offset': `${Math.min(index, 5) * 18}px`,
+const windowStyle = (window: { id: string; initialOffset: number }) => ({
+  zIndex: activeWindowId.value === window.id
+    ? 29
+    : 20 + Math.min(zOrder.value.indexOf(window.id), 8),
+  '--window-offset': `${window.initialOffset}px`,
 });
 </script>

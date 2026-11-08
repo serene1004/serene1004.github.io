@@ -2,12 +2,14 @@ export interface DesktopWindowState {
   id: string
   minimized: boolean
   maximized: boolean
+  initialOffset: number
 }
 
 export const useDesktopWindows = () => {
   const windows = useState<DesktopWindowState[]>('desktop-windows', () => []);
   const zOrder = useState<string[]>('desktop-window-z-order', () => []);
   const activeWindowId = useState<string | null>('desktop-active-window', () => null);
+  const nextWindowOffset = useState('desktop-window-offset-sequence', () => 0);
 
   const findTopVisibleWindow = () => [...zOrder.value]
     .reverse()
@@ -29,7 +31,14 @@ export const useDesktopWindows = () => {
       moveToFront(id);
       return;
     }
-    windows.value = [...windows.value, { id, minimized: false, maximized: false }];
+    const initialOffset = Math.min(nextWindowOffset.value, 5) * 18;
+    nextWindowOffset.value = Math.min(nextWindowOffset.value + 1, 5);
+    windows.value = [...windows.value, {
+      id,
+      minimized: false,
+      maximized: false,
+      initialOffset,
+    }];
     zOrder.value = [...zOrder.value, id];
     activeWindowId.value = id;
   };
@@ -38,6 +47,7 @@ export const useDesktopWindows = () => {
     windows.value = windows.value.filter((window) => window.id !== id);
     zOrder.value = zOrder.value.filter((windowId) => windowId !== id);
     activeWindowId.value = findTopVisibleWindow();
+    if (!windows.value.length) nextWindowOffset.value = 0;
   };
 
   const minimizeWindow = (id: string) => {

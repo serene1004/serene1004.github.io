@@ -2,19 +2,9 @@
 
 Windows OS를 모티브로 한 Vue 3·Nuxt 프론트엔드 포트폴리오입니다. 프로젝트 폴더를 열면 요약과 주요 작업을, AboutMe 폴더를 열면 소개와 연락처를 확인할 수 있습니다.
 
-## Features
-
-- 픽셀아트 요소를 적용한 데스크톱 워크스페이스
-- 폴더를 열어 확인하는 프로젝트 정보 창
-- 모바일에서 한 번 탭으로 열리는 화면 맞춤 프로젝트 창
-- AboutMe 폴더에서 프로필과 연락처 확인
-- 종이색 바탕, 먹색 텍스트, 절제된 청록 포인트
-
 ## Stack
 
 - Nuxt 4, Vue 3, TypeScript
-- CSS custom properties와 직접 작성한 반응형 스타일
-- Pretendard Variable
 - GitHub Pages 정적 배포
 
 ## Requirements

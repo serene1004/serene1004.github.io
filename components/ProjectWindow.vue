@@ -9,7 +9,7 @@
       :aria-label="`${displayFolderName} ${copy.projectInformation}`"
       tabindex="-1"
       @keydown="handleWindowKeydown"
-      @pointerdown="emit('activate')"
+      @pointerdown="handleWindowPointerdown"
     >
       <header
         class="window-titlebar"
@@ -27,7 +27,7 @@
           <button class="window-control" type="button" :aria-label="copy.minimizeWindow" @pointerdown.stop @click="emit('activate'); emit('minimize')">
             <Minus class="window-control-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
           </button>
-          <button class="window-control" type="button" :aria-label="props.maximized ? copy.restoreWindow : copy.maximizeWindow" @pointerdown.stop @click="emit('activate'); emit('toggle-maximize')">
+          <button class="window-control" type="button" :aria-label="props.maximized ? copy.restoreWindow : copy.maximizeWindow" @pointerdown.stop @click="toggleWindowMaximize">
             <Copy v-if="props.maximized" class="window-control-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
             <Square v-else class="window-control-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
           </button>
@@ -145,12 +145,19 @@ const windowElement = ref<HTMLElement | null>(null);
 const closeButton = ref<HTMLButtonElement | null>(null);
 const activeIndex = ref(0);
 const dragPosition = ref<{ left: number; top: number } | null>(null);
+const windowSize = ref<{ width: number; height: number } | null>(null);
 const dragPointer = ref<{ id: number; offsetX: number; offsetY: number } | null>(null);
-const dragPositionStyle = computed(() => (
-  dragPosition.value && !props.maximized
-    ? { left: `${dragPosition.value.left}px`, top: `${dragPosition.value.top}px`, transform: 'none' }
-    : {}
-));
+const dragPositionStyle = computed(() => {
+  if (props.maximized) return {};
+  return {
+    ...(dragPosition.value
+      ? { left: `${dragPosition.value.left}px`, top: `${dragPosition.value.top}px`, transform: 'none' }
+      : {}),
+    ...(windowSize.value
+      ? { width: `${windowSize.value.width}px`, height: `${windowSize.value.height}px` }
+      : {}),
+  };
+});
 const folder = computed(() => folders.find((item) => item.id === props.folderId));
 const sideProject = computed(() => getSideProjectById(props.folderId));
 const project = computed(() => getProjectById(props.folderId));
@@ -178,6 +185,33 @@ const activeProject = computed(() => {
 const focusWindow = () => nextTick(() => (
   windowElement.value?.querySelector<HTMLInputElement>('.terminal-command-input') ?? closeButton.value
 )?.focus());
+
+const handleWindowPointerdown = (event: PointerEvent) => {
+  emit('activate');
+  const element = windowElement.value;
+  if (
+    !element
+    || props.maximized
+    || event.button !== 0
+    || !window.matchMedia('(pointer: fine)').matches
+    || event.target !== element
+  ) return;
+
+  const rect = element.getBoundingClientRect();
+  if (event.clientX < rect.right - 20 || event.clientY < rect.bottom - 20) return;
+  dragPosition.value = { left: rect.left, top: rect.top };
+};
+
+const toggleWindowMaximize = () => {
+  if (!props.maximized && windowElement.value) {
+    const rect = windowElement.value.getBoundingClientRect();
+    windowSize.value = { width: rect.width, height: rect.height };
+    windowElement.value.style.removeProperty('width');
+    windowElement.value.style.removeProperty('height');
+  }
+  emit('activate');
+  emit('toggle-maximize');
+};
 
 const startDragging = (event: PointerEvent) => {
   if (props.maximized || !window.matchMedia('(pointer: fine)').matches) return;

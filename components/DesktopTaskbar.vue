@@ -1,17 +1,16 @@
 <template>
-  <nav class="desktop-taskbar" aria-label="시스템 작업 표시줄">
+  <nav class="desktop-taskbar" :aria-label="copy.taskbar">
     <div class="taskbar-start-wrap">
-      <button ref="startButton" class="taskbar-start" type="button" aria-label="시작 메뉴" :aria-expanded="startMenuOpen" @click="toggleStartMenu">
+      <button ref="startButton" class="taskbar-start" type="button" :aria-label="copy.startMenu" :aria-expanded="startMenuOpen" @click="toggleStartMenu">
         <Grid2X2 class="start-window-icon" :size="24" :stroke-width="2.5" aria-hidden="true" />
       </button>
-      <section v-if="startMenuOpen" class="start-menu" aria-label="프로그램">
-        <p>프로젝트 열기</p>
+      <section v-if="startMenuOpen" class="start-menu" :aria-label="copy.programs">
         <button v-for="folder in folders" :key="folder.id" type="button" @click="openFolder(folder.id)">
-          <PixelFolderIcon :src="folder.icon" />{{ folder.name }}
+          <PixelFolderIcon :src="folder.icon" />{{ folderName(folder.id) }}
         </button>
       </section>
     </div>
-    <div ref="taskbarOpenApps" class="taskbar-open-apps" aria-label="열린 프로젝트">
+    <div ref="taskbarOpenApps" class="taskbar-open-apps" :aria-label="copy.openWindows">
       <button
         v-for="window in visibleTaskbarWindows"
         :key="window.id"
@@ -35,7 +34,7 @@
         >
           ··· <span>+{{ overflowedTaskbarWindows.length }}</span>
         </button>
-        <div v-if="taskbarMoreOpen" class="taskbar-more-menu" role="group" aria-label="숨겨진 열린 프로젝트">
+        <div v-if="taskbarMoreOpen" class="taskbar-more-menu" role="group" :aria-label="copy.hiddenWindows">
           <button
             v-for="window in overflowedTaskbarWindows"
             :key="window.id"
@@ -57,30 +56,40 @@
       </div>
     </div>
     <div class="taskbar-tray">
-      <span class="tray-language" aria-label="현재 언어 한국어">KO</span>
+      <button class="tray-language" type="button" :aria-label="copy.languageSwitch" @click="toggleLocale">
+        {{ locale.toUpperCase() }}
+      </button>
       <details class="tray-popover weather-popover" @toggle="handlePopoverToggle">
-        <summary :aria-label="`서울 날씨, ${weatherStatus}, 현재 기온 ${weatherText}`"><img class="weather-icon" :src="weatherIcon" alt="">{{ weatherText }}</summary>
-        <section class="weather-card" aria-label="서울 현재 날씨">
+        <summary :aria-label="copy.weather.ariaLabel(weatherStatus, weatherText)"><img class="weather-icon" :src="weatherIcon" alt="">{{ weatherText }}</summary>
+        <section class="weather-card" :aria-label="`${copy.weather.city} ${copy.weather.current}`">
           <div class="weather-overview">
-            <div><span>서울</span><strong>{{ weatherStatus }}</strong></div>
+            <div><span>{{ copy.weather.city }}</span><strong>{{ weatherStatus }}</strong></div>
             <strong class="weather-temperature">{{ weatherText }}</strong>
           </div>
           <dl class="weather-metrics">
-            <div v-if="weather.apparent != null"><dt>체감</dt><dd>{{ Math.round(weather.apparent) }}°</dd></div>
-            <div v-if="weather.humidity != null"><dt>습도</dt><dd>{{ Math.round(weather.humidity) }}%</dd></div>
-            <div v-if="weather.precipitation != null"><dt>강수량</dt><dd>{{ weather.precipitation.toFixed(1) }} mm</dd></div>
-            <div v-if="weather.wind != null"><dt>풍속</dt><dd>{{ Math.round(weather.wind) }} km/h</dd></div>
+            <div v-if="weather.apparent != null"><dt>{{ copy.weather.feelsLike }}</dt><dd>{{ Math.round(weather.apparent) }}°</dd></div>
+            <div v-if="weather.humidity != null"><dt>{{ copy.weather.humidity }}</dt><dd>{{ Math.round(weather.humidity) }}%</dd></div>
+            <div v-if="weather.precipitation != null"><dt>{{ copy.weather.precipitation }}</dt><dd>{{ weather.precipitation.toFixed(1) }} mm</dd></div>
+            <div v-if="weather.wind != null"><dt>{{ copy.weather.wind }}</dt><dd>{{ Math.round(weather.wind) }} km/h</dd></div>
           </dl>
-          <a class="weather-source" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">날씨 데이터 제공: Open-Meteo</a>
+          <a class="weather-source" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">{{ copy.weather.source }}</a>
         </section>
       </details>
       <details class="tray-popover calendar-popover" @toggle="handlePopoverToggle">
-        <summary :aria-label="`현재 시각 ${timeText}, 날짜 ${dateText}`"><strong>{{ timeText }}</strong><span>{{ dateText }}</span></summary>
+        <summary :aria-label="copy.calendar.ariaLabel(timeText, dateText)"><strong>{{ timeText }}</strong><span>{{ dateText }}</span></summary>
         <div class="calendar-card">
-          <strong>{{ monthText }}</strong>
-          <div class="calendar-grid" aria-label="이번 달 달력">
+          <div class="calendar-heading">
+            <button class="calendar-month-button" type="button" :aria-label="copy.calendar.previousMonth" @click="changeCalendarMonth(-1)">
+              <ChevronLeft :size="16" aria-hidden="true" />
+            </button>
+            <strong>{{ monthText }}</strong>
+            <button class="calendar-month-button" type="button" :aria-label="copy.calendar.nextMonth" @click="changeCalendarMonth(1)">
+              <ChevronRight :size="16" aria-hidden="true" />
+            </button>
+          </div>
+          <div class="calendar-grid" :aria-label="copy.calendar.month">
             <span v-for="day in weekDays" :key="day" class="calendar-weekday">{{ day }}</span>
-            <span v-for="cell in monthCells" :key="cell.key" :class="{ 'is-today': cell.today, 'is-empty': !cell.day }">{{ cell.day }}</span>
+            <span v-for="cell in monthCells" :key="cell.key" :class="{ 'is-today': cell.today, 'is-adjacent': cell.adjacent }">{{ cell.day }}</span>
           </div>
         </div>
       </details>
@@ -92,14 +101,19 @@
 import {
   computed, nextTick, onMounted, onUnmounted, ref, watch,
 } from 'vue';
-import { Grid2X2 } from '@lucide/vue';
+import { ChevronLeft, ChevronRight, Grid2X2 } from '@lucide/vue';
 import PixelFolderIcon from '~/components/PixelFolderIcon.vue';
-import { folders } from '~/data/folders';
+import { folders, getFolderDisplayName } from '~/data/folders';
 import { useDesktopWindows } from '~/composables/useDesktopWindows';
+import { usePortfolioLocale } from '~/composables/usePortfolioLocale';
+import { localeMessages } from '~/data/locale-messages';
 
 const {
   windows, activeWindowId, openWindow, toggleWindow,
 } = useDesktopWindows();
+const { locale, setLocale } = usePortfolioLocale();
+const copy = computed(() => localeMessages[locale.value]);
+const localeTag = computed(() => (locale.value === 'ja' ? 'ja-JP' : 'ko-KR'));
 const startMenuOpen = ref(false);
 const taskbarMoreOpen = ref(false);
 const startButton = ref<HTMLButtonElement | null>(null);
@@ -109,10 +123,57 @@ const taskbarMeasure = ref<HTMLDivElement | null>(null);
 const taskbarMoreMeasure = ref<HTMLButtonElement | null>(null);
 const taskbarWindowLimit = ref(0);
 const now = ref<Date | null>(null);
+const calendarMonth = ref<Date | null>(null);
 const weatherText = ref('--°');
-const weatherStatus = ref('날씨 정보를 불러오는 중');
-const weatherIcon = ref('/images/weather/cloudy.png');
+const weatherLoading = ref(true);
+const weatherFailed = ref(false);
+const weatherCode = ref<number | null>(null);
+const isDay = ref(true);
 const weather = ref<{ apparent?: number; humidity?: number; precipitation?: number; wind?: number }>({});
+const weatherConditionDefinitions: Record<number, {
+  label: keyof typeof localeMessages.ko.weatherConditions
+  icon: string
+  nightIcon?: string
+}> = {
+  0: { label: 'sunny', icon: 'clear-day', nightIcon: 'clear-night' },
+  1: { label: 'mostlySunny', icon: 'partly-cloudy-day', nightIcon: 'partly-cloudy-night' },
+  2: { label: 'partlyCloudy', icon: 'partly-cloudy-day', nightIcon: 'partly-cloudy-night' },
+  3: { label: 'cloudy', icon: 'cloudy' },
+  45: { label: 'fog', icon: 'fog' },
+  48: { label: 'fog', icon: 'fog' },
+  51: { label: 'drizzle', icon: 'drizzle' },
+  53: { label: 'drizzle', icon: 'drizzle' },
+  55: { label: 'drizzle', icon: 'drizzle' },
+  56: { label: 'freezingDrizzle', icon: 'sleet' },
+  57: { label: 'freezingDrizzle', icon: 'sleet' },
+  61: { label: 'rain', icon: 'rain' },
+  63: { label: 'rain', icon: 'rain' },
+  65: { label: 'rain', icon: 'rain' },
+  66: { label: 'freezingRain', icon: 'sleet' },
+  67: { label: 'freezingRain', icon: 'sleet' },
+  71: { label: 'snow', icon: 'snow' },
+  73: { label: 'snow', icon: 'snow' },
+  75: { label: 'snow', icon: 'snow' },
+  77: { label: 'snowGrains', icon: 'snow' },
+  80: { label: 'shower', icon: 'showers' },
+  81: { label: 'shower', icon: 'showers' },
+  82: { label: 'heavyShower', icon: 'showers' },
+  85: { label: 'snowShower', icon: 'snow' },
+  86: { label: 'heavySnowShower', icon: 'snow' },
+  95: { label: 'thunderstorm', icon: 'thunderstorm' },
+  96: { label: 'hailThunderstorm', icon: 'thunderstorm' },
+  99: { label: 'heavyHailThunderstorm', icon: 'thunderstorm' },
+};
+const weatherStatus = computed(() => {
+  if (weatherLoading.value) return copy.value.weather.loading;
+  if (weatherFailed.value) return copy.value.weather.error;
+  const condition = weatherConditionDefinitions[weatherCode.value ?? -1];
+  return condition ? copy.value.weatherConditions[condition.label] : copy.value.weather.unknown;
+});
+const weatherIcon = computed(() => {
+  const condition = weatherConditionDefinitions[weatherCode.value ?? -1];
+  return `/images/weather/${!isDay.value && condition?.nightIcon ? condition.nightIcon : condition?.icon ?? 'cloudy'}.png`;
+});
 const dateText = computed(() => {
   if (!now.value) return '---- -- --';
   const year = now.value.getFullYear();
@@ -130,19 +191,30 @@ const timeText = computed(() => {
   const period = parts.find((part) => part.type === 'dayPeriod')?.value.toUpperCase() ?? 'AM';
   return `${period} ${hour}:${minute}`;
 });
-const monthText = computed(() => (now.value
-  ? new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long' }).format(now.value)
+const monthText = computed(() => (calendarMonth.value
+  ? new Intl.DateTimeFormat(localeTag.value, { year: 'numeric', month: 'long' }).format(calendarMonth.value)
   : ''));
-const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+const weekDays = computed(() => Array.from({ length: 7 }, (_, index) => (
+  new Intl.DateTimeFormat(localeTag.value, { weekday: 'short' })
+    .format(new Date(2023, 0, 1 + index))
+)));
 const monthCells = computed(() => {
-  if (!now.value) return [];
-  const year = now.value.getFullYear();
-  const month = now.value.getMonth();
+  if (!calendarMonth.value) return [];
+  const year = calendarMonth.value.getFullYear();
+  const month = calendarMonth.value.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
-  const length = new Date(year, month + 1, 0).getDate();
-  return Array.from({ length: Math.ceil((firstDay + length) / 7) * 7 }, (_, index) => {
-    const day = index - firstDay + 1;
-    return { key: index, day: day > 0 && day <= length ? day : '', today: day === now.value.getDate() };
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(year, month, index - firstDay + 1);
+    const today = now.value
+      && date.getFullYear() === now.value.getFullYear()
+      && date.getMonth() === now.value.getMonth()
+      && date.getDate() === now.value.getDate();
+    return {
+      key: index,
+      day: date.getDate(),
+      adjacent: date.getMonth() !== month,
+      today: Boolean(today),
+    };
   });
 });
 const visibleTaskbarWindows = computed(() => windows.value.slice(0, taskbarWindowLimit.value));
@@ -165,6 +237,15 @@ const openFolder = (id: string) => {
   openWindow(id);
   startMenuOpen.value = false;
 };
+const toggleLocale = () => setLocale(locale.value === 'ko' ? 'ja' : 'ko');
+const changeCalendarMonth = (amount: number) => {
+  if (!calendarMonth.value) return;
+  calendarMonth.value = new Date(
+    calendarMonth.value.getFullYear(),
+    calendarMonth.value.getMonth() + amount,
+    1,
+  );
+};
 const toggleStartMenu = () => {
   const shouldOpen = !startMenuOpen.value;
   if (shouldOpen) {
@@ -173,13 +254,17 @@ const toggleStartMenu = () => {
   }
   startMenuOpen.value = shouldOpen;
 };
-const getFolderName = (id: string) => folders.find((folder) => folder.id === id)?.name ?? id;
-const getFolderIcon = (id: string) => folders.find((folder) => folder.id === id)?.icon;
+const getFolderName = (id: string) => getFolderDisplayName(id, locale.value);
+const folderName = getFolderName;
+const getFolderIcon = (id: string) => {
+  if (id === 'terminal') return '/images/folder-icons/terminal.png';
+  return folders.find((folder) => folder.id === id)?.icon;
+};
 const taskbarMoreLabel = computed(() => {
   const activeLabel = activeOverflowWindow.value
-    ? `활성 ${getFolderName(activeOverflowWindow.value.id)}, `
+    ? getFolderName(activeOverflowWindow.value.id)
     : '';
-  return `${activeLabel}더보기, 숨겨진 프로젝트 ${overflowedTaskbarWindows.value.length}개`;
+  return copy.value.moreWindows(activeLabel, overflowedTaskbarWindows.value.length);
 });
 const openOverflowWindow = (id: string) => {
   toggleWindow(id);
@@ -200,7 +285,12 @@ const toggleTaskbarMore = () => {
 };
 const handlePopoverToggle = (event: Event) => {
   const current = event.currentTarget as HTMLDetailsElement;
-  if (!current.open) return;
+  if (!current.open) {
+    if (current.classList.contains('calendar-popover') && now.value) {
+      calendarMonth.value = new Date(now.value.getFullYear(), now.value.getMonth(), 1);
+    }
+    return;
+  }
   document.querySelectorAll<HTMLDetailsElement>('.tray-popover[open]').forEach((popover) => {
     if (popover !== current) popover.removeAttribute('open');
   });
@@ -260,6 +350,7 @@ onMounted(async () => {
   document.addEventListener('pointerdown', handleDocumentPointerDown);
   document.addEventListener('keydown', handleDocumentKeydown);
   now.value = new Date();
+  calendarMonth.value = new Date(now.value.getFullYear(), now.value.getMonth(), 1);
   updateTaskbarWindowLimit();
   window.addEventListener('resize', updateTaskbarWindowLimit);
   if (taskbarOpenApps.value && typeof ResizeObserver !== 'undefined') {
@@ -283,44 +374,14 @@ onMounted(async () => {
       precipitation: current.precipitation,
       wind: current.wind_speed_10m,
     };
-    const code = current.weather_code ?? -1;
-    const conditions: Record<number, { label: string; icon: string }> = {
-      0: { label: '맑음', icon: current.is_day === 0 ? 'clear-night' : 'clear-day' },
-      1: { label: '대체로 맑음', icon: current.is_day === 0 ? 'partly-cloudy-night' : 'partly-cloudy-day' },
-      2: { label: '구름 조금', icon: current.is_day === 0 ? 'partly-cloudy-night' : 'partly-cloudy-day' },
-      3: { label: '흐림', icon: 'cloudy' },
-      45: { label: '안개', icon: 'fog' },
-      48: { label: '안개', icon: 'fog' },
-      51: { label: '이슬비', icon: 'drizzle' },
-      53: { label: '이슬비', icon: 'drizzle' },
-      55: { label: '이슬비', icon: 'drizzle' },
-      56: { label: '어는 이슬비', icon: 'sleet' },
-      57: { label: '어는 이슬비', icon: 'sleet' },
-      61: { label: '비', icon: 'rain' },
-      63: { label: '비', icon: 'rain' },
-      65: { label: '비', icon: 'rain' },
-      66: { label: '어는 비', icon: 'sleet' },
-      67: { label: '어는 비', icon: 'sleet' },
-      71: { label: '눈', icon: 'snow' },
-      73: { label: '눈', icon: 'snow' },
-      75: { label: '눈', icon: 'snow' },
-      77: { label: '싸락눈', icon: 'snow' },
-      80: { label: '소나기', icon: 'showers' },
-      81: { label: '소나기', icon: 'showers' },
-      82: { label: '강한 소나기', icon: 'showers' },
-      85: { label: '눈 소나기', icon: 'snow' },
-      86: { label: '강한 눈 소나기', icon: 'snow' },
-      95: { label: '뇌우', icon: 'thunderstorm' },
-      96: { label: '우박을 동반한 뇌우', icon: 'thunderstorm' },
-      99: { label: '강한 우박을 동반한 뇌우', icon: 'thunderstorm' },
-    };
-    const condition = conditions[code];
-    weatherStatus.value = condition?.label ?? '날씨 정보';
-    weatherIcon.value = `/images/weather/${condition?.icon ?? 'cloudy'}.png`;
+    weatherCode.value = current.weather_code ?? -1;
+    isDay.value = current.is_day !== 0;
+    weatherLoading.value = false;
+    weatherFailed.value = false;
   } catch {
     weatherText.value = '--°';
-    weatherStatus.value = '날씨 정보를 불러올 수 없습니다';
-    weatherIcon.value = '/images/weather/cloudy.png';
+    weatherLoading.value = false;
+    weatherFailed.value = true;
     weather.value = {};
   }
 });

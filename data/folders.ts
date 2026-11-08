@@ -1,8 +1,10 @@
 import { projectGroups, projects } from './projects';
+import type { PortfolioLocale } from './locale-messages';
 
 export interface PortfolioFolder {
   id: string
   name: string
+  nameJa?: string
   icon?: string
 }
 
@@ -71,3 +73,9 @@ export const sideProjectFolders: PortfolioFolder[] = [
 ];
 
 export const folders: PortfolioFolder[] = [profileFolder, ...workFolders, ...sideProjectFolders];
+
+export const getFolderDisplayName = (folderId: string, locale: PortfolioLocale) => {
+  if (folderId === 'terminal') return locale === 'ja' ? 'ターミナル' : 'Terminal';
+  const folder = folders.find((item) => item.id === folderId);
+  return locale === 'ja' ? folder?.nameJa ?? folder?.name ?? folderId : folder?.name ?? folderId;
+};

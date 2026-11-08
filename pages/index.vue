@@ -1,33 +1,44 @@
 <template>
   <div class="desktop-screen">
-    <section class="desktop-group" aria-label="프로필">
+    <section class="desktop-group" :aria-label="copy.profileGroup">
       <ul class="desktop-folder-grid">
         <li>
           <button class="desktop-folder desktop-shortcut" type="button" @click="openFolder(profileFolder.id)">
             <PixelFolderIcon :src="profileFolder.icon" />
-            <span>{{ profileFolder.name }}</span>
+            <span>{{ folderName(profileFolder.id) }}</span>
           </button>
         </li>
       </ul>
     </section>
 
-    <section class="desktop-group" aria-label="진행 프로젝트">
-      <ul class="desktop-folder-grid" aria-label="진행 프로젝트 폴더">
+    <section class="desktop-group" :aria-label="copy.workProjects">
+      <ul class="desktop-folder-grid" :aria-label="copy.workFolders">
         <li v-for="folder in workFolders" :key="folder.id">
           <button class="desktop-folder" type="button" @click="openFolder(folder.id)">
             <PixelFolderIcon :src="folder.icon" />
-            <span>{{ folder.name }}</span>
+            <span>{{ folderName(folder.id) }}</span>
           </button>
         </li>
       </ul>
     </section>
 
-    <section class="desktop-group" aria-label="개인 사이드 프로젝트">
-      <ul class="desktop-folder-grid" aria-label="개인 사이드 프로젝트 폴더">
+    <section class="desktop-group" :aria-label="copy.sideProjects">
+      <ul class="desktop-folder-grid" :aria-label="copy.sideProjectFolders">
         <li v-for="folder in sideProjectFolders" :key="folder.id">
           <button class="desktop-folder" type="button" @click="openFolder(folder.id)">
             <PixelFolderIcon :src="folder.icon" />
-            <span>{{ folder.name }}</span>
+            <span>{{ folderName(folder.id) }}</span>
+          </button>
+        </li>
+      </ul>
+    </section>
+
+    <section class="desktop-group" :aria-label="copy.desktopApps">
+      <ul class="desktop-folder-grid">
+        <li>
+          <button class="desktop-folder desktop-shortcut" type="button" @click="openFolder('terminal')">
+            <img class="desktop-app-icon" src="/images/folder-icons/terminal.png" alt="" aria-hidden="true">
+            <span>{{ copy.terminal.title }}</span>
           </button>
         </li>
       </ul>
@@ -52,11 +63,17 @@ import { computed, nextTick } from 'vue';
 import PixelFolderIcon from '~/components/PixelFolderIcon.vue';
 import ProjectWindow from '~/components/ProjectWindow.vue';
 import { useDesktopWindows } from '~/composables/useDesktopWindows';
-import { profileFolder, workFolders, sideProjectFolders } from '~/data/folders';
+import { usePortfolioLocale } from '~/composables/usePortfolioLocale';
+import {
+  profileFolder, workFolders, sideProjectFolders, getFolderDisplayName,
+} from '~/data/folders';
+import { localeMessages } from '~/data/locale-messages';
 
+const { locale } = usePortfolioLocale();
+const copy = computed(() => localeMessages[locale.value]);
 useSeoMeta({
-  title: 'Serene1004 | Frontend Developer Portfolio',
-  description: '윤용준의 프론트엔드 포트폴리오. 폴더를 열어 업무 프로젝트와 개인 프로젝트를 살펴보세요.',
+  title: () => copy.value.pageTitle,
+  description: () => copy.value.pageDescription,
 });
 
 const {
@@ -70,6 +87,7 @@ const visibleWindows = computed(() => windows.value
 const openFolder = (folderId: string) => {
   openWindow(folderId);
 };
+const folderName = (folderId: string) => getFolderDisplayName(folderId, locale.value);
 const focusActiveWindow = async () => {
   await nextTick();
   if (activeWindowId.value) {

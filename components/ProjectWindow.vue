@@ -3,10 +3,10 @@
       :id="`project-window-${props.folderId}`"
       ref="windowElement"
       class="project-window"
-      :class="{ 'is-maximized': props.maximized }"
+      :class="{ 'is-maximized': props.maximized, 'is-terminal-window': props.folderId === 'terminal' }"
       :style="dragPositionStyle"
       role="dialog"
-      :aria-label="`${folder?.name ?? 'Project'} information`"
+      :aria-label="`${displayFolderName} ${copy.projectInformation}`"
       tabindex="-1"
       @keydown="handleWindowKeydown"
       @pointerdown="emit('activate')"
@@ -19,49 +19,45 @@
         @pointercancel="stopDragging"
       >
         <div class="window-title">
-          <PixelFolderIcon :src="folder?.icon" />
-          <h2>{{ folder?.name }}</h2>
+          <img v-if="props.folderId === 'terminal'" class="window-app-icon" src="/images/folder-icons/terminal.png" alt="" aria-hidden="true">
+          <PixelFolderIcon v-else :src="folder?.icon" />
+          <h2>{{ displayFolderName }}</h2>
         </div>
         <div class="window-controls">
-          <button class="window-control" type="button" aria-label="창 최소화" @pointerdown.stop @click="emit('activate'); emit('minimize')">
+          <button class="window-control" type="button" :aria-label="copy.minimizeWindow" @pointerdown.stop @click="emit('activate'); emit('minimize')">
             <Minus class="window-control-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
           </button>
-          <button class="window-control" type="button" :aria-label="props.maximized ? '창 복원' : '창 최대화'" @pointerdown.stop @click="emit('activate'); emit('toggle-maximize')">
+          <button class="window-control" type="button" :aria-label="props.maximized ? copy.restoreWindow : copy.maximizeWindow" @pointerdown.stop @click="emit('activate'); emit('toggle-maximize')">
             <Copy v-if="props.maximized" class="window-control-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
             <Square v-else class="window-control-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
           </button>
-          <button ref="closeButton" class="window-close" type="button" aria-label="창 닫기" @pointerdown.stop @click="emit('activate'); emit('close')">
+          <button ref="closeButton" class="window-close" type="button" :aria-label="copy.closeWindow" @pointerdown.stop @click="emit('activate'); emit('close')">
             <X class="window-control-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
           </button>
         </div>
       </header>
 
       <div class="window-body">
-        <template v-if="props.folderId === 'serene1004'">
-          <p class="eyebrow">ABOUT ME</p>
+        <TerminalApp v-if="props.folderId === 'terminal'" />
+        <template v-else-if="props.folderId === 'serene1004'">
+          <p class="eyebrow">{{ copy.about.eyebrow }}</p>
           <header class="about-page-header">
-            <img class="about-avatar" src="/images/brand/serene.png" alt="윤용준 프로필 사진" width="80" height="80">
+            <img class="about-avatar" src="/images/brand/serene.png" :alt="copy.profileImageAlt" width="80" height="80">
             <div>
-              <h3 class="window-heading">사용자 경험을 디자인하는<br>프론트엔드 개발자 윤용준입니다.</h3>
+              <h3 class="window-heading">{{ copy.about.headingLead }}<br>{{ copy.about.headingRole }}</h3>
             </div>
           </header>
           <div class="info-copy">
-            <p>
-              웹 퍼블리셔로 커리어를 시작하여 현재 프론트엔드 개발을 하고 있는 6년차 프론트엔드 개발자입니다.<br>
-              화면의 완성도뿐 아니라 사용자의 흐름과 경험, 유지보수하기 좋은 구조를 함께 고민합니다.<br>
-              현재 방송통신대학교 컴퓨터과학과에 재학하며 학업과 실무를 이어가고 있습니다.
-            </p>
+            <p v-for="paragraph in copy.about.paragraphs" :key="paragraph">{{ paragraph }}</p>
           </div>
           <section class="detail-section">
-            <h4>관심 있게 다루는 일</h4>
+            <h4>{{ copy.about.interestsHeading }}</h4>
             <ul class="detail-list">
-              <li>요구사항과 사용 맥락을 이해해 명확한 화면 흐름으로 구성하기</li>
-              <li>컴포넌트 구조와 상태 흐름을 고려해 오래 유지할 수 있는 UI 만들기</li>
-              <li>필요에 맞게 지도, 캔버스, 실시간 데이터를 다루는 인터랙션 구현하기</li>
+              <li v-for="interest in copy.about.interests" :key="interest">{{ interest }}</li>
             </ul>
           </section>
           <section class="detail-section contact-methods">
-            <h4>연락 채널</h4>
+            <h4>{{ copy.about.contactHeading }}</h4>
             <div class="contact-options">
               <a class="contact-option" href="mailto:vcbxnzn@gmail.com">
                 <img class="contact-option-icon" src="/images/contact/email.png" alt="">
@@ -80,25 +76,25 @@
             </div>
           </section>
         </template>
-        <template v-else-if="sideProject">
-          <p class="eyebrow">SIDE PROJECT</p>
-          <h3 class="window-heading">{{ sideProject.name }}</h3>
-          <p class="detail-summary">{{ sideProject.summary }}</p>
+        <template v-else-if="sideProjectContent">
+          <p class="eyebrow">{{ copy.sideProject }}</p>
+          <h3 class="window-heading">{{ sideProjectContent.name }}</h3>
+          <p class="detail-summary">{{ sideProjectContent.summary }}</p>
           <section class="detail-section">
-            <h4>주요 기능</h4>
+            <h4>{{ copy.projectFeatures }}</h4>
             <ul class="detail-list">
-              <li v-for="highlight in sideProject.highlights" :key="highlight">{{ highlight }}</li>
+              <li v-for="highlight in sideProjectContent.highlights" :key="highlight">{{ highlight }}</li>
             </ul>
           </section>
-          <a class="primary-link" :href="sideProject.url" target="_blank" rel="noopener noreferrer">
-            프로젝트 열기 <ExternalLink class="action-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
+          <a class="primary-link" :href="sideProjectContent.url" target="_blank" rel="noopener noreferrer">
+            {{ copy.openProject }} <ExternalLink class="action-icon" :size="16" :stroke-width="2.25" aria-hidden="true" />
           </a>
         </template>
 
         <template v-else-if="projectGroup">
-          <nav class="project-tabs" :aria-label="`${folder?.name} project views`">
+          <nav class="project-tabs" :aria-label="copy.projectTabs">
             <button
-              v-for="(tab, index) in projectGroup.tabs"
+              v-for="(tab, index) in displayTabs"
               :key="tab"
               class="project-tab"
               :class="{ 'is-active': activeIndex === index }"
@@ -134,9 +130,14 @@ import {
 } from 'vue';
 import ProjectContent from '~/components/ProjectContent.vue';
 import PixelFolderIcon from '~/components/PixelFolderIcon.vue';
-import { folders } from '~/data/folders';
+import TerminalApp from '~/components/TerminalApp.vue';
+import { folders, getFolderDisplayName } from '~/data/folders';
 import { getProjectById, projectGroups } from '~/data/projects';
 import { getSideProjectById } from '~/data/side-projects';
+import { usePortfolioLocale } from '~/composables/usePortfolioLocale';
+import { localeMessages } from '~/data/locale-messages';
+import { projectGroupTabsJa } from '~/data/project-translations-ja';
+import { sideProjectTranslationsJa } from '~/data/side-project-translations-ja';
 
 const props = defineProps<{ folderId: string; maximized?: boolean }>();
 const emit = defineEmits<{ close: []; minimize: []; 'toggle-maximize': []; activate: [] }>();
@@ -154,13 +155,29 @@ const folder = computed(() => folders.find((item) => item.id === props.folderId)
 const sideProject = computed(() => getSideProjectById(props.folderId));
 const project = computed(() => getProjectById(props.folderId));
 const projectGroup = computed(() => projectGroups.find((item) => item.id === props.folderId));
+const { locale } = usePortfolioLocale();
+const copy = computed(() => localeMessages[locale.value]);
+const displayFolderName = computed(() => getFolderDisplayName(props.folderId, locale.value));
+const sideProjectContent = computed(() => {
+  if (!sideProject.value) return undefined;
+  return locale.value === 'ja'
+    ? { ...sideProject.value, ...sideProjectTranslationsJa[sideProject.value.id] }
+    : sideProject.value;
+});
+const displayTabs = computed(() => (
+  projectGroup.value && locale.value === 'ja'
+    ? projectGroupTabsJa[projectGroup.value.id] ?? projectGroup.value.tabs
+    : projectGroup.value?.tabs ?? []
+));
 const activeProject = computed(() => {
   const projectId = projectGroup.value?.projectIds[activeIndex.value];
   if (projectId === undefined) return undefined;
   return getProjectById(projectId);
 });
 
-const focusWindow = () => nextTick(() => closeButton.value?.focus());
+const focusWindow = () => nextTick(() => (
+  windowElement.value?.querySelector<HTMLInputElement>('.terminal-command-input') ?? closeButton.value
+)?.focus());
 
 const startDragging = (event: PointerEvent) => {
   if (props.maximized || !window.matchMedia('(pointer: fine)').matches) return;

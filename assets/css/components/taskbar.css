@@ -30,8 +30,8 @@
   font-weight: 700;
 }
 .taskbar-start { width: 36px; height: 36px; flex: 0 0 36px; justify-content: center; padding: 0; border: 0; background: transparent; }
-.taskbar-start:hover, .taskbar-app:hover, .taskbar-app.is-minimized { background: var(--color-teal-tint); }
-.taskbar-start:hover { background: transparent; }
+.taskbar-app:hover, .taskbar-app.is-minimized { background: var(--color-teal-tint); }
+.taskbar-start:hover, .taskbar-start:active, .taskbar-start[aria-expanded='true'], .tray-language:hover, .tray-language:active { border: var(--border-width) solid var(--color-line); background: var(--color-surface); }
 .taskbar-app.is-active { box-shadow: inset 0 -2px 0 var(--color-teal); }
 .taskbar-open-apps { position: relative; display: flex; min-width: 0; flex: 1; align-items: center; gap: var(--space-2); overflow: visible; }
 .taskbar-app { width: max-content; min-width: 150px; max-width: 210px; flex: 0 0 auto; justify-content: flex-start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -62,7 +62,7 @@
 .taskbar-app .pixel-folder-icon { width: 22px; height: 22px; }
 
 .taskbar-tray { display: flex; flex: 0 0 auto; align-items: center; gap: var(--space-1); padding-left: var(--space-3); border-left: var(--border-width) solid var(--color-line); }
-.tray-language { display: grid; min-width: 34px; min-height: 32px; place-items: center; color: var(--color-muted); font-size: var(--font-size-small); font-weight: 750; }
+.tray-language { display: grid; min-width: 34px; min-height: 32px; place-items: center; padding: 0; border: var(--border-width) solid transparent; background: transparent; color: var(--color-muted); cursor: pointer; font-size: var(--font-size-small); font-weight: 750; }
 .tray-popover { position: relative; }
 .tray-popover summary { display: flex; min-height: 36px; align-items: center; justify-content: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: var(--border-width) solid transparent; color: var(--color-ink); cursor: pointer; font-size: var(--font-size-small); list-style: none; font-variant-numeric: tabular-nums; }
 .tray-popover summary::-webkit-details-marker { display: none; }
@@ -75,12 +75,15 @@
 .calendar-popover summary span { color: var(--color-muted); }
 .calendar-card, .weather-card { position: absolute; right: 0; bottom: calc(100% + var(--space-3)); margin: 0; border: var(--border-width-strong) solid var(--color-ink); background: var(--color-surface); box-shadow: var(--shadow-popover); color: var(--color-ink); }
 .calendar-card { width: 248px; padding: var(--space-4); font-size: var(--font-size-small); }
-.calendar-card > strong { display: block; margin-bottom: var(--space-3); font-size: var(--font-size-body); }
+.calendar-heading { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3); }
+.calendar-heading > strong { min-width: 0; flex: 1; font-size: var(--font-size-body); text-align: center; }
+.calendar-month-button { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; padding: 0; border: var(--border-width) solid var(--color-line); background: transparent; color: var(--color-ink); cursor: pointer; }
+.calendar-month-button:hover { border-color: var(--color-teal); background: var(--color-teal-tint); }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-1); text-align: center; }
 .calendar-grid span { display: grid; min-height: 28px; place-items: center; font-size: var(--font-size-small); }
 .calendar-grid .calendar-weekday { color: var(--color-muted); font-size: var(--font-size-caption); font-weight: 700; }
 .calendar-grid .is-today { background: var(--color-teal); color: var(--color-white); font-weight: 750; }
-.calendar-grid .is-empty { visibility: hidden; }
+.calendar-grid .is-adjacent { color: var(--color-muted); opacity: .45; }
 
 .weather-card { width: 200px; padding: var(--space-3); }
 .weather-overview { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
@@ -108,7 +111,6 @@
   background: var(--color-surface);
   box-shadow: var(--shadow-menu);
 }
-.start-menu p { margin: var(--space-1) var(--space-2) var(--space-3); color: var(--color-muted); font-size: var(--font-size-caption); font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
 .start-menu button { display: flex; min-height: 40px; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border: 0; background: transparent; color: var(--color-ink); cursor: pointer; font-size: var(--font-size-small); text-align: left; }
 .start-menu button:hover { background: var(--color-teal-tint); }
 

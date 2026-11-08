@@ -17,9 +17,11 @@
 .project-window.is-maximized { inset: 68px 24px 64px; width: auto; max-height: none; height: auto; transform: none; resize: none; }
 .window-titlebar { display: flex; min-height: 48px; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-5); border-bottom: var(--border-width-strong) solid var(--color-ink); background: var(--color-teal); color: var(--color-surface); cursor: grab; user-select: none; }
 .window-titlebar:active { cursor: grabbing; }
+.project-window.is-terminal-window .window-titlebar { background: var(--color-ink); }
 .window-title { display: flex; min-width: 0; align-items: center; gap: var(--space-3); }
 .window-title h2 { overflow: hidden; margin: 0; font-size: var(--font-size-body); font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
 .window-title .pixel-folder-icon { width: 24px; height: 24px; color: var(--color-surface); }
+.window-app-icon { display: block; width: 24px; height: 24px; flex: 0 0 24px; transform: scale(1.2); image-rendering: pixelated; }
 .window-title .pixel-folder-icon[src$="/folder-icons/aetem.png"],
 .window-title .pixel-folder-icon[src$="/folder-icons/aisct.png"],
 .window-title .pixel-folder-icon[src$="/folder-icons/danbichat.png"],
@@ -30,6 +32,7 @@
 .window-control:hover { background: var(--color-teal-tint); }
 .window-close:hover { background: var(--color-close-hover); }
 .window-body { min-height: 0; overflow: auto; padding: var(--space-7) clamp(var(--space-5), 4vw, var(--space-9)) var(--space-9); }
+.project-window.is-terminal-window .window-body { padding: 0; background: var(--color-ink); }
 .window-body > .eyebrow { margin-bottom: var(--space-2); }
 .eyebrow { display: flex; align-items: center; gap: var(--space-3); margin: 0 0 var(--space-4); color: var(--color-teal); font-size: var(--font-size-caption); font-weight: 750; letter-spacing: .12em; }
 .window-heading { margin: 0; font-size: var(--font-size-heading); font-weight: 750; letter-spacing: -.045em; line-height: 1.4; }
@@ -39,7 +42,7 @@
 .detail-section p { margin: 0; color: var(--color-text); font-size: var(--font-size-project-copy); line-height: var(--line-height-content); }
 .detail-list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
 .detail-list li { position: relative; padding-left: var(--space-5); color: var(--color-text); font-size: var(--font-size-project-copy); line-height: var(--line-height-content); text-wrap: pretty; }
-.detail-list li::before { position: absolute; top: var(--space-2); left: 0; width: 6px; height: 6px; background: var(--color-teal); content: ''; }
+.detail-list li::before { position: absolute; top: .6em; left: 0; width: 6px; height: 6px; background: var(--color-teal); content: ''; }
 .project-tabs { display: flex; gap: var(--space-2); margin: 0 0 var(--space-5); border-bottom: var(--border-width) solid var(--color-line); }
 .project-tab { margin-bottom: var(--space-2); padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--color-line); background: var(--color-paper); color: var(--color-muted); cursor: pointer; font-size: var(--font-size-small); font-weight: 650; }
 .project-tab:hover, .project-tab.is-active { border-color: var(--color-ink); background: var(--color-teal); color: var(--color-surface); }

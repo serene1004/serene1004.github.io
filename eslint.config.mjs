@@ -18,6 +18,7 @@ export default withNuxt(
       'import/no-extraneous-dependencies': ['error', { packageDir: import.meta.dirname }],
       'import/no-unresolved': 'off',
       'import/prefer-default-export': 'off',
+      'linebreak-style': 'off',
       'max-len': ['error', {
         code: 100, ignoreStrings: true, ignoreTemplateLiterals: true, ignoreUrls: true,
       }],

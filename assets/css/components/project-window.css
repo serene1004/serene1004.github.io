@@ -69,7 +69,8 @@
 .contact-option strong { font-size: var(--font-size-body); font-weight: 650; overflow-wrap: anywhere; }
 
 @media (max-width: 760px) {
-  html:has(.project-window), body:has(.project-window) { overflow: hidden; overscroll-behavior-y: none; }
+  html:has(.project-window, .start-menu, .tray-popover[open]),
+  body:has(.project-window, .start-menu, .tray-popover[open]) { overflow: hidden; overscroll-behavior-y: none; }
   .project-window { top: 54px; right: 8px; bottom: 58px; left: 8px; width: auto; max-height: none; transform: none; resize: none; }
   .project-window.is-maximized { inset: 54px 8px 58px; }
   .window-body { padding: var(--space-6) var(--space-5) var(--space-7); overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }

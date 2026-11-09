@@ -118,6 +118,7 @@
   .desktop-taskbar { width: 100%; gap: var(--space-1); padding-inline: var(--space-2); }
   .taskbar-start, .taskbar-app { gap: var(--space-2); padding-inline: var(--space-2); }
   .taskbar-app { min-width: 120px; max-width: 144px; }
+  .taskbar-more-menu { position: fixed; right: 8px; bottom: calc(50px + var(--space-3)); width: min(260px, calc(100vw - 16px)); overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
   .taskbar-tray { gap: 0; padding-left: var(--space-2); }
   .tray-language { min-width: 28px; }
   .tray-popover summary { gap: var(--space-2); padding-inline: var(--space-2); }
